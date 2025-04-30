@@ -1,4 +1,14 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# ------------------------------------------------------------
+# pnpm & Angular/Webpack cache
+/.cache/
+/.pnpm-store/
+/.pnpm-cache/
+/.pnpm-debug.log
+# (si existiera)
+/.pack_cache/
+/*.pack
+# ------------------------------------------------------------
 
 # Compiled output
 /dist
