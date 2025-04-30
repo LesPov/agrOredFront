@@ -1,17 +1,25 @@
+// src/app/pages/inicio/inicio.component.ts // O la ruta correcta: src/app/landing/components/inicio/inicio.component.ts
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
- import { CampiAmigoProductsService, Product, Zone } from '../../../features/campiamigo/services/campiAmigoProducts.service';
-import { CampiAmigoZonesService, ZoneData } from '../../../features/campiamigo/services/campiAmigoZones.service';
-import { environment } from '../../../../environments/environment';
-import { ObserversService } from '../../services/observers.service';
-import { TerritorySceneService } from '../../services/territory-scene.service';
-import { ProductSceneService } from '../../services/product-scene.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+// Tipos y Servicios existentes
+import { ZoneData } from '../../../features/campiamigo/services/campiAmigoZones.service'; // Ajusta si es necesario
+import { Product, Zone } from '../../../features/campiamigo/services/campiAmigoProducts.service'; // Ajusta si es necesario
+import { environment } from '../../../../environments/environment'; // Ajusta si es necesario
+import { ObserversService } from '../../services/observers.service'; // Ajusta ruta si es necesario
+import { TerritorySceneService } from '../../services/territory-scene.service'; // Ajusta ruta si es necesario
+import { ProductSceneService } from '../../services/product-scene.service'; // Ajusta ruta si es necesario
+import { InicioDataService, InitialDataResult } from '../../services/inicio-data.service'; // Ajusta ruta si es necesario
+import { TerritoryInteractionService, TerritoryState, TerritoryInteractionEvent } from '../../services/inicio-territory-interaction.service'; // Ajusta ruta si es necesario
+
 import { ToastrService } from 'ngx-toastr';
 import { Swiper } from 'swiper';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { CommonModule } from '@angular/common';
 
-
+// --- Interface Definition ---
 interface DisplayProductInicio extends Product {
   imageUrl: string;
   producerLocation: string;
@@ -28,63 +36,85 @@ interface DisplayProductInicio extends Product {
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './inicio.component.html',
-  styleUrl: './inicio.component.css'
+  styleUrl: './inicio.component.css',
 })
 export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
-  @ViewChild('terrainCanvas', { static: false }) terrainCanvasRef!: ElementRef<HTMLCanvasElement>;
+  // ======================================================================== //
+  // == Section 1: Component Properties                                    == //
+  // ======================================================================== //
+
+  private _terrainCanvasRef: ElementRef<HTMLCanvasElement> | undefined;
+  @ViewChild('terrainCanvas') set terrainCanvas(canvasRef: ElementRef<HTMLCanvasElement> | undefined) {
+    // console.log("ViewChild setter: terrainCanvas triggered. Ref provided:", canvasRef);
+    if (canvasRef && canvasRef !== this._terrainCanvasRef) {
+      // console.log("ViewChild setter: Setting _terrainCanvasRef and initializing services.");
+      this._terrainCanvasRef = canvasRef;
+      this.territoryInteractionService.initialize(this._terrainCanvasRef);
+      this.initializeTerritoryServiceBase();
+      this.setupTerritoryObserver();
+    } else if (!canvasRef && this._terrainCanvasRef) {
+      // console.log("ViewChild setter: terrainCanvas removed.");
+      this._terrainCanvasRef = undefined;
+      this.territoryObserver?.disconnect();
+    }
+  }
+
   @ViewChildren('productCanvas') productCanvases!: QueryList<ElementRef<HTMLCanvasElement>>;
   @ViewChild('productSwiperContainer') productSwiperContainer!: ElementRef<HTMLElement>;
 
+  public allZones: ZoneData[] = [];
+  public activeTerritoryZone: ZoneData | null = null;
   public isTerritoryLoading = false;
   public territoryModelsReady = false;
   public territoryLoaded = false;
-  public Math = Math;
-  public selectedTab: 'all' | 'offer' | 'new' | 'popular' | 'cold' | 'hot' = 'all';
-  public showModal = false;
-  public allZones: ZoneData[] = [];
   public isLoadingZones = false;
   public zonesError: string | null = null;
-  public activeTerritoryZone: ZoneData | null = null;
+
   public allDisplayProducts: DisplayProductInicio[] = [];
+  public selectedTab: 'all' | 'offer' | 'new' | 'popular' | 'cold' | 'hot' = 'all';
   public isLoadingProducts = false;
   public productError: string | null = null;
   public productLoaded: boolean[] = [];
   public activeProductOriginalIndex: number | null = null;
-  public currentSlideIndex = 0; // Índice del slide Swiper actualmente visible
+  public currentSlideIndex = 0;
+
+  public Math = Math;
+  public showModal = false;
 
   private readonly defaultProductImage = 'assets/img/default-product.png';
   private readonly defaultTerritoryImage = 'assets/img/default-zone.png';
-  private territoryObserver: IntersectionObserver | null = null;
-  private productServiceInitialized = false;
   private readonly baseAssetUrl = environment.endpoint.endsWith('/') ? environment.endpoint : environment.endpoint + '/';
+
+  private territoryObserver: IntersectionObserver | null = null;
+  private productSwiperInstance: Swiper | null = null;
+  private productServiceInitialized = false;
   private territoryInitAttemptedByObserver = false;
   private isTerritoryInitializing: boolean = false;
-  private productSwiperInstance: Swiper | null = null;
-  private readonly PASCA_ZONE_ID = 11;
-  private isPreloadingInBackground = false;
-
-  // Almacena el índice *original* del producto en el slide que estaba activo ANTES del cambio
   private previousActiveProductOriginalIndexOnSlide: number | null = null;
+  private destroy$ = new Subject<void>();
 
+  // ======================================================================== //
+  // == Section 2: Angular Lifecycle Hooks                                 == //
+  // ======================================================================== //
   constructor(
     private router: Router,
     private toastr: ToastrService,
     private observerService: ObserversService,
     private territoryService: TerritorySceneService,
     private productService3D: ProductSceneService,
-    private campiAmigoProductsService: CampiAmigoProductsService,
-    private campiAmigoZonesService: CampiAmigoZonesService,
-    private cdRef: ChangeDetectorRef
+    private inicioDataService: InicioDataService,
+    private cdRef: ChangeDetectorRef,
+    private territoryInteractionService: TerritoryInteractionService
   ) { }
 
   ngOnInit(): void {
-    this.loadFeaturedProducts();
-    this.loadAllZonesAndSetDefault();
+    this.loadInitialData();
+    this.subscribeToTerritoryState();
+    this.subscribeToTerritoryEvents();
   }
 
   ngAfterViewInit(): void {
-    this.setupTerritoryObserver();
     this.initializeTerritoryServiceBase();
     this.productCanvases.changes.subscribe(() => this.handleProductCanvasChanges());
     document.addEventListener('visibilitychange', this.handleVisibilityChange);
@@ -93,438 +123,330 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this.territoryService.destroy();
     this.productService3D.destroy();
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-    this.territoryObserver?.disconnect();
     this.destroySwiper();
+    this.territoryObserver?.disconnect();
+    document.removeEventListener('visibilitychange', this.handleVisibilityChange);
+
+    // *** NUEVO: Limpiar referencia en el servicio ***
+    this.territoryInteractionService.clearCanvasReference();
+    // --------------------------------------------
+
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  // ======================================================================== //
+  // == Section 3: Initial Data Load & Component-Specific Setup            == //
+  // ======================================================================== //
+  private loadInitialData(): void {
+    this.isLoadingZones = true; this.isLoadingProducts = true;
+    this.zonesError = null; this.productError = null;
+    this.allZones = []; this.allDisplayProducts = [];
+    this.activeTerritoryZone = null; this.isTerritoryLoading = false;
+    this.territoryModelsReady = false; this.territoryLoaded = false;
+    this.productLoaded = []; this.activeProductOriginalIndex = null;
+    this.destroySwiper();
+    if (this.productServiceInitialized) this.productService3D.stopAnimation();
+    this.territoryInteractionService.setActiveZone(null);
+    this.cdRef.detectChanges();
+
+    this.inicioDataService.loadInitialData().subscribe({
+      next: (result: InitialDataResult) => {
+        this.isLoadingZones = false; this.isLoadingProducts = false;
+        if (result.success) {
+          this.allZones = result.zones;
+          this.allDisplayProducts = result.products;
+          this.productLoaded = new Array(this.allDisplayProducts.length).fill(false);
+          this.zonesError = null; this.productError = null;
+          this.activeTerritoryZone = result.defaultZone ?? null;
+          this.territoryInteractionService.setActiveZone(this.activeTerritoryZone);
+          this.cdRef.detectChanges();
+          setTimeout(() => this.initializeOrUpdateSwiper(), 0);
+        } else {
+          this.zonesError = result.errorMessage ?? 'Error cargando datos.';
+          this.productError = result.errorMessage ?? 'Error cargando datos.';
+          this.allZones = []; this.allDisplayProducts = [];
+          this.activeTerritoryZone = null;
+          this.territoryInteractionService.setActiveZone(null);
+        }
+      },
+      error: (err) => {
+        console.error("Error en la suscripción a loadInitialData:", err);
+        const genericError = 'Ocurrió un error inesperado. Intenta de nuevo.';
+        this.zonesError = genericError; this.productError = genericError;
+        this.isLoadingZones = false; this.isLoadingProducts = false;
+        this.allZones = []; this.allDisplayProducts = [];
+        this.activeTerritoryZone = null;
+        this.territoryInteractionService.setActiveZone(null);
+        this.cdRef.detectChanges();
+      }
+    });
   }
 
   private async initializeTerritoryServiceBase(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 0));
-    if (this.terrainCanvasRef && this.terrainCanvasRef.nativeElement.isConnected && !this.territoryService.isInitialized()) {
+    if (this._terrainCanvasRef && this._terrainCanvasRef.nativeElement.isConnected && !this.territoryService.isInitialized()) {
       try {
-        await this.ensureCanvasIsReady(this.terrainCanvasRef.nativeElement);
-        await this.territoryService.init(this.terrainCanvasRef.nativeElement, this.baseAssetUrl);
+        await this.ensureCanvasIsReady(this._terrainCanvasRef.nativeElement);
+        await this.territoryService.init(this._terrainCanvasRef.nativeElement, this.baseAssetUrl);
       } catch (error) {
-        console.error("Error inicializando servicio 3D Territorio:", error);
+        console.error("Error inicializando servicio 3D Territorio (Base):", error);
+        this.toastr.error("No se pudo inicializar la vista 3D del territorio.");
       }
-    }
-  }
-
-  private loadAllZonesAndSetDefault(): void {
-    this.isLoadingZones = true; this.zonesError = null; this.allZones = [];
-    this.activeTerritoryZone = null; this.cdRef.detectChanges();
-    this.campiAmigoZonesService.getAllZones().subscribe({
-      next: (zones) => {
-        this.allZones = zones; this.isLoadingZones = false;
-        const defaultZone = this.allZones.find(zone => zone.id === this.PASCA_ZONE_ID) ?? this.allZones[0] ?? null;
-        this.activeTerritoryZone = defaultZone;
-        this.cdRef.detectChanges();
-        if (this.activeTerritoryZone && this.zoneHasModels(this.activeTerritoryZone) && !this.isPreloadingInBackground) {
-          setTimeout(() => this.preloadTerritoryModels(this.activeTerritoryZone!), 0);
-        } else if (this.activeTerritoryZone && !this.zoneHasModels(this.activeTerritoryZone)) {
-          this.territoryModelsReady = true; this.cdRef.detectChanges();
-        }
-      }, error: (err) => {
-        console.error("Error cargando zonas:", err); this.zonesError = 'Error al cargar zonas.';
-        this.isLoadingZones = false; this.cdRef.detectChanges();
-      }
-    });
-  }
-
-  private loadFeaturedProducts(): void {
-    this.isLoadingProducts = true; this.productError = null; this.destroySwiper();
-    this.allDisplayProducts = []; this.productLoaded = []; this.activeProductOriginalIndex = null;
-    if (this.productServiceInitialized) this.productService3D.stopAnimation();
-    this.cdRef.detectChanges();
-    this.campiAmigoProductsService.getAllProductsWithUsers().subscribe({
-      next: (resp) => {
-        this.allDisplayProducts = resp.products.map(p => {
-          const productZone = p.auth?.userProfile?.zone;
-          const { climateClass, climateText } = this.getProductClimateInfo(productZone);
-          const producerLocation = productZone ? `${productZone.name} · ${productZone.departamentoName}` : p.auth?.userProfile?.direccion || 'N/A';
-          const imageUrl = p.image ? `${this.baseAssetUrl}uploads/productos/imagenes/${p.image}` : this.defaultProductImage;
-          const discountPercentage = p.id % 3 === 0 ? 15 : undefined;
-          const isTopProduct = p.id % 5 === 0;
-          const originalPrice = discountPercentage ? p.price / (1 - discountPercentage / 100) : undefined;
-          const ratingCount = Math.floor(Math.random() * 200) + 50;
-          return { ...p, imageUrl, producerLocation, climateClass, climateText, glbFile: p.glbFile, discountPercentage, isTopProduct, originalPrice, ratingCount };
-        });
-        this.productLoaded = new Array(this.allDisplayProducts.length).fill(false);
-        this.isLoadingProducts = false; this.cdRef.detectChanges();
-        setTimeout(() => this.initializeOrUpdateSwiper(), 0);
-      }, error: (err) => {
-        console.error("Error cargando productos:", err); this.productError = 'Error al cargar productos.';
-        this.isLoadingProducts = false; this.cdRef.detectChanges();
-      }
-    });
-  }
-
-  public get filteredDisplayProducts(): DisplayProductInicio[] {
-    switch (this.selectedTab) {
-      case 'all': return this.allDisplayProducts;
-      case 'cold': return this.allDisplayProducts.filter(p => p.climateClass === 'cold');
-      case 'hot': return this.allDisplayProducts.filter(p => p.climateClass === 'hot');
-      case 'offer': return this.allDisplayProducts.filter(p => p.discountPercentage && p.discountPercentage > 0);
-      case 'new': return this.allDisplayProducts.slice(0, 5);
-      case 'popular': return this.allDisplayProducts.filter(p => (p.rating || 0) > 4);
-      default: return this.allDisplayProducts;
-    }
-  }
-
-  public selectTab(tab: 'all' | 'offer' | 'new' | 'popular' | 'cold' | 'hot'): void {
-    if (this.selectedTab !== tab) {
-      this.deactivateCurrentProduct3D(); // Reanuda swiper si estaba pausado
-      this.destroySwiper();
-      this.selectedTab = tab;
-      this.cdRef.detectChanges();
-      setTimeout(() => this.initializeOrUpdateSwiper(), 0);
-    }
-  }
-
-  private initializeOrUpdateSwiper(): void {
-    const slidesCount = this.filteredDisplayProducts.length;
-    if (!this.productSwiperContainer || slidesCount === 0) {
-      if (this.productSwiperInstance) this.destroySwiper();
-      return;
-    }
-    if (this.productSwiperInstance) {
-      this.productSwiperInstance.update();
-      this.currentSlideIndex = this.productSwiperInstance.realIndex;
-      this.cdRef.markForCheck();
-      return;
-    }
-    this.productSwiperInstance = new Swiper(this.productSwiperContainer.nativeElement, {
-      modules: [Navigation, Pagination, Autoplay],
-      slidesPerView: 1, centeredSlides: true, spaceBetween: 30,
-      loop: slidesCount > 1,
-      autoplay: { delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: false },
-      pagination: { el: '.product-swiper-pagination', clickable: true },
-      navigation: { nextEl: '.product-swiper-button-next', prevEl: '.product-swiper-button-prev' },
-      grabCursor: true
-    });
-
-    this.currentSlideIndex = this.productSwiperInstance.realIndex; // Inicializar índice
-    this.previousActiveProductOriginalIndexOnSlide = this.getOriginalIndexForSwiperIndex(this.currentSlideIndex); // Inicializar índice previo
-
-    // Listener principal para cambios de slide
-    this.productSwiperInstance.on('slideChange', () => {
-      if (!this.productSwiperInstance) return; // Guardia por si se destruye
-
-      const newSwiperIndex = this.productSwiperInstance.realIndex;
-      const newProductOriginalIndex = this.getOriginalIndexForSwiperIndex(newSwiperIndex);
-
-      // Si había un producto 3D activo en el slide *anterior* y ya no estamos en ese slide, desactivarlo.
-      if (this.activeProductOriginalIndex !== null && this.activeProductOriginalIndex === this.previousActiveProductOriginalIndexOnSlide && this.activeProductOriginalIndex !== newProductOriginalIndex) {
-        console.log(`Slide changed away from active 3D product (Index: ${this.activeProductOriginalIndex}). Deactivating.`);
-        this.deactivateCurrentProduct3D(); // Esto reanuda el autoplay
-      }
-
-      // Actualizar estado para el próximo cambio
-      this.currentSlideIndex = newSwiperIndex;
-      this.previousActiveProductOriginalIndexOnSlide = newProductOriginalIndex;
-      this.cdRef.markForCheck(); // Notificar a Angular
-    });
-
-    this.productSwiperInstance.on('autoplayStop', () => { /* Opcional: console.log('Swiper autoplay STOPPED'); */ });
-    this.productSwiperInstance.on('autoplayStart', () => { /* Opcional: console.log('Swiper autoplay STARTED'); */ });
-  }
-
-  /** Obtiene el índice original (en allDisplayProducts) para un índice de Swiper (en filteredDisplayProducts) */
-  private getOriginalIndexForSwiperIndex(swiperIndex: number): number | null {
-    if (swiperIndex < 0 || swiperIndex >= this.filteredDisplayProducts.length) {
-      return null;
-    }
-    const productOnSlide = this.filteredDisplayProducts[swiperIndex];
-    return this.getOriginalIndex(productOnSlide.id);
-  }
-
-
-  public goToSlide(idx: number): void { if (this.productSwiperInstance) this.productSwiperInstance.slideToLoop(idx); }
-
-  private destroySwiper(): void {
-    if (this.productSwiperInstance) {
-      this.productSwiperInstance.destroy(true, true);
-      this.productSwiperInstance = null;
-      this.currentSlideIndex = 0;
-      this.previousActiveProductOriginalIndexOnSlide = null;
-    }
-  }
-
-  public pauseSwiperAutoplay(): void {
-    if (this.productSwiperInstance?.autoplay?.running) {
-      this.productSwiperInstance.autoplay.stop();
-    }
-  }
-
-  public resumeSwiperAutoplay(): void {
-    if (this.activeProductOriginalIndex === null && this.productSwiperInstance && !this.productSwiperInstance.autoplay?.running) {
-      this.productSwiperInstance.autoplay.start();
     }
   }
 
   private setupTerritoryObserver(): void {
-    if (!this.terrainCanvasRef) return;
-    if (this.territoryObserver) this.territoryObserver.disconnect();
+    if (!this._terrainCanvasRef) { return; }
+    if (this.territoryObserver) { this.territoryObserver.disconnect(); }
+    const canvasElement = this._terrainCanvasRef.nativeElement;
     this.territoryObserver = this.observerService.createObserver(async () => {
-      if (this.terrainCanvasRef.nativeElement.offsetParent !== null &&
-        !this.territoryInitAttemptedByObserver &&
-        !this.territoryService.isInitialized() &&
-        !this.isTerritoryInitializing) {
+      if (canvasElement.offsetParent !== null && !this.territoryInitAttemptedByObserver && !this.territoryService.isInitialized() && !this.isTerritoryInitializing) {
         this.isTerritoryInitializing = true; this.territoryInitAttemptedByObserver = true;
-        try { await this.territoryService.init(this.terrainCanvasRef.nativeElement, this.baseAssetUrl); }
-        catch (error) { console.error("Territory Observer: Falló init base:", error); }
-        finally {
-          this.isTerritoryInitializing = false;
-          if (this.territoryObserver && this.terrainCanvasRef) this.territoryObserver.unobserve(this.terrainCanvasRef.nativeElement);
+        try { await this.initializeTerritoryServiceBase(); } catch (error) { console.error("Territory Observer: Base init failed (fallback):", error); } finally {
+          this.isTerritoryInitializing = false; if (this.territoryObserver) { this.territoryObserver.unobserve(canvasElement); }
         }
-      } else if (this.territoryObserver && this.terrainCanvasRef) {
-        this.territoryObserver.unobserve(this.terrainCanvasRef.nativeElement);
-      }
+      } else if (this.territoryObserver && (this.territoryService.isInitialized() || this.territoryInitAttemptedByObserver)) { this.territoryObserver.unobserve(canvasElement); }
     });
-    this.territoryObserver.observe(this.terrainCanvasRef.nativeElement);
+    this.territoryObserver.observe(canvasElement);
   }
 
-  async preloadTerritoryModels(zoneToPreload: ZoneData): Promise<void> {
-    if (!this.zoneHasModels(zoneToPreload)) {
-      if (this.activeTerritoryZone?.id === zoneToPreload.id) { this.territoryModelsReady = true; this.cdRef.detectChanges(); }
+  private subscribeToTerritoryState(): void {
+    this.territoryInteractionService.state$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((state: TerritoryState) => {
+        this.isTerritoryLoading = state.isLoading;
+        this.territoryModelsReady = state.modelsReady;
+        this.territoryLoaded = state.isLoaded;
+        this.cdRef.markForCheck();
+      });
+  }
+
+  private subscribeToTerritoryEvents(): void {
+    this.territoryInteractionService.events$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((event: TerritoryInteractionEvent) => {
+        switch (event.type) {
+          case 'requestProductDeactivation': this.deactivateCurrentProduct3D(); break;
+          case 'statusUpdate':
+            if (event.message) {
+              const level = event.details?.level || 'info'; const title = event.details?.title;
+              const options = { timeOut: title === 'Preparando' ? 2500 : (level === 'success' ? 3000 : 4000) };
+              switch (level) {
+                case 'success': this.toastr.success(event.message, title, options); break;
+                case 'warning': this.toastr.warning(event.message, title, options); break;
+                case 'error': this.toastr.error(event.message, title, options); break;
+                default: this.toastr.info(event.message, title, options); break;
+              }
+            }
+            break;
+          case 'error':
+            if (event.message) { this.toastr.error(event.message, 'Error Territorio 3D'); }
+            console.error("Territory Interaction Error:", event.details);
+            break;
+        }
+      });
+  }
+
+  // ======================================================================== //
+  // == Section 4: Territory Interaction & 3D Management (DELEGADO)        == //
+  // ======================================================================== //
+  public onMainCanvasClick(): void { this.territoryInteractionService.handleCanvasClick(); }
+  public changeActiveZone(zone: ZoneData): void {
+    if (this.activeTerritoryZone?.id !== zone.id) {
+      this.activeTerritoryZone = zone;
+      this.territoryInteractionService.setActiveZone(zone);
+    }
+  }
+
+  // ======================================================================== //
+  // == Section 5: Product Carousel (Swiper) & Filtering Logic           == //
+  // ======================================================================== //
+  public get filteredDisplayProducts(): DisplayProductInicio[] {
+    switch (this.selectedTab) { case 'all': return this.allDisplayProducts; case 'cold': return this.allDisplayProducts.filter(p => p.climateClass === 'cold'); case 'hot': return this.allDisplayProducts.filter(p => p.climateClass === 'hot'); case 'offer': return this.allDisplayProducts.filter(p => p.discountPercentage && p.discountPercentage > 0); case 'new': return this.allDisplayProducts.slice(0, 5); case 'popular': return this.allDisplayProducts.filter(p => (p.rating || 0) >= 4.0); default: return this.allDisplayProducts; }
+  }
+  public selectTab(tab: 'all' | 'offer' | 'new' | 'popular' | 'cold' | 'hot'): void {
+    if (this.selectedTab !== tab) { this.deactivateCurrentProduct3D(); this.territoryInteractionService.deactivateView(); this.destroySwiper(); this.selectedTab = tab; this.cdRef.detectChanges(); setTimeout(() => this.initializeOrUpdateSwiper(), 0); }
+  }
+  private initializeOrUpdateSwiper(): void {
+    const slidesCount = this.filteredDisplayProducts.length; if (!this.productSwiperContainer || slidesCount === 0) { if (this.productSwiperInstance) this.destroySwiper(); return; } const swiperElement = this.productSwiperContainer.nativeElement; setTimeout(() => { if (this.productSwiperInstance) { this.productSwiperInstance.update(); this.productSwiperInstance.slideToLoop(0, 0); this.currentSlideIndex = this.productSwiperInstance.realIndex; this.previousActiveProductOriginalIndexOnSlide = this.getOriginalIndexForSwiperIndex(this.currentSlideIndex); this.cdRef.markForCheck(); return; } this.productSwiperInstance = new Swiper(swiperElement, { modules: [Navigation, Pagination, Autoplay], slidesPerView: 1, centeredSlides: true, spaceBetween: 30, loop: slidesCount > 3, autoplay: { delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true, }, pagination: { el: '.product-swiper-pagination', clickable: true }, navigation: { nextEl: '.product-swiper-button-next', prevEl: '.product-swiper-button-prev' }, grabCursor: true, observer: true, observeParents: true, }); this.currentSlideIndex = this.productSwiperInstance.realIndex; this.previousActiveProductOriginalIndexOnSlide = this.getOriginalIndexForSwiperIndex(this.currentSlideIndex); this.productSwiperInstance.on('slideChange', () => { if (!this.productSwiperInstance) return; const newSwiperIndex = this.productSwiperInstance.realIndex; const newProductOriginalIndex = this.getOriginalIndexForSwiperIndex(newSwiperIndex); if (this.activeProductOriginalIndex !== null && this.activeProductOriginalIndex === this.previousActiveProductOriginalIndexOnSlide && this.activeProductOriginalIndex !== newProductOriginalIndex) { this.deactivateCurrentProduct3D(); } this.currentSlideIndex = newSwiperIndex; this.previousActiveProductOriginalIndexOnSlide = newProductOriginalIndex; this.cdRef.markForCheck(); }); }, 50);
+  }
+  private destroySwiper(): void { if (this.productSwiperInstance) { this.productSwiperInstance.destroy(true, true); this.productSwiperInstance = null; this.currentSlideIndex = 0; this.previousActiveProductOriginalIndexOnSlide = null; } }
+  public pauseSwiperAutoplay(): void { if (this.productSwiperInstance?.autoplay?.running) { this.productSwiperInstance.autoplay.stop(); } }
+  public resumeSwiperAutoplay(): void { if (this.activeProductOriginalIndex === null && !this.territoryLoaded && this.productSwiperInstance && !this.productSwiperInstance.autoplay?.running) { this.productSwiperInstance.autoplay.start(); } }
+  public goToSlide(idx: number): void { if (this.productSwiperInstance) { this.productSwiperInstance.slideToLoop(idx); } }
+
+  // ======================================================================== //
+  // == Section 6: Product 3D Management                                   == //
+  // ======================================================================== //
+  public async onProductCanvasClick(originalIndex: number): Promise<void> {
+    // console.log(`onProductCanvasClick triggered for index: ${originalIndex}`); // Mantenido para debug inicial
+    if (originalIndex < 0 || originalIndex >= this.allDisplayProducts.length) { return; }
+    const product = this.allDisplayProducts[originalIndex];
+    if (!product) { return; }
+    // console.log(`Product: ${product.name}, Has GLB: ${!!product.glbFile}, Currently Loaded: ${this.productLoaded[originalIndex]}`);
+
+    if (this.productLoaded[originalIndex]) {
+      // console.log('Product already loaded, deactivating...');
+      this.deactivateCurrentProduct3D();
       return;
     }
-    if ((this.isPreloadingInBackground || this.territoryModelsReady) && this.activeTerritoryZone?.id === zoneToPreload.id) return;
-
-    this.isPreloadingInBackground = true; this.territoryModelsReady = false;
-    if (this.activeTerritoryZone?.id === zoneToPreload.id) this.cdRef.detectChanges();
-
-    try {
-      if (!this.territoryService.isInitialized()) {
-        if (this.terrainCanvasRef && this.terrainCanvasRef.nativeElement.isConnected) {
-          await this.ensureCanvasIsReady(this.terrainCanvasRef.nativeElement);
-          await this.territoryService.init(this.terrainCanvasRef.nativeElement, this.baseAssetUrl);
-        } else throw new Error("Canvas no disponible para inicializar en precarga.");
-      } else this.territoryService.clearModels();
-
-      await this.territoryService.loadModels(zoneToPreload.modelPath, zoneToPreload.titleGlb);
-
-      if (this.activeTerritoryZone?.id === zoneToPreload.id) {
-        this.territoryModelsReady = true;
-        this.cdRef.detectChanges();
-      }
-
-    } catch (error) {
-      console.error(`Error durante PRECARGA para ${zoneToPreload.name}:`, error);
-      if (this.activeTerritoryZone?.id === zoneToPreload.id) { this.territoryModelsReady = false; this.cdRef.detectChanges(); }
-    } finally {
-      this.isPreloadingInBackground = false;
-      if (this.isTerritoryLoading && this.activeTerritoryZone?.id === zoneToPreload.id) { this.isTerritoryLoading = false; this.cdRef.detectChanges(); }
+    if (product.glbFile) {
+      // console.log('Product has GLB, attempting activation...');
+      await this.activateProduct3D(originalIndex);
+    } else {
+      // console.log('Product has no GLB.');
+      this.toastr.info(`Producto ${product.name} sin modelo 3D.`);
+      this.deactivateCurrentProduct3D();
     }
   }
 
-  private showAndAnimateTerritory(): void {
-    if (this.activeTerritoryZone && this.zoneHasModels(this.activeTerritoryZone) && this.territoryModelsReady) {
-      this.deactivateCurrentProduct3D(); // Reanuda swiper
-      if (!this.territoryLoaded) { this.territoryLoaded = true; this.cdRef.detectChanges(); }
-      if (!this.territoryService.isAnimating()) { this.territoryService.startAnimation(); }
-    }
-  }
-
-  private deactivateTerritory3D(): void {
-    if (this.territoryLoaded) {
-      this.territoryLoaded = false; this.territoryService.stopAnimation(); this.cdRef.detectChanges();
-    }
-  }
-
+  // -------- ¡CORRECCIÓN PRINCIPAL AQUÍ! --------
   private async activateProduct3D(originalIndex: number): Promise<void> {
+    // console.log(`activateProduct3D for index: ${originalIndex}`); // Mantenido para debug inicial
     const targetProduct = this.allDisplayProducts[originalIndex];
-    // La verificación ahora se basa directamente en si targetProduct.glbFile tiene un valor
-    if (!targetProduct || !targetProduct.glbFile) {
-        if (targetProduct) this.toastr.info(`Producto ${targetProduct.name} sin modelo 3D.`);
-        this.deactivateCurrentProduct3D(); // Asegurarse de desactivar si se hace clic y no hay modelo
-        return;
+    if (!targetProduct || !targetProduct.glbFile) return;
+
+    // 1. Desactivar otras vistas y pausar
+    this.territoryInteractionService.deactivateView();
+    if (this.activeProductOriginalIndex !== null && this.activeProductOriginalIndex !== originalIndex) {
+      this.deactivateCurrentProduct3D();
     }
+    this.pauseSwiperAutoplay();
 
-    this.deactivateTerritory3D();
-    this.deactivateCurrentProduct3D(); // Desactiva otro y reanuda swiper temporalmente
-    this.pauseSwiperAutoplay(); // Pausa explícitamente para este nuevo
-
+    // 2. Encontrar Canvas
     const targetCanvasRef = this.findCanvasByProductId(targetProduct.id);
     if (!targetCanvasRef) {
-        this.toastr.error("Error interno: No se encontró el canvas 3D.");
-        this.resumeSwiperAutoplay();
-        return;
+      console.error(`Canvas element not found for product ID ${targetProduct.id}.`);
+      this.toastr.error("Error interno: No se encontró el canvas 3D del producto.");
+      this.resumeSwiperAutoplay();
+      return;
     }
     const targetCanvasElement = targetCanvasRef.nativeElement;
 
+    // -------- CAMBIO CLAVE: Hacer visible ANTES de inicializar --------
+    // Forzar visibilidad ANTES de ensureCanvasIsReady
+    targetCanvasElement.style.display = 'block';
+    // Forzar detección de cambio para que el navegador lo aplique
     try {
-        // Inicializa el servicio si es necesario o establece el nuevo canvas
-        if (!this.productServiceInitialized) {
-            await this.productService3D.init(targetCanvasElement);
-            this.productServiceInitialized = true;
-        } else {
-            await this.productService3D.setRenderingTarget(targetCanvasElement);
-        }
-
-        // ----- Lógica de carga modificada -----
-        // Ya no buscamos un índice. Pasamos directamente el nombre del archivo.
-        // El servicio se encargará de cargar el default si glbFile es null o falla.
-        await this.productService3D.loadModelByFilename(targetProduct.glbFile);
-        // ----- Fin Lógica de carga modificada -----
-
-
-        // Si loadModelByFilename se completa sin lanzar error, asumimos éxito (o carga del default)
-        this.productLoaded[originalIndex] = true;
-        this.activeProductOriginalIndex = originalIndex;
-        this.previousActiveProductOriginalIndexOnSlide = originalIndex; // Marcar slide actual como el que tiene 3D activo
-        console.log(`Activando 3D para índice ${originalIndex}.`);
-        this.cdRef.detectChanges();
-        // Swiper sigue pausado por `pauseSwiperAutoplay()` al inicio
-
-    } catch (error) { // Captura errores si loadModelByFilename los relanza (actualmente no lo hace por defecto)
-        console.error(`Error activando 3D producto ${originalIndex} (${targetProduct.name}):`, error);
-        this.toastr.error(`Error al preparar 3D para ${targetProduct.name}.`);
-        this.productLoaded[originalIndex] = false;
-        this.activeProductOriginalIndex = null;
-        this.previousActiveProductOriginalIndexOnSlide = null; // Resetear si falla
-        if (!this.productService3D.isInitialized()) this.productServiceInitialized = false;
-        this.cdRef.detectChanges();
-        this.resumeSwiperAutoplay(); // Reanudar si falla la activación
+      this.cdRef.detectChanges(); // Intentar forzar detección
+    } catch (e) {
+      console.warn("detectChanges during activateProduct3D failed (likely due to ongoing cycle), continuing...", e);
+      // Podría fallar si ya está en un ciclo de detección, pero el estilo debería aplicarse igualmente.
     }
-}
+    // Dar un respiro mínimo al navegador para aplicar el estilo
+    await new Promise(resolve => setTimeout(resolve, 10)); // 10ms, ajustar si es necesario
+    // -----------------------------------------------------------------
 
+    // 3. Inicializar/Configurar Servicio y Cargar Modelo
+    try {
+      // AHORA llamar a ensureCanvasIsReady
+      await this.ensureCanvasIsReady(targetCanvasElement); // Ahora debería tener dimensiones
+      console.log('Canvas ready for product 3D.'); // Log si ensureCanvasIsReady tiene éxito
+
+      if (!this.productServiceInitialized) {
+        // console.log('Initializing ProductSceneService...'); // Log mantenido
+        await this.productService3D.init(targetCanvasElement);
+        this.productServiceInitialized = true;
+        // console.log('ProductSceneService Initialized.'); // Log mantenido
+      } else {
+        // console.log('Setting rendering target...'); // Log mantenido
+        // ensureCanvasIsReady ya se llamó, no es necesario repetirlo
+        await this.productService3D.setRenderingTarget(targetCanvasElement);
+        // console.log('ProductSceneService Target Set.'); // Log mantenido
+      }
+
+      // console.log(`Loading product model: ${targetProduct.glbFile}`); // Log mantenido
+      await this.productService3D.loadModelByFilename(targetProduct.glbFile);
+      // console.log(`Product model loaded successfully for index: ${originalIndex}`); // Log mantenido
+
+      // 4. Éxito: Actualizar estado y empezar animación
+      this.productLoaded[originalIndex] = true; // Mantener estado consistente
+      this.activeProductOriginalIndex = originalIndex;
+      this.previousActiveProductOriginalIndexOnSlide = originalIndex;
+      // El detectChanges aquí podría ser redundante si el anterior funcionó, pero no hace daño
+      this.cdRef.detectChanges();
+
+      // Esperar un instante mínimo ANTES de animar
+      await new Promise(resolve => setTimeout(resolve, 0));
+
+      if (targetCanvasElement.offsetParent !== null && this.productService3D.isInitialized()) { // Doble check
+        // console.log('Starting product animation...'); // Log mantenido
+        this.productService3D.startAnimation();
+      } else {
+        console.warn(`Product canvas (${targetProduct.id}) not visible or service not ready AFTER loading, animation not started.`);
+      }
+
+    } catch (error) {
+      console.error(`Error during activateProduct3D for index ${originalIndex}:`, error);
+      this.toastr.error(`Error al preparar 3D para ${targetProduct.name}.`);
+      // 5. Fallo: Resetear estado y ocultar canvas
+      this.productLoaded[originalIndex] = false;
+      this.activeProductOriginalIndex = null;
+      targetCanvasElement.style.display = 'none'; // Ocultar de nuevo si falló
+      this.cdRef.detectChanges();
+      this.resumeSwiperAutoplay();
+    }
+  }
+  // -------- FIN CORRECCIÓN PRINCIPAL --------
 
   private deactivateCurrentProduct3D(): void {
     if (this.activeProductOriginalIndex !== null) {
       const oldIndex = this.activeProductOriginalIndex;
-      this.productService3D.stopAnimation();
-      if (oldIndex >= 0 && oldIndex < this.productLoaded.length) { this.productLoaded[oldIndex] = false; }
+      // console.log(`Deactivating product 3D for index ${oldIndex}`);
+      if (this.productServiceInitialized) {
+        this.productService3D.stopAnimation();
+        // Encontrar el canvas correspondiente para ocultarlo explícitamente
+        const productToDeactivate = this.allDisplayProducts[oldIndex];
+        if (productToDeactivate) {
+          const canvasRef = this.findCanvasByProductId(productToDeactivate.id);
+          if (canvasRef) {
+            canvasRef.nativeElement.style.display = 'none'; // Ocultar al desactivar
+          }
+        }
+      }
+      if (oldIndex >= 0 && oldIndex < this.productLoaded.length) {
+        this.productLoaded[oldIndex] = false;
+      }
       this.activeProductOriginalIndex = null;
-      // No resetear previousActiveProductOriginalIndexOnSlide aquí, lo hace el slideChange
       this.cdRef.detectChanges();
-      // Reanudar Swiper DESPUÉS de desactivar 3D
       this.resumeSwiperAutoplay();
     }
   }
 
   private handleProductCanvasChanges(): void {
+    // console.log(`handleProductCanvasChanges triggered. Canvas count: ${this.productCanvases?.length}`);
     if (this.activeProductOriginalIndex !== null) {
       const activeProduct = this.allDisplayProducts[this.activeProductOriginalIndex];
-      const canvasStillExists = this.productCanvases.some(ref => ref.nativeElement.getAttribute('data-product-id') === activeProduct?.id.toString());
-      if (activeProduct && !canvasStillExists) {
-        this.deactivateCurrentProduct3D(); // Esto reanuda Swiper
-      }
+      if (!activeProduct) { this.deactivateCurrentProduct3D(); return; }
+      const canvasStillExists = this.productCanvases.some(ref => ref.nativeElement.getAttribute('data-product-id') === activeProduct.id.toString());
+      if (!canvasStillExists) { this.deactivateCurrentProduct3D(); }
     }
   }
 
-  onZoneCardClick(zone: ZoneData): void {
-    if (this.activeTerritoryZone?.id === zone.id) return;
-    this.activeTerritoryZone = zone;
-    this.deactivateTerritory3D();
-    this.deactivateCurrentProduct3D(); // Reanuda swiper
-    this.territoryModelsReady = false; this.isTerritoryLoading = false; this.cdRef.detectChanges();
-    if (this.zoneHasModels(zone) && !this.isPreloadingInBackground) { this.preloadTerritoryModels(zone); }
-    else if (!this.zoneHasModels(zone)) { this.territoryModelsReady = true; this.cdRef.detectChanges(); }
-  }
-
-  onMainCanvasClick(): void {
-    if (!this.activeTerritoryZone) { this.toastr.warning("Selecciona una zona."); return; }
-    if (!this.zoneHasModels(this.activeTerritoryZone)) { this.toastr.info(`Zona sin modelo 3D.`); this.deactivateTerritory3D(); return; }
-    if (this.territoryModelsReady) { this.showAndAnimateTerritory(); }
-    else if (this.isTerritoryLoading || this.isPreloadingInBackground) { this.toastr.info(`Modelo 3D aún no está listo...`, "Preparando", { timeOut: 2500 }); }
-    else {
-      this.deactivateCurrentProduct3D(); // Reanuda swiper ANTES de cargar territorio
-      this.isTerritoryLoading = true; this.cdRef.detectChanges();
-      this.preloadTerritoryModels(this.activeTerritoryZone).then(() => { if (this.territoryModelsReady) { this.toastr.success(`Modelo 3D preparado. Clic de nuevo para verlo.`, "Listo", { timeOut: 3000 }); } });
-    }
-  }
-
-  async onProductCanvasClick(originalIndex: number): Promise<void> {
-    if (originalIndex < 0 || originalIndex >= this.allDisplayProducts.length) return;
-    const product = this.allDisplayProducts[originalIndex];
-    if (this.productLoaded[originalIndex]) { return; } // Ya cargado
-    if (product.glbFile) {
-      await this.activateProduct3D(originalIndex); // Pausa swiper
-    } else {
-      this.toastr.info(`Producto ${product.name} sin modelo 3D.`);
-      this.deactivateCurrentProduct3D(); // Desactiva otro y reanuda swiper
-    }
-  }
-
-  private handleVisibilityChange = () => {
-    if (document.hidden) {
-      if (this.territoryService.isInitialized()) this.territoryService.stopAnimation();
-      if (this.productServiceInitialized) this.productService3D.stopAnimation();
-      this.pauseSwiperAutoplay();
-    } else {
-      if (this.territoryLoaded && this.territoryService.isInitialized()) this.territoryService.startAnimation();
-      if (this.activeProductOriginalIndex !== null && this.productLoaded[this.activeProductOriginalIndex] && this.productServiceInitialized) this.productService3D.startAnimation();
-      this.resumeSwiperAutoplay();
-    }
-  };
-
+  // ======================================================================== //
+  // == Section 7: Footer Interaction Logic                                == //
+  // ======================================================================== //
   public subscribeNewsletter(event: Event): void {
-    event.preventDefault();
-    const form = event.target as HTMLFormElement;
-    const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
-    const email = emailInput.value;
-    if (email) {
-      this.toastr.success(`Gracias por suscribirte con ${email}!`, 'Suscripción Exitosa'); 
-      emailInput.value = '';
-    } else {
-      this.toastr.error('Por favor, ingresa un correo electrónico válido.', 'Error');
-    }
+    event.preventDefault(); const form = event.target as HTMLFormElement; const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement; if (!emailInput) return; const email = emailInput.value; if (email && emailInput.checkValidity()) { this.toastr.success(`Gracias por suscribirte con ${email}!`, 'Suscripción Exitosa'); emailInput.value = ''; } else if (!email) { this.toastr.warning('Por favor, ingresa tu correo electrónico.', 'Campo Vacío'); } else { this.toastr.error('Por favor, ingresa un correo electrónico válido.', 'Error de Formato'); }
   }
   public scrollToTop(): void { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-  public goToAllProducts(): void { this.router.navigate(['/inicio/productos']); }
-  public closeModal(): void { this.showModal = false; this.cdRef.detectChanges(); }
-  public onImgError(event: Event, entityType: 'product' | 'zone'): void {
-    const element = event.target as HTMLImageElement;
-    if (!element) return;
-    const fallbackSrc = entityType === 'zone' ? this.defaultTerritoryImage : this.defaultProductImage;
-    if (element.src !== fallbackSrc) { element.src = fallbackSrc; }
-    else { console.error(`CRITICAL: Fallback ${entityType} image failed: ${fallbackSrc}`); }
-  }
 
-  private async ensureCanvasIsReady(canvasElement: HTMLCanvasElement): Promise<void> {
-    let attempts = 0; const maxAttempts = 10; const delay = 50;
-    while ((!canvasElement.clientWidth || !canvasElement.clientHeight) && attempts < maxAttempts) {
-      await new Promise(resolve => setTimeout(resolve, delay)); attempts++;
-    }
-    if (!canvasElement.clientWidth || !canvasElement.clientHeight) throw new Error("Canvas zero dimensions.");
-  }
-
-  private getProductClimateInfo(zone?: Zone): { climateClass: 'cold' | 'hot' | 'other'; climateText: string } {
-    if (!zone?.climate) return { climateClass: 'other', climateText: 'Clima N/A' };
-    const cl = zone.climate.toLowerCase();
-    switch (cl) {
-      case 'frio': case 'frío': return { climateClass: 'cold', climateText: 'Clima Frío' };
-      case 'calido': case 'cálido': case 'templado': return { climateClass: 'hot', climateText: 'Clima Templado' };
-      default: return { climateClass: 'other', climateText: `Clima ${zone.climate}` };
-    }
-  }
-  public getZoneClimateClass(climate?: ZoneData['climate'] | string): string {
-    if (!climate) return 'other'; const cl = climate.toLowerCase();
-    if (cl === 'frio' || cl === 'frío') return 'cold';
-    if (cl === 'calido' || cl === 'cálido' || cl === 'templado') return 'hot'; return 'other';
-  }
-  public getZoneClimateText(climate?: ZoneData['climate'] | string): string {
-    if (!climate) return 'N/A'; const cl = climate.toLowerCase();
-    if (cl === 'frio' || cl === 'frío') return 'Frío';
-    if (cl === 'calido' || cl === 'cálido') return 'Cálido';
-    if (cl === 'templado') return 'Templado';
-    return climate.charAt(0).toUpperCase() + climate.slice(1).toLowerCase();
-  }
-  public getZoneImageUrl(zone: ZoneData | null): string {
-    if (!zone) return this.defaultTerritoryImage;
-    const fn = zone.cityImage?.trim();
-    if (fn) { try { return `${this.baseAssetUrl}uploads/zones/images/${encodeURIComponent(fn)}`; } catch (e) { return this.defaultTerritoryImage; } }
-    return this.defaultTerritoryImage;
-  }
-  public zoneHasModels(zone: ZoneData): boolean { return !!(zone.modelPath || zone.titleGlb); }
+  // ======================================================================== //
+  // == Section 8: Utility & Helper Functions                              == //
+  // ======================================================================== //
+  public getZoneImageUrl(zone: ZoneData | null): string { if (!zone) return this.defaultTerritoryImage; const fn = zone.cityImage?.trim(); if (fn) { try { return `${this.baseAssetUrl}uploads/zones/images/${encodeURIComponent(fn)}`; } catch (e) { console.error('Error encoding zone image URL', e); return this.defaultTerritoryImage; } } return this.defaultTerritoryImage; }
+  public zoneHasModels(zone: ZoneData | null): boolean { if (!zone) return false; return this.territoryInteractionService.zoneHasModels(zone); }
+  public getZoneClimateClass(climate?: ZoneData['climate'] | string): string { if (!climate) return 'other'; const cl = climate.toLowerCase(); if (cl === 'frio' || cl === 'frío') return 'cold'; if (cl === 'calido' || cl === 'cálido' || cl === 'templado') return 'hot'; return 'other'; }
+  public getZoneClimateText(climate?: ZoneData['climate'] | string): string { if (!climate) return 'N/A'; const cl = climate.toLowerCase(); if (cl === 'frio' || cl === 'frío') return 'Frío'; if (cl === 'calido' || cl === 'cálido') return 'Cálido'; if (cl === 'templado') return 'Templado'; return climate.charAt(0).toUpperCase() + climate.slice(1).toLowerCase(); }
+  private getProductClimateInfo(zone?: Zone): { climateClass: 'cold' | 'hot' | 'other'; climateText: string } { if (!zone?.climate) return { climateClass: 'other', climateText: 'Clima N/A' }; const cl = zone.climate.toLowerCase(); switch (cl) { case 'frio': case 'frío': return { climateClass: 'cold', climateText: 'Clima Frío' }; case 'calido': case 'cálido': case 'templado': return { climateClass: 'hot', climateText: 'Clima Templado' }; default: return { climateClass: 'other', climateText: `Clima ${zone.climate}` }; } }
   public getOriginalIndex(productId: number): number { return this.allDisplayProducts.findIndex(p => p.id === productId); }
-  private getBaseGlbName(filePath?: string): string | undefined {
-    if (!filePath) return undefined; const fn = filePath.split('/').pop()?.toLowerCase(); if (!fn) return undefined;
-    return fn.replace(/\.glb$/, '').replace(/-\d{10,}$/, '').replace(/-[a-f0-9]{8,}$/, '');
-  }
-  private findCanvasByProductId(productId: number): ElementRef<HTMLCanvasElement> | undefined {
-    return this.productCanvases.find(ref => ref.nativeElement.getAttribute('data-product-id') === productId.toString());
-  }
+  private getOriginalIndexForSwiperIndex(swiperIndex: number): number | null { if (!this.filteredDisplayProducts || swiperIndex < 0 || swiperIndex >= this.filteredDisplayProducts.length) return null; const productOnSlide = this.filteredDisplayProducts[swiperIndex]; if (!productOnSlide) return null; const originalIndex = this.getOriginalIndex(productOnSlide.id); return originalIndex !== -1 ? originalIndex : null; }
+  private findCanvasByProductId(productId: number): ElementRef<HTMLCanvasElement> | undefined { if (!this.productCanvases) { console.warn("findCanvasByProductId: productCanvases QueryList is not yet available."); return undefined; } const found = this.productCanvases.find(ref => ref.nativeElement.getAttribute('data-product-id') === productId.toString()); return found; }
+  public onImgError(event: Event, entityType: 'product' | 'zone'): void { const element = event.target as HTMLImageElement; if (!element) return; const fallbackSrc = entityType === 'zone' ? this.defaultTerritoryImage : this.defaultProductImage; if (element.src !== fallbackSrc) { element.src = fallbackSrc; } else { element.style.display = 'none'; } }
+  private handleVisibilityChange = (): void => { if (document.hidden) { if (this.territoryService.isInitialized() && this.territoryService.isAnimating()) this.territoryService.stopAnimation(); if (this.productServiceInitialized && this.productService3D.isAnimating()) this.productService3D.stopAnimation(); this.pauseSwiperAutoplay(); } else { if (this.territoryLoaded && this.territoryService.isInitialized()) this.territoryService.startAnimation(); if (this.activeProductOriginalIndex !== null && this.productLoaded[this.activeProductOriginalIndex] && this.productServiceInitialized) this.productService3D.startAnimation(); this.resumeSwiperAutoplay(); } };
+  private async ensureCanvasIsReady(canvasElement: HTMLCanvasElement): Promise<void> { let attempts = 0; const maxAttempts = 10; const delay = 50; while ((!canvasElement.clientWidth || !canvasElement.clientHeight) && attempts < maxAttempts) { await new Promise(resolve => setTimeout(resolve, delay)); attempts++; } if (!canvasElement.clientWidth || !canvasElement.clientHeight) { console.error("Canvas dimensions not valid after waiting.", canvasElement); throw new Error("Canvas no tiene dimensiones válidas después de esperar."); } }
+  public closeModal(): void { this.showModal = false; this.cdRef.detectChanges(); }
+  public goToAllProducts(): void { this.router.navigate(['/inicio/productos']); }
 
-}
+} // Fin Clase InicioComponent
