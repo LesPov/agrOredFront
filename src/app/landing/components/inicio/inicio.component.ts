@@ -18,6 +18,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Swiper } from 'swiper';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { CommonModule } from '@angular/common';
+import { BotInfoService } from '../../../features/admin/services/botInfo.service';
 
 // --- Interface Definition ---
 interface DisplayProductInicio extends Product {
@@ -93,7 +94,10 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   private isTerritoryInitializing: boolean = false;
   private previousActiveProductOriginalIndexOnSlide: number | null = null;
   private destroy$ = new Subject<void>();
-
+  private infoInicioList: string[] = [
+    "Estás viendo el inicio",
+   
+  ];
   // ======================================================================== //
   // == Section 2: Angular Lifecycle Hooks                                 == //
   // ======================================================================== //
@@ -105,13 +109,17 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
     private productService3D: ProductSceneService,
     private inicioDataService: InicioDataService,
     private cdRef: ChangeDetectorRef,
-    private territoryInteractionService: TerritoryInteractionService
+    private territoryInteractionService: TerritoryInteractionService,
+    private botInfoService: BotInfoService,
+
   ) { }
 
   ngOnInit(): void {
     this.loadInitialData();
     this.subscribeToTerritoryState();
     this.subscribeToTerritoryEvents();
+    this.botInfoService.setInfoList(this.infoInicioList);
+
   }
 
   ngAfterViewInit(): void {

@@ -124,7 +124,8 @@
 /* Sección: ¿Cómo quieres usar?      */
 /* ================================= */
 .usage-section {
-    background-color: #ffffff;
+    background-color: #f8f9fa;
+    /* Un fondo ligeramente gris para contraste */
     padding: 4rem 1rem 3rem 1rem;
     text-align: center;
 }
@@ -133,14 +134,12 @@
     font-size: clamp(1.8rem, 5vw, 2.4rem);
     font-weight: 700;
     color: #212529;
-    /* Casi negro */
     margin-bottom: 0.5rem;
 }
 
 .usage-subtitle {
     font-size: clamp(0.9rem, 2.5vw, 1rem);
-    color: #555;
-    /* Gris oscuro */
+    color: #000;
     max-width: 600px;
     margin: 0 auto 2.5rem auto;
     line-height: 1.5;
@@ -151,149 +150,196 @@
     grid-template-columns: 1fr;
     gap: 2rem;
     max-width: 800px;
+    /* O el ancho que prefieras */
     margin: 0 auto;
 }
 
+/* Estilos generales de las tarjetas (actualizado) */
 .usage-card {
-    border-radius: 15px;
-    padding: 2rem 1.5rem;
+    border-radius: 10px;
+    /* Bordes menos redondeados */
     color: white;
-    position: relative;
-    overflow: hidden;
     text-align: left;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    /* Eliminada la sombra para un look más plano */
     display: flex;
     flex-direction: column;
+    transition: transform 0.3s ease;
+    /* Añadir transición suave */
 }
 
-/* CORRECCIÓN CONTRASTE: Gradientes más oscuros */
+/* Colores sólidos de fondo (actualizado) */
 .card-cliente {
-    background: linear-gradient(135deg, #28a745, #1a6e31);
+    /* Un verde similar al de la imagen 2 */
+    background-color: #045229;
 }
 
 .card-campiamigo {
-    background: linear-gradient(135deg, #d98114, #a06321);
-    /* Naranja más oscuro */
+    /* Un naranja/amarillo similar al de la imagen 2 */
+    background-color: #FFAA00;
 }
 
-.card-icon-wrapper {
-    background-color: rgba(255, 255, 255, 0.9);
+.titlecard {
+    padding: 1.8rem 1.5rem 0;
+    /* Ajuste ligero de padding */
+
+}
+
+
+
+/* Ocultar elementos del diseño anterior que ya no se usan */
+.card-icon-wrapper,
+.decorative-icon {
+    display: none;
+}
+
+/* Título dentro de la tarjeta (actualizado) */
+.card-role-title {
+    font-size: 1.5rem;
+    /* Ligeramente más pequeño */
+    font-weight: 600;
+    /* Ligeramente menos grueso */
+    margin-bottom: 0.6rem;
+    color: white;
+}
+
+/* NUEVO: Estilo para el resumen corto */
+.card-summary {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    /* Espacio antes de la lista */
+    color: rgba(255, 255, 255, 0.95);
+    /* Texto ligeramente transparente */
+}
+
+/* NUEVO: Estilos para la lista ordenada */
+.card-steps {
+    list-style: none;
+    padding: 1.5rem;
+    background: #fff;
+    /* Espacio debajo de la lista */
+    counter-reset: steps-counter;
+    /* Iniciar contador personalizado */
+    flex-grow: 1;
+    /* Permite que la lista ocupe espacio vertical */
+}
+
+.card-steps li {
+    font-size: 13px;
+    margin-bottom: 0.8rem;
+    display: flex;
+    gap: 15px;
+    color: rgb(0 0 0 / 90%);
+    align-items: center;
+}
+
+/* NUEVO: Estilo para los números en círculo */
+.card-steps.cliente li::before {
+    counter-increment: steps-counter;
+    content: counter(steps-counter);
+    padding: 10px;
+    background-color: rgb(124 255 168 / 49%);
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    display: inline-flex;
+    color: #004d26;
+    font-weight: bold;
+    font-size: 0.8rem;
+    display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    line-height: 1;
 }
 
-.card-icon-wrapper i {
-    font-size: 24px;
-}
-
-.card-cliente .card-icon-wrapper i {
-    color: #1a6e31;
-    /* Verde oscuro */
-}
-
-.card-campiamigo .card-icon-wrapper i {
-    color: #a06321;
-    /* Marrón oscuro */
-}
-
-.decorative-icon {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 80px;
-    opacity: 0.1;
-    color: white;
-    pointer-events: none;
-    transform: rotate(15deg);
-}
-
-.decorative-icon-sun {
-    transform: rotate(0deg);
-    font-size: 75px;
+.card-steps.campiamigo li::before {
+    counter-increment: steps-counter;
+    content: counter(steps-counter);
+    padding: 10px;
+    background-color: rgb(254 243 201);
+    border-radius: 50%;
+    color: #f59e0b;
+    font-weight: bold;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
 }
 
 
-.card-role-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    margin-bottom: 0.8rem;
-    color: white;
-}
-
-.card-role-desc {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    margin-bottom: 2rem;
-    color: rgba(255, 255, 255, 0.95);
-    /* Más opaco */
-    flex-grow: 1;
-}
-
-.btn-role {
-    background-color: white;
+/* Botón de rol (actualizado para coincidir con Imagen 2) */
+.card-cliente .btn-role {
+    background-color: #045229;
     border: none;
-    border-radius: 8px;
-    padding: 0.8rem 1.5rem;
-    font-size: 0.95rem;
+    border-radius: 20px;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     display: inline-flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     text-decoration: none;
     align-self: flex-start;
     margin-top: auto;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* Añadir sombra sutil */
-}
+    width: 100%;
+    min-width: 180px;
+    color: #fff;
 
-/* CORRECCIÓN CONTRASTE: Texto oscuro en botón blanco */
-.card-cliente .btn-role {
-    color: #155724;
-    /* Verde muy oscuro */
 }
 
 .card-campiamigo .btn-role {
-    color: #85551e;
-    /* Marrón oscuro */
+    background-color: #FFAA00;
+    border: none;
+    border-radius: 20px;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    align-self: flex-start;
+    margin-top: auto;
+    width: 100%;
+    color: #fff;
+    min-width: 180px;
 }
+
+
 
 .btn-role:hover,
 .btn-role:focus {
-    /* Añadido :focus */
     background-color: #f0f0f0;
-    transform: translateY(-2px);
+    /* Fondo ligeramente gris al pasar el ratón */
+    transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    /* Sombra más pronunciada */
-    outline: 2px solid #0056b3;
-    /* Outline azul genérico para focus */
-    outline-offset: 1px;
+    outline: none;
+    /* Puedes quitar el outline si prefieres */
 }
 
-/* Ajuste específico de outline para cada tarjeta si se prefiere */
-.card-cliente .btn-role:focus {
+/* Si quieres un focus visible específico */
+.btn-role:focus-visible {
+    outline: 2px solid #0056b3;
+    outline-offset: 2px;
+}
+
+.card-cliente .btn-role:focus-visible {
     outline-color: #155724;
 }
 
-.card-campiamigo .btn-role:focus {
+.card-campiamigo .btn-role:focus-visible {
     outline-color: #85551e;
 }
 
-
+/* Ya no se necesita espacio para el icono */
 .btn-role span {
-    margin-right: 0.5rem;
+    margin-right: 0;
 }
 
-.btn-role i {
-    font-size: 1.2rem;
-}
+
+
 
 /* ========================================== */
 /* INICIO: Sección Explora el Territorio      */
@@ -1694,15 +1740,13 @@
     background: #155724;
 }
 
-
 /* ============================================= */
 /*              ESTILOS FOOTER                   */
 /* ============================================= */
 /* Footer: Colores base ya tienen buen contraste */
 .footer-section {
-    background-color: #0F381F;
-    color: #E0E0E0;
-    padding: 4rem 1rem 1.5rem 1rem;
+    background-color: #1c0e07;
+    padding: 3rem 1rem 1.5rem 1rem;
     font-size: 0.9rem;
     position: relative;
 }
@@ -1710,6 +1754,18 @@
 .footer-container {
     max-width: 1200px;
     margin: 0 auto;
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.logo-container img {
+    width: auto;
+    margin-bottom: 25px;
+    height: 70px;
 }
 
 .scroll-to-top {
@@ -1735,7 +1791,7 @@
 }
 
 .scroll-to-top:hover {
-    background-color: #f0f0f0;
+    background-color: #fff;
     transform: translateX(-50%) translateY(-3px);
 }
 
@@ -1771,7 +1827,7 @@
     left: 0;
     width: 40px;
     height: 2px;
-    background-color: #28a745;
+    background-color: #ffde58;
     /* Línea verde más brillante OK */
 }
 
@@ -1796,7 +1852,7 @@
 .about-col .footer-description {
     line-height: 1.6;
     margin-bottom: 1.5rem;
-    color: #c0c0c0;
+    color: #ffff;
 }
 
 .footer-contact {
@@ -1809,7 +1865,7 @@
     display: flex;
     align-items: center;
     margin-bottom: 0.8rem;
-    color: #c0c0c0;
+    color: #ffff;
 }
 
 .footer-contact li i {
@@ -1832,7 +1888,7 @@
 }
 
 .links-col .footer-links a {
-    color: #c0c0c0;
+    color: #ffff;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -1852,14 +1908,13 @@
 }
 
 .links-col .footer-links a:hover {
-    color: #ffffff;
+    color: #ffde58;
     padding-left: 5px;
-    text-decoration: underline;
 }
 
 .links-col .footer-links a:focus {
     /* Añadir focus */
-    color: #ffffff;
+    color: #ffde58;
     outline: 1px solid #ffde58;
     outline-offset: 2px;
     text-decoration: none;
@@ -1873,7 +1928,7 @@
 .subscribe-col p {
     line-height: 1.6;
     margin-bottom: 1rem;
-    color: #c0c0c0;
+    color: #ffff;
 }
 
 .newsletter-form {
@@ -1884,7 +1939,7 @@
 .newsletter-form input[type="email"] {
     flex-grow: 1;
     padding: 0.75rem 1rem;
-    border: 1px solid #446150;
+    border: 1px solid #ffde58;
     background-color: rgba(255, 255, 255, 0.05);
     color: #fff;
     border-radius: 6px 0 0 6px;
@@ -1906,7 +1961,7 @@
 .newsletter-form button[type="submit"] {
     padding: 0.75rem 1rem;
     background-color: #fedf59;
-    color: #004d26;
+    color: #1c0e07;
     /* Contraste OK */
     border: none;
     border-radius: 0 6px 6px 0;
@@ -1925,7 +1980,7 @@
 
 .newsletter-form button[type="submit"]:focus {
     /* Añadir focus */
-    outline: 2px solid #004d26;
+    outline: 2px solid #fdd32a;
     outline-offset: 1px;
     background-color: #fdd32a;
 }
@@ -1972,7 +2027,7 @@
 }
 
 .footer-bottom {
-    border-top: 1px solid #446150;
+    border-top: 1px solid #fdd32a;
     padding-top: 1.5rem;
     display: flex;
     flex-wrap: wrap;

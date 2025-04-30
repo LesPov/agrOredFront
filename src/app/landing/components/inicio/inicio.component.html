@@ -11,390 +11,520 @@
 -->
 <div class="dashboard-container">
 
-    <!-- ========================== -->
-    <!--     INICIO: Sección Hero     -->
-    <!-- ========================== -->
-    <section class="hero-section" aria-labelledby="hero-title">
-      <div class="content">
-        <h1 id="hero-title" class="welcome-title">
-          Conectando con<br />
-          la <span class="highlight">naturaleza</span> y<br />
-          sus productores
-        </h1>
-        <p class="description">
-          Explora territorio en 3D, conoce a los miembros de nuestra red y a los CampiAmigos verificados y descubre
-          productos agrícolas de calidad directamente de la fuente con AgroRed.
-        </p>
-        <div class="buttons">
-          <button routerLink="/auth/login" class="btn primary">Explorar Territorio</button>
-          <button class="btn secondary">Cómo Funciona</button>
-        </div>
-      </div>
-    </section>
-    <!-- ========================== -->
-    <!--       FIN: Sección Hero      -->
-    <!-- ========================== -->
-  
-  
-    <!-- ========================================== -->
-    <!-- INICIO: Sección Explora el Territorio      -->
-    <!-- ========================================== -->
-    <section id="territorios" class="section territorios" aria-labelledby="territorio-title">
-      <div class="container_territorios">
-        <!-- Encabezado -->
-        <div class="section-header">
-          <h2 id="territorio-title">Explora el Territorio</h2>
-          <p>
-            Visualiza modelos 3D detallados. Haz clic en la imagen o en una zona con <i class='bx bxs-cube-alt'
-              aria-hidden="true"></i> para
-            ver su modelo 3D.
-          </p>
-        </div>
-  
-        <!-- Tarjeta Principal Grande (Muestra activeTerritoryZone) -->
-        <div class="main-territorio-card" *ngIf="activeTerritoryZone">
-          <!-- Contenedor Modelo/Imagen/Overlay -->
-          <div class="model-container" (click)="onMainCanvasClick()"
-            [class.has-model]="zoneHasModels(activeTerritoryZone)"
-            title="{{ zoneHasModels(activeTerritoryZone) ? (territoryModelsReady ? 'Clic para MOSTRAR modelo 3D' : (isTerritoryLoading ? 'Cargando modelo...' : 'Clic para CARGAR modelo 3D')) : 'Modelo 3D no disponible' }}">
-  
-            <!-- Canvas para el modelo 3D -->
-            <canvas #terrainCanvas [class.canvas-visible]="territoryLoaded"
-              aria-label="Visualización 3D del territorio"></canvas>
-  
-            <!-- Placeholder (Ahora solo contiene la imagen) -->
-            <div class="placeholder-content main-placeholder" *ngIf="!territoryLoaded" aria-hidden="true">
-              <!-- Imagen Zona Activa -->
-              <img [src]="getZoneImageUrl(activeTerritoryZone)"
-                [alt]="'Vista previa del territorio ' + activeTerritoryZone.name" class="placeholder-image"
-                (error)="onImgError($event, 'zone')" />
-              <!-- Icono y Spinner MOVIDOS FUERA -->
-            </div> <!-- Fin placeholder-content -->
-  
-            <!-- Icono "Clic para Mostrar" (MOVISTO AQUÍ, hermano de placeholder y canvas) -->
-            <!-- Condición: Zona tiene modelos, modelos listos, no se está cargando activamente Y el canvas NO está visible -->
-            <div class="icon-click-wrapper"
-              *ngIf="zoneHasModels(activeTerritoryZone) && territoryModelsReady && !isTerritoryLoading && !territoryLoaded">
-              <i class='bx bxs-hand-right icon-click' title="¡Clic para MOSTRAR modelo 3D!"></i>
-              <span class="line-container"></span>
-            </div>
-  
-  
-          </div> <!-- Fin model-container -->
-  
-          <!-- Información de la Tarjeta Principal -->
-          <div class="card-info">
-            <!-- ... Contenido de card-info ... -->
-            <div class="card-title">
-              <div class="card-title-group">
-                <h3>{{ activeTerritoryZone.name | uppercase }}</h3>
-                <span class="region">{{ activeTerritoryZone.departamentoName | uppercase }}</span>
-              </div>
-              <a class="link-detail">Ver detalles</a>
-            </div>
-            <p class="card-desc">
-              {{ activeTerritoryZone.description || 'Descripción no disponible.' }}
-            </p>
-            <span class="climate-pill" [ngClass]="getZoneClimateClass(activeTerritoryZone.climate)">
-              {{ getZoneClimateText(activeTerritoryZone.climate) }}
-            </span>
-          </div>
-        </div> <!-- Fin main-territorio-card -->
-  
-        <!-- Botón "Ver todas las zonas" -->
-        <button class="btn more-btn" routerLink="/inicio/zonas">Ver todas las zonas</button>
-  
-      </div> <!-- Fin container_territorios -->
-    </section>
-    <!-- ========================================== -->
-    <!-- FIN: Sección Explora el Territorio         -->
-    <!-- ========================================== -->
-  
-    <!-- ====================================== -->
-    <!-- INICIO: Sección ¿Cómo quieres usar? -->
-    <!-- ====================================== -->
-    <section class="usage-section" aria-labelledby="usage-title">
-      <h2 id="usage-title" class="usage-title">¿Cómo quieres usar CampiAmigo?</h2>
-      <p class="usage-subtitle">
-        Elige tu rol en nuestra plataforma y comienza a disfrutar de todos los beneficios
-        que tenemos para ti
+  <!-- ========================== -->
+  <!--     INICIO: Sección Hero     -->
+  <!-- ========================== -->
+  <section class="hero-section" aria-labelledby="hero-title">
+    <div class="content">
+      <h1 id="hero-title" class="welcome-title">
+        Conectando con<br />
+        la <span class="highlight">naturaleza</span> y<br />
+        sus productores
+      </h1>
+      <p class="description">
+        Explora territorio en 3D, conoce a los miembros de nuestra red y a los CampiAmigos verificados y descubre
+        productos agrícolas de calidad directamente de la fuente con AgroRed.
       </p>
-      <div class="usage-cards-container">
-        <div class="usage-card card-cliente">
-          <div class="card-icon-wrapper" aria-hidden="true"><i class='bx bx-shopping-bag'></i></div>
-          <i class='bx bxs-leaf decorative-icon decorative-icon-leaf' aria-hidden="true"></i>
-          <!-- H3 aquí es correcto, subordinado al H2 de la sección -->
+      <div class="buttons">
+        <button routerLink="/auth/login" class="btn primary">Explorar Territorio</button>
+        <button class="btn secondary">Cómo Funciona</button>
+      </div>
+    </div>
+  </section>
+  <!-- ========================== -->
+  <!--       FIN: Sección Hero      -->
+  <!-- ========================== -->
+
+
+  <!-- ========================================== -->
+  <!-- INICIO: Sección Explora el Territorio      -->
+  <!-- ========================================== -->
+  <section id="territorios" class="section territorios" aria-labelledby="territorio-title">
+    <div class="container_territorios">
+      <!-- Encabezado -->
+      <div class="section-header">
+        <h2 id="territorio-title">Tu Ventana al Campo Colombiano</h2>
+        <p>
+          Descubre las tierras fértiles donde nacen los alimentos que disfrutas. Conoce a nuestros Campiamigos
+          explorando sus regiones con modelos 3D <i class='bx bxs-cube-alt' aria-hidden="true"></i>. Haz clic en la
+          imagen para una vista inmersiva y aprecia el valor del origen.
+        </p>
+      </div>
+
+      <!-- Tarjeta Principal Grande (Muestra activeTerritoryZone) -->
+      <div class="main-territorio-card" *ngIf="activeTerritoryZone">
+        <!-- Contenedor Modelo/Imagen/Overlay -->
+        <div class="model-container" (click)="onMainCanvasClick()"
+          [class.has-model]="zoneHasModels(activeTerritoryZone)"
+          title="{{ zoneHasModels(activeTerritoryZone) ? (territoryModelsReady ? 'Clic para MOSTRAR modelo 3D' : (isTerritoryLoading ? 'Cargando modelo...' : 'Clic para CARGAR modelo 3D')) : 'Modelo 3D no disponible' }}">
+
+          <!-- Canvas para el modelo 3D -->
+          <canvas #terrainCanvas [class.canvas-visible]="territoryLoaded"
+            aria-label="Visualización 3D del territorio"></canvas>
+
+          <!-- Placeholder (Ahora solo contiene la imagen) -->
+          <div class="placeholder-content main-placeholder" *ngIf="!territoryLoaded" aria-hidden="true">
+            <!-- Imagen Zona Activa -->
+            <img [src]="getZoneImageUrl(activeTerritoryZone)"
+              [alt]="'Vista previa del territorio ' + activeTerritoryZone.name" class="placeholder-image"
+              (error)="onImgError($event, 'zone')" />
+            <!-- Icono y Spinner MOVIDOS FUERA -->
+          </div> <!-- Fin placeholder-content -->
+
+          <!-- Icono "Clic para Mostrar" (MOVISTO AQUÍ, hermano de placeholder y canvas) -->
+          <!-- Condición: Zona tiene modelos, modelos listos, no se está cargando activamente Y el canvas NO está visible -->
+          <div class="icon-click-wrapper"
+            *ngIf="zoneHasModels(activeTerritoryZone) && territoryModelsReady && !isTerritoryLoading && !territoryLoaded">
+            <i class='bx bxs-hand-right icon-click' title="¡Clic para MOSTRAR modelo 3D!"></i>
+            <span class="line-container"></span>
+          </div>
+
+
+        </div> <!-- Fin model-container -->
+
+        <!-- Información de la Tarjeta Principal -->
+        <div class="card-info">
+          <!-- ... Contenido de card-info ... -->
+          <div class="card-title">
+            <div class="card-title-group">
+              <h3>{{ activeTerritoryZone.name | uppercase }}</h3>
+              <span class="region">{{ activeTerritoryZone.departamentoName | uppercase }}</span>
+            </div>
+            <a class="link-detail">Ver detalles</a>
+          </div>
+          <p class="card-desc">
+            {{ activeTerritoryZone.description || 'Descripción no disponible.' }}
+          </p>
+          <span class="climate-pill" [ngClass]="getZoneClimateClass(activeTerritoryZone.climate)">
+            {{ getZoneClimateText(activeTerritoryZone.climate) }}
+          </span>
+        </div>
+      </div> <!-- Fin main-territorio-card -->
+
+      <!-- Botón "Ver todas las zonas" -->
+      <button class="btn more-btn" routerLink="/inicio/zonas">Ver todas las zonas</button>
+
+    </div> <!-- Fin container_territorios -->
+  </section>
+  <!-- ========================================== -->
+  <!-- FIN: Sección Explora el Territorio         -->
+  <!-- ========================================== -->
+
+  <!-- ====================================== -->
+  <!-- INICIO: Sección ¿Cómo quieres usar? -->
+  <!-- ====================================== -->
+  <section class="usage-section" aria-labelledby="usage-title">
+    <h2 id="usage-title" class="usage-title">¿Cómo quieres usar CampiAmigo?</h2>
+    <p class="usage-subtitle">
+      Define tu experiencia: Descubre productos auténticos y apoya a productores locales, o expande tu alcance y lleva
+      tus cosechas a nuevos hogares. ¡Elige cómo participar!
+    </p>
+    <div class="usage-cards-container">
+
+      <!-- Tarjeta Cliente -->
+      <div class="usage-card card-cliente">
+        <div class="titlecard">
+          <!-- Título del Rol -->
           <h3 class="card-role-title">Soy Cliente</h3>
-          <p class="card-role-desc">
-            Descubre productos frescos directamente de los campesinos. Explora
-            por zonas, clima o tipo de producto y conecta con productores locales.
+          <!-- Resumen corto -->
+          <p class="card-summary">
+            Conecta directamente con productores locales, conoce sus productos y coordina tu pedido personalizado.
           </p>
-          <a class="btn-role" routerLink="/inicio/productos">
-            <span>Explorar Productos</span><i class='bx bx-chevron-right' aria-hidden="true"></i>
-          </a>
         </div>
-        <div class="usage-card card-campiamigo">
-          <div class="card-icon-wrapper" aria-hidden="true"><i class='bx bx-group'></i></div>
-          <i class='bx bx-sun decorative-icon decorative-icon-sun' aria-hidden="true"></i>
-          <!-- H3 aquí es correcto -->
+        <div class="steps">
+          <!-- Lista de Pasos/Beneficios -->
+          <ol class="card-steps cliente" aria-label="Pasos para Clientes">
+            <li>Explora territorios y conoce a los CampiAmigos disponibles</li>
+            <li>Revisa sus productos y selecciona los que te interesen</li>
+            <li>Contacta directamente con el CampiAmigo para coordinar detalles</li>
+            <li>Acuerda cantidad, peso, envío y forma de pago</li>
+            <!-- Botón de Acción -->
+            <a class="btn-role" routerLink="/inicio/productos">
+              <span>Explorar Productores</span>
+              <!-- Icono eliminado -->
+            </a>
+          </ol>
+
+        </div>
+      </div>
+
+      <!-- Tarjeta Campiamigo -->
+      <div class="usage-card card-campiamigo">
+        <div class="titlecard"> <!-- Título del Rol -->
           <h3 class="card-role-title">Soy Campiamigo</h3>
-          <p class="card-role-desc">
-            Conecta con clientes y vende tus productos agrícolas. Gestiona tu
-            perfil, catálogo de productos y expande tu negocio a nuevos mercados.
+          <!-- Resumen corto -->
+          <p class="card-summary">
+            Muestra tus productos, conecta con clientes interesados y gestiona tus ventas directamente.
           </p>
+        </div>
+        <!-- Lista de Pasos/Beneficios -->
+        <ol class="card-steps campiamigo" aria-label="Pasos para Campiamigos">
+          <li>Crea tu perfil y muestra información sobre tu producción</li>
+          <li>Sube fotos y detalles de tus productos disponibles</li>
+          <li>Recibe mensajes directos de clientes interesados</li>
+          <li>Coordina detalles de venta y entrega según tus condiciones</li>
           <button class="btn-role" routerLink="/auth/register">
-            <span>Registrarme como Campiamigo</span><i class='bx bx-chevron-right' aria-hidden="true"></i>
+            <span>Registrarme como CampiAmigo</span>
+            <!-- Icono eliminado -->
           </button>
-        </div>
+        </ol>
+        <!-- Botón de Acción -->
+
       </div>
-    </section>
-    <!-- ==================================== -->
-    <!-- FIN: Sección ¿Cómo quieres usar? -->
-    <!-- ==================================== -->
-  
-  
-    <!-- ========================================== -->
-    <!-- INICIO: Sección Productos Destacados     -->
-    <!-- ========================================== -->
-    <section class="products-section" aria-labelledby="products-title">
-      <div class="container_products">
-        <div class="section-header">
-          <h2 id="products-title">Productos Destacados</h2>
-          <p>Descubre productos frescos y de calidad directamente de nuestros campiamigos. Cada producto viene con
-            información detallada sobre su origen y productor.</p>
-        </div>
-  
-        <!-- Filtros: Grupo de botones -->
-        <div class="filter-tabs tabs" role="tablist" aria-labelledby="products-title">
-          <button role="tab" [attr.aria-selected]="selectedTab === 'all'" (click)="selectTab('all')" class="tab-button"
-            [class.active]="selectedTab === 'all'">Todos</button>
-          <button role="tab" [attr.aria-selected]="selectedTab === 'offer'" (click)="selectTab('offer')"
-            class="tab-button" [class.active]="selectedTab === 'offer'">Oferta</button>
-          <button role="tab" [attr.aria-selected]="selectedTab === 'new'" (click)="selectTab('new')" class="tab-button"
-            [class.active]="selectedTab === 'new'">Nuevos</button>
-          <button role="tab" [attr.aria-selected]="selectedTab === 'popular'" (click)="selectTab('popular')"
-            class="tab-button" [class.active]="selectedTab === 'popular'">Popular</button>
-          <button role="tab" [attr.aria-selected]="selectedTab === 'cold'" (click)="selectTab('cold')" class="tab-button"
-            [class.active]="selectedTab === 'cold'">Clima Frío</button>
-          <button role="tab" [attr.aria-selected]="selectedTab === 'hot'" (click)="selectTab('hot')" class="tab-button"
-            [class.active]="selectedTab === 'hot'">Clima Cálido</button>
-        </div>
+
+    </div>
+  </section>
+  <!-- ==================================== -->
+  <!-- FIN: Sección ¿Cómo quieres usar? -->
+  <!-- ==================================== -->
+
+  <!-- ========================================== -->
+  <!-- INICIO: Sección Productos Destacados       -->
+  <!-- ========================================== -->
+  <section class="products-section" aria-labelledby="products-title">
+    <div class="container_products">
+
+      <!-- Cabecera -->
+      <div class="section-header">
+        <h2 id="products-title">Productos Destacados</h2>
+        <p>
+          Descubre productos frescos y de calidad directamente de nuestros campiamigos. Cada producto viene con
+          información detallada sobre su origen y productor.
+        </p>
       </div>
-  
-      <div *ngIf="isLoadingProducts" class="loading-message" role="status">Cargando productos...</div>
-      <div *ngIf="productError" class="error-message" role="alert">{{ productError }}</div>
-  
+
+      <!-- Filtros como pestañas accesibles -->
+      <div class="filter-tabs tabs" role="tablist" aria-labelledby="products-title">
+        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='all' ? 'true':'false'"
+          (click)="selectTab('all')" class="tab-button" [class.active]="selectedTab==='all'">
+          Todos
+        </button>
+        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='offer' ? 'true':'false'"
+          (click)="selectTab('offer')" class="tab-button" [class.active]="selectedTab==='offer'">
+          Oferta
+        </button>
+        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='new' ? 'true':'false'"
+          (click)="selectTab('new')" class="tab-button" [class.active]="selectedTab==='new'">
+          Nuevos
+        </button>
+        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='popular' ? 'true':'false'"
+          (click)="selectTab('popular')" class="tab-button" [class.active]="selectedTab==='popular'">
+          Popular
+        </button>
+        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='cold' ? 'true':'false'"
+          (click)="selectTab('cold')" class="tab-button" [class.active]="selectedTab==='cold'">
+          Clima Frío
+        </button>
+        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='hot' ? 'true':'false'"
+          (click)="selectTab('hot')" class="tab-button" [class.active]="selectedTab==='hot'">
+          Clima Cálido
+        </button>
+      </div>
+
+      <!-- Estado de carga y error -->
+      <div *ngIf="isLoadingProducts" class="loading-message" role="status">
+        Cargando productos...
+      </div>
+      <div *ngIf="productError" class="error-message" role="alert">
+        {{ productError }}
+      </div>
+
+      <!-- Carrusel de productos -->
       <div class="product-carousel-container" *ngIf="!isLoadingProducts && !productError">
-        <!-- Swiper: Se maneja internamente su accesibilidad, pero añadimos un label general -->
-        <div class="swiper-container product-carousel" #productSwiperContainer *ngIf="filteredDisplayProducts.length > 0"
-          aria-label="Carrusel de productos destacados">
+        <!-- Solo renderiza si hay productos filtrados -->
+        <div class="swiper-container product-carousel" #productSwiperContainer
+          *ngIf="filteredDisplayProducts.length > 0" aria-label="Carrusel de productos destacados">
           <div class="swiper-wrapper">
-            <!-- ***** INICIO CAMBIO ESTRUCTURA ENCABEZADOS PRODUCTO ***** -->
             <div class="swiper-slide" *ngFor="let prod of filteredDisplayProducts; let i = index" role="group"
+              [id]="'product-slide-' + prod.id" aria-roledescription="slide"
               [attr.aria-label]="'Producto ' + (i + 1) + ' de ' + filteredDisplayProducts.length + ': ' + prod.name">
+
+              <!-- Tarjeta de producto -->
               <div class="product-card">
+
+                <!-- Zona clicable para el modelo 3D -->
                 <div class="product-model" [class.loaded]="productLoaded[getOriginalIndex(prod.id)]"
-                (click)="onProductCanvasClick(getOriginalIndex(prod.id))">
-                <!-- ... badges ... -->
-  
-                <canvas #productCanvas [attr.data-product-id]="prod.id"
-                  [style.display]="productLoaded[getOriginalIndex(prod.id)] ? 'block' : 'none'"
-                  aria-label="Visualización 3D del producto">
-                </canvas>
-  
-                <div class="placeholder-content_product" *ngIf="!productLoaded[getOriginalIndex(prod.id)]"
-                  aria-hidden="true">
-                  <img [src]="prod.imageUrl" [alt]="'Imagen de ' + prod.name" class="placeholder-image_product"
-                    (error)="onImgError($event, 'product')" />
-                  <span *ngIf="!prod.glbFile" class="no-model-info">Sin vista 3D</span>
-                </div>
-  
-                <!-- ***** AQUÍ ESTÁ EL CAMBIO CLAVE ***** -->
-                <!-- Aplica el *ngIf a TODO el div wrapper -->
-                <div class="icon-click-wrapper"
-                     *ngIf="prod.glbFile && !productLoaded[getOriginalIndex(prod.id)]"
-                     aria-hidden="true"
-                     title="Clic para ver modelo 3D">
-                    <i class='bx bxs-hand-right icon-click'></i>
+                  (click)="onProductCanvasClick(getOriginalIndex(prod.id))" role="button" tabindex="0"
+                  [attr.aria-label]="'Ver modelo 3D de ' + prod.name">
+
+                  <!-- Canvas 3D -->
+                  <canvas #productCanvas [attr.data-product-id]="prod.id"
+                    [style.display]="productLoaded[getOriginalIndex(prod.id)] ? 'block' : 'none'"
+                    aria-label="Visualización 3D del producto">
+                  </canvas>
+
+                  <!-- Imagen placeholder si no está cargado -->
+                  <div class="placeholder-content_product" *ngIf="!productLoaded[getOriginalIndex(prod.id)]"
+                    aria-hidden="true">
+                    <img [src]="prod.imageUrl" [alt]="'Imagen de ' + prod.name" class="placeholder-image_product"
+                      (error)="onImgError($event, 'product')" />
+                    <span *ngIf="!prod.glbFile" class="no-model-info">
+                      Sin vista 3D
+                    </span>
+                  </div>
+
+                  <!-- Icono clicable -->
+                  <div class="icon-click-wrapper" *ngIf="prod.glbFile && !productLoaded[getOriginalIndex(prod.id)]"
+                    role="button" tabindex="0" [attr.aria-label]="'Clic para ver modelo 3D de ' + prod.name">
+                    <i class="bx bxs-hand-right icon-click" aria-hidden="true"></i>
                     <span class="line-container"></span>
                   </div>
-                <!-- ***** FIN DEL CAMBIO CLAVE ***** --> 
-  
-  
-                <span *ngIf="prod.glbFile && !productLoaded[getOriginalIndex(prod.id)]" class="model-badge-floating"
-                  aria-hidden="true">Modelo 3D</span>
-              </div>
-           
+
+                  <!-- Etiqueta de 'Modelo 3D' -->
+                  <span *ngIf="prod.glbFile && !productLoaded[getOriginalIndex(prod.id)]" class="model-badge-floating"
+                    aria-hidden="true">
+                    Modelo 3D
+                  </span>
+                </div>
+
+                <!-- Información del producto -->
                 <div class="product-info">
-                  <!-- CAMBIO: h3 a span (o p) para la ubicación/subtítulo -->
                   <span class="prod-subtitle">{{ prod.producerLocation }}</span>
-                  <!-- CAMBIO: h2 a h3 para el título del producto -->
                   <h3 class="prod-title">{{ prod.name }}</h3>
                   <p class="prod-desc">{{ prod.description }}</p>
-                  <div class="prod-meta">
-                    <div class="rating" [attr.aria-label]="'Calificación: ' + (prod.rating || 0) + ' de 5 estrellas'">
-                      <i class="bx bxs-star" *ngFor="let _ of [].constructor(Math.floor(prod.rating || 0))"
-                        aria-hidden="true"></i>
-                      <i class="bx bxs-star-half" *ngIf="(prod.rating || 0) % 1 >= 0.5" aria-hidden="true"></i>
-                      <i class="bx bx-star" *ngFor="let _ of [].constructor(5 - Math.ceil(prod.rating || 0))"
-                        aria-hidden="true"></i>
-                      <span class="rating-value">({{ prod.ratingCount || 0 }})</span>
-                    </div>
+                  <div class="prod-meta" [attr.aria-label]="'Calificación: ' + (prod.rating || 0) + ' de 5 estrellas'">
+                    <i class="bx bxs-star" *ngFor="let _ of [].constructor(Math.floor(prod.rating || 0))"
+                      aria-hidden="true">
+                    </i>
+                    <i class="bx bxs-star-half" *ngIf="(prod.rating || 0) % 1 >= 0.5" aria-hidden="true">
+                    </i>
+                    <i class="bx bx-star" *ngFor="let _ of [].constructor(5 - Math.ceil(prod.rating || 0))"
+                      aria-hidden="true">
+                    </i>
+                    <span class="rating-value">({{ prod.ratingCount || 0 }})</span>
                   </div>
                   <div class="product-bottom-row">
                     <div class="price-container">
-                      <span class="price" [attr.aria-label]="'Precio: ' + (prod.price | number:'1.2-2') + ' pesos'"> ${{
-                        prod.price | number:'1.2-2' }} Cop</span>
+                      <span class="price" [attr.aria-label]="'Precio: ' + (prod.price | number:'1.2-2') + ' pesos'">
+                        {{ prod.price | number:'1.2-2' }} COP
+                      </span>
                       <span class="original-price" *ngIf="prod.originalPrice"
-                        [attr.aria-label]="'Precio original: ' + (prod.originalPrice | number:'1.2-2') + ' pesos'"> ${{
-                        prod.originalPrice | number:'1.2-2' }}</span>
+                        [attr.aria-label]="'Precio original: ' + (prod.originalPrice | number:'1.2-2') + ' pesos'">
+                        {{ prod.originalPrice | number:'1.2-2' }}
+                      </span>
                     </div>
-                    <a class="btn-view-product" [attr.aria-label]="'Ver detalles del producto ' + prod.name"
-                      title="Ver detalles" [routerLink]="['/inicio', 'detalleProducto', prod.id]"
-                      [queryParams]="{ id: prod.id }">
-                      <i class='bx bx-chevron-right' aria-hidden="true"></i>
+                    <a class="btn-view-product" [routerLink]="['/inicio','detalleProducto',prod.id]"
+                      [queryParams]="{ id: prod.id }" role="button"
+                      [attr.aria-label]="'Ver detalles del producto ' + prod.name" title="Ver detalles">
+                      <i class="bx bx-chevron-right" aria-hidden="true"></i>
                     </a>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- ***** FIN CAMBIO ESTRUCTURA ENCABEZADOS PRODUCTO ***** -->
           </div>
-          <!-- Controles Swiper (Swiper debe manejarlos internamente) -->
-          <div class="swiper-button-prev product-swiper-button-prev" aria-label="Producto anterior"></div>
-          <div class="swiper-button-next product-swiper-button-next" aria-label="Producto siguiente"></div>
-          <div class="swiper-pagination product-swiper-pagination" aria-label="Paginación de productos"></div>
+
+          <!-- Controles Swiper convertidos en botones con nombre accesible -->
+          <button type="button" class="swiper-button-prev product-swiper-button-prev" aria-label="Anterior producto">
+            <span class="visually-hidden">Anterior producto</span>
+          </button>
+          <button type="button" class="swiper-button-next product-swiper-button-next" aria-label="Siguiente producto">
+            <span class="visually-hidden">Siguiente producto</span>
+          </button>
+          <!-- Swiper pagination sin atributos ARIA extra -->
+          <div class="swiper-pagination product-swiper-pagination"></div>
         </div>
-  
+
+        <!-- Mensaje si no hay productos -->
         <div *ngIf="filteredDisplayProducts.length === 0" class="no-products-message info-message" role="status">
-          <i class='bx bx-info-circle' aria-hidden="true"
-            style="font-size: 1.5rem; margin-right: 8px; vertical-align: middle;"></i>
+          <i class="bx bx-info-circle" aria-hidden="true"></i>
           No hay productos que coincidan con los filtros seleccionados actualmente.
         </div>
       </div>
-  
+
       <!-- Paginación personalizada (si Swiper no la maneja bien para a11y) -->
-      <!-- <div class="custom-pagination" role="tablist" aria-label="Seleccionar producto">
+      <div class="custom-pagination" role="tablist" aria-label="Seleccionar producto">
         <span *ngFor="let prod of filteredDisplayProducts; let idx = index" class="dot" role="tab"
           [attr.aria-selected]="idx === currentSlideIndex" [attr.aria-controls]="'product-slide-' + prod.id"
           [class.active]="idx === currentSlideIndex" (click)="goToSlide(idx)" tabindex="0"
           [attr.aria-label]="'Ir al producto ' + (idx + 1)"></span>
-      </div> -->
-  
-      <div class="view-all-container" *ngIf="!isLoadingProducts && !productError && allDisplayProducts.length > 0">
-        <a class="btn-view-all" routerLink="/inicio/productos"> <!-- Cambiado a <a> si es navegación -->
-          Ver todos los productos <i class='bx bx-chevron-right' aria-hidden="true"></i>
+      </div>
+
+
+      <!-- Enlace “Ver todos” -->
+      <div class="view-all-container" *ngIf="!isLoadingProducts && !productError && allDisplayProducts.length>0">
+        <a class="btn-view-all" routerLink="/inicio/productos" role="button">
+          Ver todos los productos
+          <i class="bx bx-chevron-right" aria-hidden="true"></i>
         </a>
       </div>
-    </section>
-    <!-- ======================================== -->
-    <!-- FIN: Sección Productos Destacados      -->
-    <!-- ======================================== -->
-  
-  
-    <!-- ====================================== -->
-    <!--         INICIO: Footer Section         -->
-    <!-- ====================================== -->
-    <footer class="footer-section">
-      <div class="footer-container">
-        <button class="scroll-to-top" (click)="scrollToTop()" title="Volver arriba"
-          aria-label="Volver al principio de la página">
-          <i class='bx bx-up-arrow-alt' aria-hidden="true"></i>
-        </button>
-  
-        <div class="footer-grid">
-          <div class="footer-col about-col">
-            <!-- H4 está bien aquí, es el inicio de una sección del footer -->
-            <h4><i class='bx bxs-leaf logo-icon' aria-hidden="true"></i> CampiAmigo</h4>
-            <!-- Eliminado el div.footer-logo redundante -->
-            <p class="footer-description">
-              La plataforma que conecta clientes y campiamigos en el mundo agrícola. Explora
-              territorio en 3D, conoce a campiamigos verificados y descubre productos agrícolas de
-              calidad.
-            </p>
-            <ul class="footer-contact" aria-label="Información de contacto">
-              <li><i class='bx bx-map' aria-hidden="true"></i><span>Bogotá, Colombia</span></li>
-              <li><i class='bx bx-phone' aria-hidden="true"></i><span>+57 300 123 4567</span></li>
-              <li><i class='bx bx-envelope' aria-hidden="true"></i><span>contactocampiamigo.com</span></li>
-            </ul>
+
+    </div>
+  </section>
+  <!-- ======================================== -->
+  <!-- FIN: Sección Productos Destacados        -->
+  <!-- ======================================== -->
+  <!-- ====================================== -->
+  <!--         INICIO: Footer Section         -->
+  <!-- ====================================== -->
+  <footer class="footer-section">
+    <div class="footer-container">
+
+      <!-- Botón de volver arriba -->
+      <button type="button" class="scroll-to-top" (click)="scrollToTop()" title="Volver arriba"
+        aria-label="Volver al principio de la página">
+        <i class="bx bx-up-arrow-alt" aria-hidden="true"></i>
+      </button>
+
+      <div class="footer-grid">
+
+        <!-- Columna “Sobre CampiAmigo” -->
+        <div class="footer-col about-col">
+          <div class="logo-container">
+            <!-- Puedes usar una imagen o un icono para el logo -->
+            <img src="../../../../../../assets/img/inicio/icon.png" alt="">
+
           </div>
-  
-          <div class="footer-col links-col">
-            <h4>Enlaces Rápidos</h4>
-            <ul class="footer-links" aria-label="Enlaces rápidos">
-              <li><a routerLink="/inicio/territorio"><i class='bx bx-chevron-right' aria-hidden="true"></i>Explorar
-                  Territorio</a></li>
-              <li><a routerLink="/inicio/productos"><i class='bx bx-chevron-right' aria-hidden="true"></i>Productos</a>
-              </li>
-              <li><a routerLink="/campiamigos"><i class='bx bx-chevron-right' aria-hidden="true"></i>Campiamigos</a></li>
-              <li><a routerLink="/inicio/productos" [queryParams]="{ clima: 'frio' }"><i class='bx bx-chevron-right'
-                    aria-hidden="true"></i>Clima Frío</a></li>
-              <li><a routerLink="/inicio/productos" [queryParams]="{ clima: 'calido' }"><i class='bx bx-chevron-right'
-                    aria-hidden="true"></i>Clima Cálido</a></li>
-              <li><a routerLink="/como-funciona"><i class='bx bx-chevron-right' aria-hidden="true"></i>Cómo Funciona</a>
-              </li>
-            </ul>
-          </div>
-  
-          <div class="footer-col links-col">
-            <h4>Información</h4>
-            <ul class="footer-links" aria-label="Enlaces de información">
-              <li><a routerLink="/faq"><i class='bx bx-chevron-right' aria-hidden="true"></i>Preguntas Frecuentes</a></li>
-              <li><a routerLink="/terminos"><i class='bx bx-chevron-right' aria-hidden="true"></i>Términos y
-                  Condiciones</a></li>
-              <li><a routerLink="/privacidad"><i class='bx bx-chevron-right' aria-hidden="true"></i>Política de
-                  Privacidad</a></li>
-              <li><a routerLink="/ayuda"><i class='bx bx-chevron-right' aria-hidden="true"></i>Centro de Ayuda</a></li>
-              <li><a routerLink="/blog"><i class='bx bx-chevron-right' aria-hidden="true"></i>Blog</a></li>
-              <li><a routerLink="/contacto"><i class='bx bx-chevron-right' aria-hidden="true"></i>Contacto</a></li>
-            </ul>
-          </div>
-  
-          <div class="footer-col subscribe-col">
-            <h4>Mantente Informado</h4>
-            <p>Suscríbete a nuestro boletín para recibir las últimas noticias, ofertas y actualizaciones.</p>
-            <form class="newsletter-form" (submit)="subscribeNewsletter($event)">
-              <label for="newsletter-email" class="visually-hidden">Correo electrónico para boletín</label>
-              <input type="email" id="newsletter-email" placeholder="Tu correo electrónico" required>
-              <button type="submit" aria-label="Suscribirse al boletín"><i class='bx bxs-paper-plane'
-                  aria-hidden="true"></i></button>
-            </form>
-            <div class="social-section">
-              <!-- H5 está bien aquí, subordinado al H4 de la columna -->
-              <h5>Síguenos</h5>
-              <ul class="social-links" aria-label="Enlaces a redes sociales">
-                <li><a href="#" target="_blank" aria-label="Facebook"><i class='bx bxl-facebook-square'
-                      aria-hidden="true"></i></a></li>
-                <li><a href="#" target="_blank" aria-label="Instagram"><i class='bx bxl-instagram-alt'
-                      aria-hidden="true"></i></a></li>
-                <li><a href="#" target="_blank" aria-label="Twitter"><i class='bx bxl-twitter' aria-hidden="true"></i></a>
-                </li>
-                <li><a href="#" target="_blank" aria-label="LinkedIn"><i class='bx bxl-linkedin-square'
-                      aria-hidden="true"></i></a></li>
-                <li><a href="#" target="_blank" aria-label="YouTube"><i class='bx bxl-youtube' aria-hidden="true"></i></a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-  
-        <div class="footer-bottom">
-          <p class="copyright">
-            © 2025 CampiAmigo. Todos los derechos reservados.
+          <p class="footer-description">
+            La plataforma que conecta clientes y campiamigos en el mundo agrícola. Explora
+            territorio en 3D, conoce a campiamigos verificados y descubre productos agrícolas de
+            calidad.
           </p>
-          <div class="payment-methods" aria-label="Métodos de pago aceptados">
-            <span>Métodos de pago:</span>
-            <!-- Deberías reemplazar estos spans con imágenes con alt text o texto real -->
-            <span class="payment-icon" aria-label="Visa"></span>
-            <span class="payment-icon" aria-label="Mastercard"></span>
-            <span class="payment-icon" aria-label="PSE"></span>
-            <span class="payment-icon" aria-label="Efecty"></span>
+          <ul class="footer-contact" aria-label="Información de contacto">
+            <li>
+              <i class="bx bx-map" aria-hidden="true"></i>
+              <span>Bogotá, Colombia</span>
+            </li>
+            <li>
+              <i class="bx bx-phone" aria-hidden="true"></i>
+              <span>+57 300 123 4567</span>
+            </li>
+            <li>
+              <i class="bx bx-envelope" aria-hidden="true"></i>
+              <span>contactocampiamigo.com</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna “Enlaces Rápidos” -->
+        <div class="footer-col links-col">
+          <h4>Enlaces Rápidos</h4>
+          <ul class="footer-links" aria-label="Enlaces rápidos">
+            <li>
+              <a routerLink="/inicio/territorio" role="link">
+                <i class="bx bx-chevron-right" aria-hidden="true"></i>
+                Explorar Territorio
+              </a>
+            </li>
+            <li>
+              <a routerLink="/inicio/productos" role="link">
+                <i class="bx bx-chevron-right" aria-hidden="true"></i>
+                Productos
+              </a>
+            </li>
+            <li>
+              <a routerLink="/campiamigos" role="link">
+                <i class="bx bx-chevron-right" aria-hidden="true"></i>
+                Campiamigos
+              </a>
+            </li>
+            <li>
+              <a routerLink="/inicio/productos" [queryParams]="{ clima: 'frio' }" role="link">
+                <i class="bx bx-chevron-right" aria-hidden="true"></i>
+                Clima Frío
+              </a>
+            </li>
+            <li>
+              <a routerLink="/inicio/productos" [queryParams]="{ clima: 'calido' }" role="link">
+                <i class="bx bx-chevron-right" aria-hidden="true"></i>
+                Clima Cálido
+              </a>
+            </li>
+            <li>
+              <a routerLink="/como-funciona" role="link">
+                <i class="bx bx-chevron-right" aria-hidden="true"></i>
+                Cómo Funciona
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna “Información” -->
+        <div class="footer-col links-col">
+          <h4>Información</h4>
+          <ul class="footer-links" aria-label="Enlaces de información">
+            <li>
+              <a routerLink="/faq" role="link">Preguntas Frecuentes</a>
+            </li>
+            <li>
+              <a routerLink="/terminos" role="link">Términos y Condiciones</a>
+            </li>
+            <li>
+              <a routerLink="/privacidad" role="link">Política de Privacidad</a>
+            </li>
+            <li>
+              <a routerLink="/ayuda" role="link">Centro de Ayuda</a>
+            </li>
+            <li>
+              <a routerLink="/blog" role="link">Blog</a>
+            </li>
+            <li>
+              <a routerLink="/contacto" role="link">Contacto</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Columna “Suscríbete y Redes” -->
+        <div class="footer-col subscribe-col">
+          <h4>Mantente Informado</h4>
+          <p>Suscríbete a nuestro boletín para recibir las últimas noticias, ofertas y actualizaciones.</p>
+
+          <form class="newsletter-form" (submit)="subscribeNewsletter($event)" role="form"
+            aria-label="Formulario de suscripción al boletín">
+            <label for="newsletter-email" class="visually-hidden">
+              Correo electrónico para boletín
+            </label>
+            <input type="email" id="newsletter-email" placeholder="Tu correo electrónico" required
+              aria-required="true" />
+            <button type="submit" aria-label="Suscribirse al boletín">
+              <i class="bx bxs-paper-plane" aria-hidden="true"></i>
+            </button>
+          </form>
+
+          <div class="social-section">
+            <h5>Síguenos</h5>
+            <ul class="social-links" aria-label="Síguenos en redes sociales">
+              <li>
+                <a href="#" target="_blank" aria-label="Facebook">
+                  <i class="bx bxl-facebook-square" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="#" target="_blank" aria-label="Instagram">
+                  <i class="bx bxl-instagram-alt" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="#" target="_blank" aria-label="Twitter">
+                  <i class="bx bxl-twitter" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="#" target="_blank" aria-label="LinkedIn">
+                  <i class="bx bxl-linkedin-square" aria-hidden="true"></i>
+                </a>
+              </li>
+              <li>
+                <a href="#" target="_blank" aria-label="YouTube">
+                  <i class="bx bxl-youtube" aria-hidden="true"></i>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
-    </footer>
-    <!-- ==================================== -->
-    <!--         FIN: Footer Section          -->
-    <!-- ==================================== -->
-  
-  </div> <!-- Fin dashboard-container -->
+
+      <!-- Footer bottom: copyright y pagos -->
+      <div class="footer-bottom">
+        <p class="copyright">
+          © 2025 CampiAmigo. Todos los derechos reservados.
+        </p>
+
+      </div>
+    </div>
+  </footer>
+  <!-- ==================================== -->
+  <!--         FIN: Footer Section          -->
+  <!-- ==================================== -->
+
+</div> <!-- Fin dashboard-container -->
