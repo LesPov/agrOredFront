@@ -1,0 +1,273 @@
+.bg {
+  content: "";
+  width: 550px;
+  height: 550px;
+  background: #00991326;
+  border-radius: 50%;
+  position: fixed;
+  top: 130px;
+  right: 0;
+  transform: translateX(-40%); 
+}
+
+
+.bx-chevron-left {
+  -webkit-tap-highlight-color: transparent;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #232949;
+  position: absolute;
+  color: #fff;
+  display: flex;
+  top: 20px;
+  left: 20px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 20px;}
+
+.bg::before {
+  content: "";
+  width: 50px;
+  height: 50px;
+  background: #2c3e50;
+  border-radius: 50%;
+  position: fixed;
+  top: -150px;
+  right: -23px;
+  transform: translateX(50%);
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.body {
+  width: 100%;
+  min-height: 100vh;
+  text-align: center;
+
+}
+
+.close-icon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  color: #333;
+  text-decoration: none;
+}
+
+.close-icon i {
+  cursor: pointer;
+}
+
+.row1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.title {
+  text-align: center;
+  margin-bottom: 2rem;
+  margin-top: 5rem;
+
+}
+
+.title h3 {
+  color: #2c3e50;
+  max-width: 300px;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-message {
+  font-size: 16px;
+  margin-top: 20px;
+  font-weight: 400;
+  color: #2c3e50;
+
+}
+
+
+.form-floating {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  width: 95%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+
+}
+
+.username-background {
+  background-color: #50b9ff;
+  color: #000;
+  padding: 3.5px 5px;
+  border-radius: 5px;
+  margin-left: 3px;
+}
+
+
+
+.row1 h6 {
+  color: #7f8c8d;
+  font-weight: 400;
+  font-size: 0.8rem;
+}
+
+.row1 label {
+  font-size: 13px;
+  position: absolute;
+  max-width: 300px;
+  bottom: 75px;
+
+}
+
+.help {
+  bottom: 25px;
+  position: absolute;
+  color: #2c3e50;
+}
+
+.row1 a {
+  text-decoration: none;
+  color: #0067ff;
+
+}
+
+
+/* email-code.component.css */
+
+.code-input {
+  display: flex;
+  gap: 8px;
+  /* Espacio entre los inputs */
+  margin-bottom: 15px;
+  /* Margen inferior para separar de los botones */
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+.digit-input {
+  width: 48px;
+  height: 58px;
+  text-align: center;
+  font-size: 25px;
+  background: transparent;
+  border: none;
+  /* Eliminamos el borde predeterminado */
+  border-bottom: 2px solid #000;
+  /* Agregamos el borde inferior */
+  border-radius: 0;
+  /* Eliminamos la esquina redondeada */
+  box-shadow: none;
+  /* Eliminamos la sombra */
+  margin: 0;
+  /* Eliminamos cualquier margen predeterminado */
+  padding: 0;
+  /* Eliminamos cualquier relleno predeterminado */
+  outline: none;
+  /* Eliminamos el resplandor al enfocar */
+}
+
+.timer {
+  font-size: 16px;
+  color: #2c3e50;
+  margin-bottom: 7px;
+}
+
+.timer-text {
+  color: #0067ff;
+}
+
+
+.btn {
+  width: 100%;
+  max-width: 320px;
+  padding: 12px;
+  background: #50b9ff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.btn:hover {
+  background: #2980b9;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+.confirmation-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.confirmation-box {
+  background-color: #fff;
+  padding: 20px;
+  padding-bottom: 0px;
+  width: 40%;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.confirmation-box p {
+  margin-bottom: 10px;
+
+}
+
+.btn1 {
+  width: 40%;
+  height: 40px;
+  font-size: 15px;
+  margin: 15px;
+  border-radius: 20px;
+  color: #fff;
+  background-color: #0067ff;
+}
+
+.wrapper>*{
+  animation: fadeIn 0.6s ease-out forwards;
+
+}
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}

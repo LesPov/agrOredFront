@@ -1,0 +1,28 @@
+
+<i class='bx bx-chevron-left' (click)="goBack()"></i>
+
+<form (ngSubmit)="loginUser()" #loginForm="ngForm" novalidate>
+  <div class="form">
+    <div class="title">
+      <h3>Iniciar Sesión</h3>
+      <h6>Ingresa tus credenciales para continuar</h6> 
+    </div>
+
+    <div class="group">
+      <label class="lbl">Usuario</label>
+      <input type="text" name="username" [(ngModel)]="user.username" class="input"
+        placeholder="Introduce tu correo electrónico" required autocomplete="username">
+    </div>
+
+    <div class="group">
+      <label class="lbl">Contraseña</label>
+      <input type="password" name="passwordorrandomPassword" [(ngModel)]="user.passwordorrandomPassword" class="input"
+        placeholder="Introduce tu contraseña" required autocomplete="current-password">
+    </div>
+
+    <button type="submit" class="btn">Iniciar Sesión</button>
+    <br>
+    <p><a routerLink="/auth/passwordrecovery">¿Olvidaste tu contraseña?</a></p>
+    <p>¿No tienes cuenta? <a routerLink="/auth/register">Regístrate</a></p>
+  </div>
+</form>

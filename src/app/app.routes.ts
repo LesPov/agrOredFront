@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
 import { inicioRouter } from './landing/landing.routes';
+import { authenticationRoutes } from './features/auth/routes/auth.router';
 
 export const routes: Routes = [
     ...inicioRouter,
-    // ...authenticationRoutes,
+    ...authenticationRoutes,
     // ...adminRouter,
     // ...userRouter,
     // ...campiamigoRouter,

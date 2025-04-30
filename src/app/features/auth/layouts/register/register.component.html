@@ -1,0 +1,36 @@
+<i class='bx bx-chevron-left' (click)="goBack()"></i>
+
+<div class="form">
+  <div class="title">
+    <h3>Crea tu Cuenta</h3>
+    <h6>Ingresa tus datos para continuar</h6>
+  </div>
+
+  <div class="group"> 
+    <label class="lbl">Usuario</label>
+
+    <input type="text" [(ngModel)]="user.username" class="input" placeholder="Ingrese usuario">
+  </div>
+
+  <div class="group">
+    <label class="lbl">Email</label>
+
+    <input type="text" [(ngModel)]="user.email" class="input" placeholder="Ingrese correo electrónico">
+  </div>
+
+  <div class="group">
+    <label class="lbl">Contraseña</label>
+
+    <input type="password" [(ngModel)]="user.password" class="input" placeholder="Ingrese password">
+  </div>
+ 
+  <div class="group">
+    <label class="lbl">Repite Contraseña</label>
+
+    <input type="password" [(ngModel)]="confirmPassword" class="input" placeholder="Ingrese password de nuevo">
+  </div>
+
+  <button type="button" (click)="addUser()" class="btn">Ingresar</button>
+  <br>
+  <p>¿Ya tienes cuenta? <a routerLink="/auth/login">Inicia sesión</a></p>
+</div> 
