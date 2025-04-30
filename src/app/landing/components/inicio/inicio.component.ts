@@ -334,52 +334,61 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private async activateProduct3D(originalIndex: number): Promise<void> {
     const targetProduct = this.allDisplayProducts[originalIndex];
-    if (!targetProduct || !targetProduct.glbFile) { if (targetProduct) this.toastr.info(`Producto sin modelo 3D.`); return; }
+    // La verificación ahora se basa directamente en si targetProduct.glbFile tiene un valor
+    if (!targetProduct || !targetProduct.glbFile) {
+        if (targetProduct) this.toastr.info(`Producto ${targetProduct.name} sin modelo 3D.`);
+        this.deactivateCurrentProduct3D(); // Asegurarse de desactivar si se hace clic y no hay modelo
+        return;
+    }
 
     this.deactivateTerritory3D();
     this.deactivateCurrentProduct3D(); // Desactiva otro y reanuda swiper temporalmente
     this.pauseSwiperAutoplay(); // Pausa explícitamente para este nuevo
 
     const targetCanvasRef = this.findCanvasByProductId(targetProduct.id);
-    if (!targetCanvasRef) { this.toastr.error("Error interno 3D."); this.resumeSwiperAutoplay(); return; }
+    if (!targetCanvasRef) {
+        this.toastr.error("Error interno: No se encontró el canvas 3D.");
+        this.resumeSwiperAutoplay();
+        return;
+    }
     const targetCanvasElement = targetCanvasRef.nativeElement;
 
     try {
-      if (!this.productServiceInitialized) { await this.productService3D.init(targetCanvasElement); this.productServiceInitialized = true; }
-      else { await this.productService3D.setRenderingTarget(targetCanvasElement); }
+        // Inicializa el servicio si es necesario o establece el nuevo canvas
+        if (!this.productServiceInitialized) {
+            await this.productService3D.init(targetCanvasElement);
+            this.productServiceInitialized = true;
+        } else {
+            await this.productService3D.setRenderingTarget(targetCanvasElement);
+        }
 
-      let serviceModelIndex = -1;
-      const targetBaseName = this.getBaseGlbName(targetProduct.glbFile);
-      if (targetBaseName && this.productService3D.productModels.length > 0) {
-        serviceModelIndex = this.productService3D.productModels.findIndex(servicePath => {
-          const serviceBaseName = this.getBaseGlbName(servicePath);
-          return serviceBaseName && (serviceBaseName === targetBaseName || serviceBaseName.includes(targetBaseName) || targetBaseName.includes(serviceBaseName));
-        });
-      }
+        // ----- Lógica de carga modificada -----
+        // Ya no buscamos un índice. Pasamos directamente el nombre del archivo.
+        // El servicio se encargará de cargar el default si glbFile es null o falla.
+        await this.productService3D.loadModelByFilename(targetProduct.glbFile);
+        // ----- Fin Lógica de carga modificada -----
 
-      if (serviceModelIndex !== -1) { await this.productService3D.loadModelByIndex(serviceModelIndex); }
-      else { await this.productService3D.loadModelByIndex(0); this.toastr.warning(`Modelo 3D específico no encontrado.`, '', { timeOut: 3500 }); }
 
-      this.productLoaded[originalIndex] = true;
-      this.activeProductOriginalIndex = originalIndex;
-      // Actualizar el índice previo AHORA que sabemos cuál está activo
-      this.previousActiveProductOriginalIndexOnSlide = originalIndex;
-      console.log(`Activando 3D para índice ${originalIndex}. Estado productLoaded DESPUÉS:`, this.productLoaded[originalIndex]); // DEBUG
-      this.cdRef.detectChanges(); // Notificar a Angular
-      // Swiper sigue pausado
+        // Si loadModelByFilename se completa sin lanzar error, asumimos éxito (o carga del default)
+        this.productLoaded[originalIndex] = true;
+        this.activeProductOriginalIndex = originalIndex;
+        this.previousActiveProductOriginalIndexOnSlide = originalIndex; // Marcar slide actual como el que tiene 3D activo
+        console.log(`Activando 3D para índice ${originalIndex}.`);
+        this.cdRef.detectChanges();
+        // Swiper sigue pausado por `pauseSwiperAutoplay()` al inicio
 
-    } catch (error) {
-      console.error(`Error activando 3D producto ${originalIndex}:`, error);
-      this.toastr.error(`Error cargando 3D para ${targetProduct.name}.`);
-      this.productLoaded[originalIndex] = false; // Asegurarse de que quede falso si falla
-      this.activeProductOriginalIndex = null;
-
-      this.previousActiveProductOriginalIndexOnSlide = null; // Resetear si falla
-      if (!this.productService3D.isInitialized()) this.productServiceInitialized = false;
-      this.cdRef.detectChanges();
-      this.resumeSwiperAutoplay(); // Reanudar si falla
+    } catch (error) { // Captura errores si loadModelByFilename los relanza (actualmente no lo hace por defecto)
+        console.error(`Error activando 3D producto ${originalIndex} (${targetProduct.name}):`, error);
+        this.toastr.error(`Error al preparar 3D para ${targetProduct.name}.`);
+        this.productLoaded[originalIndex] = false;
+        this.activeProductOriginalIndex = null;
+        this.previousActiveProductOriginalIndexOnSlide = null; // Resetear si falla
+        if (!this.productService3D.isInitialized()) this.productServiceInitialized = false;
+        this.cdRef.detectChanges();
+        this.resumeSwiperAutoplay(); // Reanudar si falla la activación
     }
-  }
+}
+
 
   private deactivateCurrentProduct3D(): void {
     if (this.activeProductOriginalIndex !== null) {
