@@ -1,0 +1,78 @@
+<div class="products-container">
+    <div *ngIf="loading" class="loading">Cargando productos...</div>
+    <div *ngIf="errorMsg" class="error">{{ errorMsg }}</div>
+
+    <div class="products-header" *ngIf="!loading && !errorMsg">
+        <i class='bx bx-chevron-left' (click)="goBack()"></i>
+        <h2>Productos Agrícolas</h2>
+
+    </div>
+    <div class="search-bar">
+        <input type="text" placeholder="Buscar productos, productores, región..." [(ngModel)]="searchTerm" />
+        <i class="bx bx-search"></i>
+    </div>
+    <div class="category-chips" *ngIf="!loading && !errorMsg">
+        <button *ngFor="let cat of categories" class="chip" [class.active]="selectedCategory === cat"
+            (click)="toggleCategory(cat)">
+            {{ cat }}
+        </button>
+    </div>
+
+    <div class="toolbar" *ngIf="!loading && !errorMsg">
+        <button class="tool-btn"><i class="bx bx-filter"></i> Filtros</button>
+        <button class="tool-btn"><i class="bx bx-category"></i> Categoría</button>
+        <button class="tool-btn"><i class='bx bx-wind'></i> Clima</button>
+
+    </div>
+
+    <div class="product-grid" *ngIf="!loading && !errorMsg">
+        <!-- Cambios empiezan aquí dentro del *ngFor -->
+        <div class="product-card" *ngFor="let prod of filteredProducts">
+
+            <!-- Contenedor de Imagen y elementos superpuestos -->
+            <div class="image">
+
+                <!-- Imagen -->
+                <img class="product-img" [src]="prod.imageUrl" [alt]="prod.name" (error)="onImgError($event)" />
+
+
+            </div>
+            <!-- Badges (AHORA DENTRO de .image) -->
+            <div *ngIf="prod.glbFile" class="badge badge-3d">3D</div>
+            <div *ngIf="prod.video" class="badge badge-video">Video</div>
+
+            <!-- Información del Producto (sin el precio aquí) -->
+            <div class="product-info">
+                <!-- Nombre y subtítulo -->
+                <h3>{{ prod.name }}</h3>
+                <p class="subtitle" *ngIf="prod.subtitle">{{ prod.subtitle }}</p>
+                <!-- Asumiendo que tienes subtítulo -->
+                <!-- O usa la descripción si no hay subtítulo -->
+                <p class="subtitle" *ngIf="!prod.subtitle && prod.description">{{ prod.description }}</p>
+
+
+                <!-- Rating + count -->
+                <div class="rating" *ngIf="prod.rating != null">
+                    <ng-container *ngFor="let _ of [0,1,2,3,4]; let i = index">
+                        <i class="bx" [ngClass]="{
+                  'bxs-star':      getStarType(i, prod.rating!) === 'full',
+                  'bxs-star-half': getStarType(i, prod.rating!) === 'half',
+                  'bx-star':       getStarType(i, prod.rating!) === 'empty'
+                }"></i>
+                    </ng-container>
+                    <!-- El número de reviews como en la imagen de ejemplo -->
+                    <span class="review-count">({{ prod.reviewCount || 0 }})</span>
+                    <!-- Asume que tienes ratingCount -->
+                </div>
+                <!-- Precio (AHORA DENTRO de .image) -->
+                <div class="datails">
+                    <div class="image-price">${{ prod.price | number:'1.0-0' }}</div>
+                    <!-- Botón (AHORA ocupa su propia línea al final) -->
+                    <button class="details-btn" (click)="goToDetail(prod.id)">
+                        <i class='bx bx-hive bx-rotate-180'></i>Ver </button>
+                </div>
+            </div>
+        </div>
+        <!-- Cambios terminan aquí -->
+    </div>
+</div>

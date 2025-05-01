@@ -1,0 +1,353 @@
+<div class="product-detail-container">
+
+    <div class="products-header" *ngIf="!loading && !errorMsg">
+        <i class='bx bx-chevron-left' (click)="goBack()"></i>
+        <h2>Volver a productos</h2>
+
+    </div>
+    <div class="main-content">
+        <!-- IZQUIERDA: Media column -->
+        <div class="media-viewer"> <!-- Contenedor para el visor principal -->
+            <div class="main-image" *ngIf="media.length > 0 && selectedMediaIndex >= 0">
+                <!-- Imagen -->
+                <img *ngIf="media[selectedMediaIndex].type === 'image'" [src]="media[selectedMediaIndex].url"
+                    [alt]="productName" class="main-media" />
+
+                <!-- Vídeo -->
+                <video #videoPlayer *ngIf="media[selectedMediaIndex].type === 'video'"
+                    [src]="media[selectedMediaIndex].url" controls autoplay muted playsinline class="main-media">
+                    Tu navegador no soporta la etiqueta de video.
+                </video>
+
+                <!-- Canvas 3D: Usamos [hidden] en lugar de *ngIf -->
+                <canvas #glbCanvas [hidden]="!media[selectedMediaIndex] || media[selectedMediaIndex].type !== 'model'"
+                    class="main-media canvas-container"> <!-- Clase main-media para consistencia -->
+                </canvas>
+            </div>
+            <!-- Mensaje si no hay media -->
+            <div class="main-image placeholder" *ngIf="media.length === 0 && !loading">
+                <i class="fas fa-image fa-3x text-muted"></i>
+                <p>No hay elementos multimedia disponibles.</p>
+            </div>
+
+        </div> <!-- FIN media-viewer -->
+
+        <!-- Thumbnails con etiqueta -->
+        <div class="thumbnail-images" *ngIf="media.length > 1"> <!-- Mostrar solo si hay más de 1 item -->
+            <div class="thumbnail" *ngFor="let m of media; let i = index" (click)="onSelectMedia(i)"
+                [class.active-thumbnail]="i === selectedMediaIndex">
+                <ng-container [ngSwitch]="m.type">
+                    <img *ngSwitchCase="'image'" [src]="m.url" [alt]="'thumbnail-' + i" class="thumbnail-content" />
+                    <!-- Alt corregido -->
+                    <div *ngSwitchCase="'video'" class="thumbnail-content thumbnail-placeholder-icon">
+                        <i class='bx bx-video-recording'></i>
+                    </div>
+                    <div *ngSwitchCase="'model'" class="thumbnail-content thumbnail-placeholder-icon">
+                        <i class='bx bxs-cube-alt'></i>
+                    </div>
+                </ng-container>
+                <span class="thumbnail-label">
+                    {{ m.type === 'image' ? 'Img' : m.type === 'video' ? 'VD' : '3D' }}
+                </span>
+            </div>
+        </div><!-- FIN thumbnail-images -->
+    </div> <!-- FIN main-content -->
+
+    <!-- DERECHA: Info vendedor y producto -->
+    <div class="info-column">
+        <!-- ========= SECCIÓN DE DESCRIPCIÓN Y CATEGORÍAS ========= -->
+        <!-- Nota: Se muestra si hay descripción O categorías -->
+        <section class="description-section"
+            *ngIf="productDescription || (productCategories && productCategories.length > 0)">
+            <h2 *ngIf="productDescription">Descripción</h2>
+            <!-- Solo mostrar párrafo si hay descripción -->
+            <p *ngIf="productDescription">{{ productDescription }}</p>
+
+
+        </section>
+        <!-- ========= FIN SECCIÓN DE DESCRIPCIÓN Y CATEGORÍAS ========= -->
+
+        <!-- ======================================================= -->
+        <!-- SECCIÓN INFORMACIÓN NUTRICIONAL -->
+        <!-- ======================================================= -->
+        <section class="nutritional-info-section"
+            *ngIf="product && (product.calories || product.proteins || product.carbohydrates || product.fats || (product.vitamins && product.vitamins.length > 0))">
+
+            <ng-container *ngIf="product?.vitamins as vitamins">
+                <div class="nutrition-vitamins" *ngIf="vitamins.length > 0">
+                    <h4>Vitaminas y minerales</h4>
+                    <div class="vitamin-tags">
+                        <span *ngFor="let vitamin of vitamins" class="vitamin-tag">{{ vitamin }}</span>
+                    </div>
+                </div>
+            </ng-container>
+            <!-- Sección categorías anidada (solo se muestra si hay categorías) -->
+            <section class="categories-section" *ngIf="productCategories && productCategories.length > 0">
+                <h3>Categorías</h3>
+                <div class="category-tags">
+                    <span *ngFor="let category of productCategories" class="category-tag">{{ category }}</span>
+                </div>
+            </section>
+        </section>
+        <!-- ========= FIN SECCIÓN INFORMACIÓN NUTRICIONAL ========= -->
+
+        <!-- ========= SECCIÓN DE CONSERVACIÓN ========= -->
+        <section class="conservation-section" *ngIf="product?.conservation">
+            <h2><i class="fas fa-info-circle"></i> Conservación</h2>
+            <p>{{ product?.conservation }}</p>
+        </section>
+        <!-- ========= FIN SECCIÓN DE CONSERVACIÓN ========= -->
+
+
+        <!-- ================================================================= -->
+        <!-- SECCIÓN DE INFORMACIÓN PRINCIPAL DEL PRODUCTO -->
+        <!-- ================================================================= -->
+        <section class="product-info-header">
+
+            <div class="product-info">
+                <h1 class="product-main-title">{{ productName }}</h1>
+                <div class="subtitle-rating-row">
+                    <span class="product-code" *ngIf="productSubtitle">{{ productSubtitle }}</span>
+                    <span class="separator"
+                        *ngIf="productSubtitle && productReviews != null && productReviews >= 0">•</span>
+                    <!-- Separador solo si hay código Y rating -->
+
+                    <!-- Contenedor del Rating -->
+                    <div class="product-rating" *ngIf="productReviews != null && productReviews >= 0">
+                        <!-- Mostrar si productReviews está definido (incluso si es 0) -->
+                        <!-- Estrellas generadas dinámicamente -->
+                        <ng-container *ngFor="let i of [0, 1, 2, 3, 4]">
+                            <i [class]="getStarClass(i)"></i>
+                            <!-- La función getStarClass define las clases bx bxs-star, bxs-star-half, bx-star -->
+                        </ng-container>
+
+                        <!-- Contador de reseñas (solo si es mayor que 0) -->
+                        <span class="review-count" *ngIf="productReviews > 0">
+                            {{ '(' + productReviews + ' reseñas)' }} <!-- Concatenación segura -->
+                        </span>
+
+                        <!-- Mensaje "Sin reseñas" (solo si es exactamente 0) -->
+                        <span class="review-count no-reviews" *ngIf="productReviews === 0">
+                            (Sin reseñas)
+                        </span>
+                    </div> <!-- FIN product-rating -->
+                </div> <!-- FIN subtitle-rating-row -->
+            </div>
+            <div class="precioystock">
+                <div class="price-availability">
+                    <div class="product-price">
+                        {{ productPrice | currency:'COP':'$':'1.0-0' }}
+                        <!-- Concatenación segura para unidad -->
+                        <span class="price-unit" *ngIf="productUnit">{{ '/ ' + productUnit }}</span>
+                    </div>
+                    <span class="availability-tag" [class.available]="isProductAvailable" *ngIf="product">
+                        {{ isProductAvailable ? 'Disponible' : 'Agotado' }}
+                    </span>
+                </div>
+                <div class="details-grid">
+                    <div class="detail-item" *ngIf="productStock > 0">
+                        <i class='bx bx-package'></i>
+                        <span>Stock: <br><strong>{{ productStock }} {{ productUnit }}</strong></span>
+                    </div>
+                    <div class="detail-item" *ngIf="productDeliveryTime">
+                        <i class='bx bxs-truck'></i>
+                        <span>Entrega:<br> <strong>{{ productDeliveryTime }}</strong></span>
+                    </div>
+                    <!-- Condición segura para minOrder -->
+                    <div class="detail-item" *ngIf="productMinOrder != null && productMinOrder > 0">
+                        <i class='bx bxs-package'></i>
+                        <span>Pedido mínimo: <br> <strong>{{ productMinOrder }} {{ productUnit }}</strong></span>
+                    </div>
+                    <div class="detail-item" *ngIf="productHarvestDate">
+                        <i class='bx bx-calendar'></i>
+                        <span>Cosecha:<br>
+                            <strong>{{ productHarvestDate | date:'longDate':'':'es-CO' }}</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <!-- ====================================================== -->
+            <!-- SECCIÓN CANTIDAD Y RESUMEN -->
+            <!-- ====================================================== -->
+            <section class="quantity-selector">
+                <h2>¿Cuánto quieres comprar?</h2>
+                <div class="preset-buttons">
+                    <button *ngFor="let q of quantityPresets" class="preset-btn" [class.active]="q === currentQuantity"
+                        (click)="selectQuantityPreset(q)">
+                        {{q}} {{productUnit}} <!-- Interpolación simple aquí suele ser segura -->
+                        <i class="fas fa-check check-icon" *ngIf="q === currentQuantity"></i>
+                    </button>
+                </div>
+                <div class="quantity-stepper">
+                    <button class="stepper-btn" (click)="decrementQuantity()"
+                        [disabled]="currentQuantity <= productMinOrder"><i class='bx bx-minus'></i></button>
+                    <!-- Usar [(ngModel)] si FormsModule está importado es más estándar -->
+                    <input class="quantity-input" type="number" [(ngModel)]="currentQuantity"
+                        (ngModelChange)="setQuantity($event)" [min]="productMinOrder" [max]="productStock" />
+                    <button class="stepper-btn" (click)="incrementQuantity()"
+                        [disabled]="currentQuantity >= productStock"><i class='bx bx-plus'></i></button>
+                    <span class="stepper-unit">{{productUnit}}</span>
+                </div>
+                <div class="price-summary">
+                    <div class="summary-line total-price-line">
+                        <span>Precio total:</span>
+                        <span class="total-price">{{totalPrice | currency:'COP':'$':'1.0-0'}}</span>
+                    </div>
+                    <button class="btn btn-contact-summary" (click)="contactWhatsApp()">
+                        Contactar campiamigo
+                    </button>
+
+                </div>
+            </section>
+        </section>
+        <!-- ========= FIN SECCIÓN DE INFORMACIÓN PRINCIPAL ========= -->
+
+
+
+        <!-- ========= FIN SECCIÓN CANTIDAD Y RESUMEN ========= -->
+
+        <!-- ========= SECCIÓN INFORMACIÓN DEL CAMPIAMIGO ========= -->
+        <section class="campiamigo-info-card" *ngIf="product?.auth?.userProfile">
+            <h2><i class='bx bxs-user-pin'></i> Información del campiamigo</h2>
+            <div class="campiamigo-header">
+                <div class="campiamigo-avatar">
+                    <img *ngIf="sellerAvatarUrl" [src]="sellerAvatarUrl" class="avatar-image" [alt]="sellerName" />
+                    <i *ngIf="!sellerAvatarUrl" class="fas fa-user-circle avatar-icon"></i>
+                    <i class="fas fa-check check-icon"></i>
+                </div>
+                <div class="campiamigo-details">
+                    <span class="campiamigo-name">{{ sellerName }}</span>
+                    <div class="campiamigo-location" *ngIf="sellerLocationShort">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ sellerLocationShort }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- **** Inicio Bloque Modificado **** -->
+            <div class="campiamigo-info">
+                <!-- Título "Biografía" añadido -->
+                <h4 class="biography-title" *ngIf="sellerbiography && sellerbiography !== 'Biografía no disponible.'">
+                    Biografía
+                </h4>
+                <!-- Párrafo de la biografía existente -->
+                <p class="campiamigo-description"
+                    *ngIf="sellerbiography && sellerbiography !== 'Biografía no disponible.'">
+                    {{ sellerbiography }}
+                </p>
+                <!-- Mensaje alternativo si no hay biografía -->
+                <p class="campiamigo-description no-biography"
+                    *ngIf="!sellerbiography || sellerbiography === 'Biografía no disponible.'">
+                    Este campiamigo aún no ha añadido una biografía.
+                </p>
+                <!-- Link "Ver perfil" sin cambios -->
+                <a class="view-profile-link" (click)="viewSellerProfile(); $event.preventDefault()">
+                    Ver perfil completo <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+            <!-- **** Fin Bloque Modificado **** -->
+
+        </section>
+        <!-- ========= FIN SECCIÓN INFORMACIÓN DEL CAMPIAMIGO ========= -->
+
+        <!-- ========= SECCIÓN ACCIONES CAMPIAMIGO ========= -->
+        <section class="campiamigo-actions">
+            <button class="btn btn-contact" (click)="navigateToScene()" *ngIf="product?.auth?.userProfile?.zone?.id">
+                Ver Territorio Modelo 3d
+            </button>
+
+            <!-- Si quieres mostrar un botón deshabilitado o un mensaje si no hay zona: -->
+            <button class="btn btn-contact" *ngIf="!product?.auth?.userProfile?.zone?.id" disabled
+                title="La zona 3D no está disponible para este campiamigo">
+                Ver Territorio Modelo 3d
+            </button>
+
+        </section> 
+        <!-- ========= FIN SECCIÓN ACCIONES CAMPIAMIGO ========= -->
+        <!-- =============================================================== -->
+        <!-- ========= INICIO SECCIÓN UBICACIÓN (NUEVO ESTILO) ========= -->
+        <!-- =============================================================== -->
+        <section class="location-details-section styled-location">
+            <!-- Encabezado de la Sección -->
+            <div class="location-section-header">
+                <h2><i class="fas fa-map-marker-alt"></i> Ubicación</h2>
+                <!-- Corregido: Llamada a la función correcta -->
+                <a (click)="showOnGoogleMaps()" class="google-maps-link" target="_blank" rel="noopener noreferrer"
+                    [style.pointer-events]="(!sellerLocation || sellerLocation === 'Dirección no especificada') ? 'none' : 'auto'"
+                    [class.disabled]="!sellerLocation || sellerLocation === 'Dirección no especificada'">
+                    Ver en Google Maps <i class="fas fa-external-link-alt"></i>
+                </a>
+            </div>
+
+            <!-- Card Principal de Ubicación -->
+            <div class="location-main-card">
+
+                <!-- Bloque Dirección -->
+                <div class="location-block address-block">
+                    <div class="block-header">
+                        <i class="far fa-paper-plane"></i> <!-- Icono de la imagen -->
+                        <h3>Dirección</h3>
+                    </div>
+                    <p class="address-text" *ngIf="sellerLocation && sellerLocation !== 'Dirección no especificada'">
+                        <!-- Mostrar dirección completa (incluye Lat/Lng si viene así) -->
+                        {{ sellerLocation }}
+                    </p>
+                    <p class="address-text" *ngIf="!sellerLocation || sellerLocation === 'Dirección no especificada'">
+                        Dirección detallada no proporcionada.
+                    </p>
+                    <!-- Línea separada para coordenadas si las pudimos parsear -->
+                    <p class="coords-line" *ngIf="sellerCoords && sellerCoords.length === 2">
+                        <i class="fas fa-map-marker-alt"></i> {{ sellerCoords[0] | number:'1.6-6' }}, {{ sellerCoords[1]
+                        | number:'1.6-6' }}
+                    </p>
+                </div>
+
+                <!-- Bloque Info (Municipio, Departamento, Clima) -->
+                <div class="location-info-grid">
+                    <div class="info-box municipality-box" *ngIf="sellerMunicipality">
+                        <span class="info-box-title">Municipio</span>
+                        <span class="info-box-value">
+                            <i class="fas fa-map-pin"></i> {{ sellerMunicipality }}
+                        </span>
+                    </div>
+                    <div class="info-box department-box" *ngIf="sellerDepartment">
+                        <span class="info-box-title">Departamento</span>
+                        <span class="info-box-value">
+                            <i class="fas fa-map-pin"></i> {{ sellerDepartment }}
+                        </span>
+                    </div>
+                    <div class="info-box climate-box"
+                        *ngIf="sellerClimateTag && sellerClimateTag !== 'Clima no especificado'">
+                        <span class="info-box-title">Clima</span>
+                        <span class="info-box-value">
+                            <i class="fas fa-thermometer-half"></i> {{ sellerClimateTag }}
+                            <!-- Usar la variable correcta -->
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Contenedor del Mapa -->
+                <div class="map-wrapper">
+                    <div *ngIf="isBrowser" #mapContainer id="map" class="leaflet-map-container styled-map">
+                        <div *ngIf="!isMapInitialized" class="map-loading-placeholder">
+                            Cargando mapa...
+                        </div>
+                    </div>
+                    <div *ngIf="!isBrowser" class="map-ssr-placeholder">
+                        El mapa interactivo solo está disponible en el navegador.
+                    </div>
+                </div>
+
+            </div> <!-- Fin location-main-card -->
+
+
+
+        </section>
+        <!-- ========= FIN SECCIÓN UBICACIÓN (NUEVO ESTILO) ========= -->
+
+
+    </div> <!-- ============== FIN de info-column ============== -->
+    <app-login-prompt *ngIf="showLoginPrompt" (closeModal)="closeLoginPrompt()" [modalTitle]="loginPromptTitle"
+        [modalMessage]="loginPromptMessage">
+    </app-login-prompt>
+</div> <!-- ============== FIN de product-detail-container ============== -->

@@ -12,34 +12,34 @@ export const inicioRouter: Routes = [
                 loadComponent: () =>
                     import('../landing/components/inicio/inicio.component').then(m => m.InicioComponent)
             },
-             {
-                path: 'zonas',  
+            {
+                path: 'zonas',
                 loadComponent: () =>
-                    import('../landing/components/zonas-shared/zonas-shared.component') 
+                    import('../features/visualization/components/zonas-shared/zonas-shared.component')
                         .then(m => m.ZonasSharedComponent),
-                data: { mode: 'public' }  
+                data: { mode: 'public' }
             },
 
-            // {
-            //     path: 'scene/:zoneId',
-            //     loadComponent: () => import('../../../users/layaut/three/scene/scene.component')
-            //         .then(m => m.SceneComponent),
-            //     data: { mode: 'public' }  
-            // },
-            // {
-            //     path: 'productos',  
-            //     loadComponent: () =>
-            //         import('../../../users/layaut/products/products.component') 
-            //             .then(m => m.ProductsComponent),
-            //     data: { mode: 'public' },  
-            // },
-            // {
-            //     path: 'detalleProducto/:id', 
-            //     loadComponent: () =>
-            //         import('../../../users/layaut/products/detalle-products/detalle-products.component') 
-            //             .then(m => m.DetalleProductsComponent),
-            //     data: { mode: 'public' }  
-            // },
+            {
+                path: 'scene/:zoneId',
+                loadComponent: () => import('../features/visualization/components/world-viewer/world-viewer.component')
+                    .then(m => m.WorldViewerComponent),
+                data: { mode: 'public' }
+            },
+            {
+                path: 'productos',
+                loadComponent: () =>
+                    import('../features/admin/components/products/products.component')
+                        .then(m => m.ProductsComponent),
+                data: { mode: 'public' },
+            },
+            {
+                path: 'detalleProducto/:id',
+                loadComponent: () =>
+                    import('../features/admin/components/products/detalle-products/detalle-products.component')
+                        .then(m => m.DetalleProductsComponent),
+                data: { mode: 'public' }
+            },
 
 
         ]

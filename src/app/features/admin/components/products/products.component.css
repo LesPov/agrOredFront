@@ -1,0 +1,347 @@
+/* --- ESTILOS GENERALES --- */
+/* ... (tu CSS existente) ... */
+
+.products-container {
+    padding: 16px;
+    font-family: Arial, sans-serif;
+}
+
+.loading,
+.error {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.1em;
+    color: #555;
+}
+
+.error {
+    color: red;
+}
+
+.products-header {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.products-header h2 {
+    flex-grow: 1;
+    text-align: center;
+    margin: 0 10px;
+}
+
+.bx-chevron-left {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.search-bar {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto 16px auto;
+}
+
+.search-bar input {
+    width: 100%;
+    padding: 10px 40px 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.search-bar i {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+    font-size: 1.3em;
+    cursor: pointer;
+}
+
+.category-chips {
+    display: flex
+    ;
+        gap: 8px;
+        margin-bottom: 20px;
+        justify-content: center;
+        flex-direction: row;
+}
+
+.chip {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background: #f8f8f8;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    font-size: 0.9em;
+    color: #555;
+}
+
+.chip.active,
+.chip:hover {
+    background: #e9f5e9;
+    border-color: #b8dcb8;
+    color: #1a7431;
+}
+
+.toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-left: 5px;
+    padding-right: 5px;
+    align-items: center;
+}
+
+.tool-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #333;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.tool-btn i {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.tool-btn:hover {
+    background-color: #f5f5f5;
+    border-color: #bbb;
+}
+
+/* --- ESTILOS DE GRID Y TARJETA --- */
+
+.product-grid {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+}
+
+.product-card {
+    display: flex;
+    align-items: flex-start;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: visible;
+    position: relative;
+    padding: 12px;
+    gap: 12px;
+    border: 1px solid #eee;
+    cursor: pointer; /* Añadido para indicar que la card es clickeable */
+    transition: box-shadow 0.2s ease, border-color 0.2s ease; /* Suavizar hover/selected */
+}
+
+/* --- Estilo para el hover de la tarjeta completa --- */
+.product-card:hover {
+    border-color: #ccc; /* Opcional: borde más visible en hover */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* Sombra más pronunciada */
+}
+
+/* --- Estilo para la tarjeta seleccionada (controlado por Angular) --- */
+.product-card.selected {
+    border-color: #28a745; /* Borde verde cuando está seleccionada */
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2); /* Sombra con tinte verde */
+}
+
+
+.image {
+    height: 100px;
+    width: 100px;
+    flex-shrink: 0;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    position: relative;
+}
+
+.product-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+    border-radius: 8px;
+}
+
+.product-img[src=""] {
+    opacity: 0;
+}
+
+.badge {
+    position: absolute;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #fff;
+    z-index: 2;
+    text-transform: capitalize;
+    line-height: 1.2;
+}
+
+.badge-video {
+    bottom: 12px;
+    left: 12px;
+    background: #ffc2c2;
+    color: #d14848;
+    border: 1px solid #d14848;
+}
+
+.badge-3d {
+    bottom: 12px;
+    left: calc(12px + 58px + 5px); /* Ajustar según ancho real del badge-video */
+    background: #b3e8fdbc;
+    color: #3a819d;
+    border: 1px solid #3a819d;
+}
+
+/* --- Contenedor de Información del Producto --- */
+.product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+    gap: 4px;
+}
+
+.product-info h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 2px 0;
+    line-height: 1.3;
+    color: #333; /* Color por defecto */
+    transition: color 0.2s ease; /* <<<--- AÑADIDO: Transición suave para el color */
+}
+
+/* --- NUEVO: Estilo para H3 en hover de la card O si la card está seleccionada --- */
+.product-card:hover .product-info h3,
+.product-card.selected .product-info h3 {
+    color: #28a745; /* <<<--- CAMBIO: Color verde en hover/selected */
+}
+
+
+/* --- Subtítulo / Descripción (Truncado) --- */
+.subtitle {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    min-height: 2.1em;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 4px 0;
+}
+
+.rating i {
+    font-size: 0.9rem;
+    line-height: 1;
+}
+
+.rating .bxs-star,
+.rating .bxs-star-half {
+    color: #ffc107;
+}
+
+.rating .bx-star {
+    color: #e0e0e0;
+}
+
+.rating .review-count {
+    margin-left: 6px;
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.datails { /* Asumo que es .details */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 4px;
+}
+
+.image-price {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #28a745;
+    line-height: 1.2;
+}
+
+.details-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.details-btn:hover {
+    background-color: #218838;
+}
+
+.details-btn i {
+    font-size: 1.1em;
+}
+
+/* --- Icono Corazón --- */
+.favorite-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.4rem;
+    color: #ff7b7b;
+    cursor: pointer;
+    z-index: 5;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.favorite-icon:hover {
+    color: #ff4d4d;
+    transform: scale(1.1);
+}
+
+.favorite-icon.active {
+    color: #e74c3c;
+}
+
+/* ... (resto de estilos como .campiamigo-badge, .producer, etc. si los usas) ... */

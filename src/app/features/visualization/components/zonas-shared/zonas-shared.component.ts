@@ -4,12 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { forkJoin } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { CampiAmigoZonesService, ZoneData } from '../../../features/campiamigo/services/campiAmigoZones.service';
-import { TerritorySceneService } from '../../services/territory-scene.service';
- import { CampiAmigoProductsService, Product as ProductData  } from '../../../features/campiamigo/services/campiAmigoProducts.service';
-import { LoginPromptComponent } from '../../../shared/components/login-prompt/login-prompt.component';
- 
+import { environment } from '../../../../../environments/environment';
+import { CampiAmigoZonesService, ZoneData } from '../../../campiamigo/services/campiAmigoZones.service';
+import { TerritorySceneService } from '../../../../landing/services/territory-scene.service';
+import { CampiAmigoProductsService, Product as ProductData } from '../../../campiamigo/services/campiAmigoProducts.service';
+import { LoginPromptComponent } from '../../../../shared/components/login-prompt/login-prompt.component';
+
 interface ExtendedZoneData extends ZoneData {
   productosPrincipales?: string[];
 }
@@ -21,7 +21,7 @@ interface AggregatedZone {
 }
 @Component({
   selector: 'app-zonas-shared',
-  imports: [ CommonModule, FormsModule, DecimalPipe, UpperCasePipe, TitleCasePipe, LoginPromptComponent],
+  imports: [CommonModule, FormsModule, DecimalPipe, UpperCasePipe, TitleCasePipe, LoginPromptComponent],
   templateUrl: './zonas-shared.component.html',
   styleUrl: './zonas-shared.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -135,8 +135,8 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     this.zoneLoaded = {};
     this.isZonePreloading = {};
     if (this.territoryServiceInitialized) {
-        this.territoryService.clearModels();
-        this.territoryService.stopAnimation();
+      this.territoryService.clearModels();
+      this.territoryService.stopAnimation();
     }
   }
 
@@ -192,11 +192,11 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.aggregatedZones.length > 0) {
       this.selectedZone = this.aggregatedZones[0];
       Object.keys(this.zoneLoaded).forEach(id => this.zoneLoaded[Number(id)] = false);
-       // Intentar inicializar base Y comenzar precarga DESPUÉS de seleccionar zona inicial
-       setTimeout(async () => {
+      // Intentar inicializar base Y comenzar precarga DESPUÉS de seleccionar zona inicial
+      setTimeout(async () => {
         await this.initializeTerritoryServiceBase(); // Intenta init base
         this.startPreloadingQueue(zonesToPreloadCandidates); // Inicia precarga
-       }, 50); // Pequeño delay
+      }, 50); // Pequeño delay
     } else {
       this.selectedZone = null;
     }
@@ -211,18 +211,18 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
   selectZone(agg: AggregatedZone): void {
     if (this.selectedZone?.zone.id === agg.zone.id) {
       if (this.zoneHasModels(agg.zone) && this.zoneModelsReady[agg.zone.id] && !this.zoneLoaded[agg.zone.id]) {
-         this.onZoneCanvasClick();
+        this.onZoneCanvasClick();
       }
       return;
     }
     console.log("Selecting zone:", agg.zone.name);
     if (this.selectedZone && this.zoneLoaded[this.selectedZone.zone.id]) {
-        this.zoneLoaded[this.selectedZone.zone.id] = false;
+      this.zoneLoaded[this.selectedZone.zone.id] = false;
     }
     if (this.territoryServiceInitialized) {
-        this.territoryService.stopAnimation();
-        // Considerar NO limpiar modelos aquí, dejar que la precarga/clic lo maneje
-        // this.territoryService.clearModels();
+      this.territoryService.stopAnimation();
+      // Considerar NO limpiar modelos aquí, dejar que la precarga/clic lo maneje
+      // this.territoryService.clearModels();
     }
     this.selectedZone = agg;
     this.zoneLoaded[agg.zone.id] = false;
@@ -231,45 +231,45 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Iniciar precarga si es necesario (priorizar esta zona)
     if (this.zoneHasModels(agg.zone) && !this.zoneModelsReady[agg.zone.id] && !this.isZonePreloading[agg.zone.id] && !this.isZoneLoading[agg.zone.id]) {
-        console.log(`[Select] Prioritizing preload for: ${agg.zone.name}`);
-        // Quitar de la cola si ya estaba para añadirla al principio
-        this.preloadQueue = this.preloadQueue.filter(z => z.id !== agg.zone.id);
-        this.preloadQueue.unshift(agg.zone); // Poner al principio
-        if (!this.isPreloadingActive) {
-            this.startPreloadingQueue([]); // Inicia proceso si no está activo
-        }
+      console.log(`[Select] Prioritizing preload for: ${agg.zone.name}`);
+      // Quitar de la cola si ya estaba para añadirla al principio
+      this.preloadQueue = this.preloadQueue.filter(z => z.id !== agg.zone.id);
+      this.preloadQueue.unshift(agg.zone); // Poner al principio
+      if (!this.isPreloadingActive) {
+        this.startPreloadingQueue([]); // Inicia proceso si no está activo
+      }
     }
     // Asegurar que la base 3D esté lista
-     if (!this.territoryServiceInitialized && this.mainZoneCanvasRef) {
-         this.initializeTerritoryServiceBase();
-     }
+    if (!this.territoryServiceInitialized && this.mainZoneCanvasRef) {
+      this.initializeTerritoryServiceBase();
+    }
   }
 
   private async initializeTerritoryServiceBase(): Promise<boolean> {
     const canvasElement = this.mainZoneCanvasRef?.nativeElement;
     if (this.territoryServiceInitialized || !canvasElement || !canvasElement.isConnected) {
-        return this.territoryServiceInitialized;
+      return this.territoryServiceInitialized;
     }
     console.log("Initializing Base 3D Service...");
     try {
-        await this.ensureCanvasIsReady(canvasElement);
-        await this.territoryService.init(canvasElement, this.baseAssetUrl);
-        this.territoryServiceInitialized = true;
-        console.log("Base 3D Service Initialized.");
-        return true;
+      await this.ensureCanvasIsReady(canvasElement);
+      await this.territoryService.init(canvasElement, this.baseAssetUrl);
+      this.territoryServiceInitialized = true;
+      console.log("Base 3D Service Initialized.");
+      return true;
     } catch (error) {
-        console.error("Error initializing Base 3D Service:", error);
-        this.territoryServiceInitialized = false;
-        return false;
+      console.error("Error initializing Base 3D Service:", error);
+      this.territoryServiceInitialized = false;
+      return false;
     }
   }
 
   private startPreloadingQueue(initialZones: ExtendedZoneData[]): void {
     // Añade solo las que no estén ya en la cola
     initialZones.forEach(zone => {
-        if (!this.preloadQueue.some(queuedZone => queuedZone.id === zone.id)) {
-            this.preloadQueue.push(zone);
-        }
+      if (!this.preloadQueue.some(queuedZone => queuedZone.id === zone.id)) {
+        this.preloadQueue.push(zone);
+      }
     });
 
     if (!this.isPreloadingActive && this.preloadQueue.length > 0) {
@@ -280,13 +280,13 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private processNextInPreloadQueue(): void {
-      if (this.preloadQueue.length === 0 || !this.isPreloadingActive) {
-        this.isPreloadingActive = false;
-        console.log("Preload queue finished or stopped.");
-        return;
-      }
-      const zoneToPreload = this.preloadQueue.shift()!;
-      this.processPreloadQueueItem(zoneToPreload);
+    if (this.preloadQueue.length === 0 || !this.isPreloadingActive) {
+      this.isPreloadingActive = false;
+      console.log("Preload queue finished or stopped.");
+      return;
+    }
+    const zoneToPreload = this.preloadQueue.shift()!;
+    this.processPreloadQueueItem(zoneToPreload);
   }
 
   // =========================================
@@ -301,16 +301,16 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     if (!this.zoneHasModels(zoneToPreload)) {
-        this.zoneModelsReady[zoneId] = true; // Listo porque no hay nada que cargar
-        console.log(`[Preload] Skipping ${zoneToPreload.name} (No models)`);
-        if (this.isPreloadingActive) setTimeout(() => this.processNextInPreloadQueue(), 50);
-        return;
+      this.zoneModelsReady[zoneId] = true; // Listo porque no hay nada que cargar
+      console.log(`[Preload] Skipping ${zoneToPreload.name} (No models)`);
+      if (this.isPreloadingActive) setTimeout(() => this.processNextInPreloadQueue(), 50);
+      return;
     }
 
     this.isZonePreloading[zoneId] = true;
     console.log(`[Preload] Starting: ${zoneToPreload.name} (ID: ${zoneId})`);
     if (this.selectedZone?.zone.id === zoneId) {
-       this.cdRef.detectChanges(); // Ocultar icono si estaba visible
+      this.cdRef.detectChanges(); // Ocultar icono si estaba visible
     }
 
     try {
@@ -330,24 +330,24 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
 
       // Actualizar UI si sigue siendo la zona seleccionada (Mostrar icono)
       if (this.selectedZone?.zone.id === zoneId) {
-          console.log(`[Preload] Updating UI for active zone: ${zoneToPreload.name}`);
-          this.cdRef.detectChanges();
+        console.log(`[Preload] Updating UI for active zone: ${zoneToPreload.name}`);
+        this.cdRef.detectChanges();
       }
 
     } catch (error) {
       console.error(`[Preload] Failed: ${zoneToPreload.name}:`, error);
       this.zoneModelsReady[zoneId] = false; // Marcar como no listo
       if (this.selectedZone?.zone.id === zoneId) {
-         this.cdRef.detectChanges(); // Actualizar UI aunque falle
+        this.cdRef.detectChanges(); // Actualizar UI aunque falle
       }
     } finally {
       this.isZonePreloading[zoneId] = false; // Termina intento de precarga
       // Continuar con la cola
       if (this.isPreloadingActive) {
-          setTimeout(() => this.processNextInPreloadQueue(), 100); // Pausa un poco mayor
+        setTimeout(() => this.processNextInPreloadQueue(), 100); // Pausa un poco mayor
       }
     }
-}
+  }
 
 
   // ==================================
@@ -364,16 +364,16 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // 1. Validaciones
     if (!this.zoneHasModels(clickedZone)) {
-       this.toastr.info('Modelo 3D no disponible.', 'Info');
-       return;
+      this.toastr.info('Modelo 3D no disponible.', 'Info');
+      return;
     }
     if (this.zoneLoaded[clickedZoneId]) {
-        if (!this.territoryService.isAnimating()) this.territoryService.startAnimation();
-        return;
+      if (!this.territoryService.isAnimating()) this.territoryService.startAnimation();
+      return;
     }
     if (this.isZoneLoading[clickedZoneId] || this.isZonePreloading[clickedZoneId]) {
-       this.toastr.info('Modelo 3D preparándose...', 'Espere', { timeOut: 1500 });
-       return;
+      this.toastr.info('Modelo 3D preparándose...', 'Espere', { timeOut: 1500 });
+      return;
     }
 
     // 2. Asegurar Canvas y Base 3D
@@ -400,17 +400,17 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
         this.territoryService.onResize(canvasElement); // Ajustar tamaño
         this.territoryService.startAnimation();      // Animar
         console.log(`[Click/Ready] Animation started instantly for ${clickedZone.name}.`);
-         // OPCIONAL: Podríamos verificar si el modelo activo en el servicio *realmente*
-         // coincide con clickedZone. Si no, cargaríamos aquí, pero intentemos
-         // confiar en la precarga primero para máxima velocidad.
+        // OPCIONAL: Podríamos verificar si el modelo activo en el servicio *realmente*
+        // coincide con clickedZone. Si no, cargaríamos aquí, pero intentemos
+        // confiar en la precarga primero para máxima velocidad.
 
       } catch (error) {
-          // Este catch es menos probable ahora, pero por seguridad
-          console.error(`[Click/Ready] Error showing/animating model for ${clickedZone.name}:`, error);
-          this.toastr.error("Error al mostrar el modelo 3D.", "Error");
-          this.zoneLoaded[clickedZoneId] = false; // Revertir
-          // No necesariamente marcar como !ready, podría ser un error de animación
-          this.cdRef.detectChanges();
+        // Este catch es menos probable ahora, pero por seguridad
+        console.error(`[Click/Ready] Error showing/animating model for ${clickedZone.name}:`, error);
+        this.toastr.error("Error al mostrar el modelo 3D.", "Error");
+        this.zoneLoaded[clickedZoneId] = false; // Revertir
+        // No necesariamente marcar como !ready, podría ser un error de animación
+        this.cdRef.detectChanges();
       }
       // ***** FIN CORRECCIÓN CLAVE *****
 
@@ -447,7 +447,7 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
       this.zoneLoaded[zoneId] = false;
       this.zoneModelsReady[zoneId] = false;
       this.cdRef.detectChanges();
-     }
+    }
   }
 
   // ==================================
@@ -461,57 +461,57 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
       attempts++;
     }
     if (!canvasElement.clientWidth || !canvasElement.clientHeight) {
-        console.error("Canvas sigue sin dimensiones después de esperar.");
-        throw new Error("Canvas has zero dimensions after timeout.");
+      console.error("Canvas sigue sin dimensiones después de esperar.");
+      throw new Error("Canvas has zero dimensions after timeout.");
     }
-     console.log("Canvas ready with dimensions:", canvasElement.clientWidth, "x", canvasElement.clientHeight);
+    console.log("Canvas ready with dimensions:", canvasElement.clientWidth, "x", canvasElement.clientHeight);
   }
 
   public zoneHasModels(zone: ZoneData | ExtendedZoneData | null): boolean {
-     return !!(zone?.modelPath?.trim() || zone?.titleGlb?.trim());
+    return !!(zone?.modelPath?.trim() || zone?.titleGlb?.trim());
   }
 
   public getZoneImageUrl(zone: ZoneData | null): string {
     if (!zone) return this.defaultZoneImage;
     let filename = zone.cityImage?.trim();
     if (filename) {
-        try {
-            const baseUrl = this.baseAssetUrl.endsWith('/') ? this.baseAssetUrl : this.baseAssetUrl + '/';
-            return `${baseUrl}uploads/zones/images/${encodeURIComponent(filename)}`;
-        } catch (e) {
-            console.error(`Error creando URL para imagen '${filename}':`, e);
-            return this.defaultZoneImage;
-        }
+      try {
+        const baseUrl = this.baseAssetUrl.endsWith('/') ? this.baseAssetUrl : this.baseAssetUrl + '/';
+        return `${baseUrl}uploads/zones/images/${encodeURIComponent(filename)}`;
+      } catch (e) {
+        console.error(`Error creando URL para imagen '${filename}':`, e);
+        return this.defaultZoneImage;
+      }
     }
     return this.defaultZoneImage;
-   }
+  }
 
-   public getZoneClimateClass(climate?: ZoneData['climate'] | string): string {
-        if (!climate) return 'other';
-        const cl = climate.toLowerCase().trim();
-        if (cl === 'frio' || cl === 'frío') return 'cold';
-        if (cl === 'calido' || cl === 'cálido' || cl === 'templado') return 'hot';
-        return 'other';
+  public getZoneClimateClass(climate?: ZoneData['climate'] | string): string {
+    if (!climate) return 'other';
+    const cl = climate.toLowerCase().trim();
+    if (cl === 'frio' || cl === 'frío') return 'cold';
+    if (cl === 'calido' || cl === 'cálido' || cl === 'templado') return 'hot';
+    return 'other';
+  }
+
+  public getZoneClimateText(climate?: ZoneData['climate'] | string): string {
+    if (!climate) return 'N/A';
+    const cl = climate.toLowerCase().trim();
+    if (cl === 'frio' || cl === 'frío') return 'Frío';
+    if (cl === 'calido' || cl === 'cálido') return 'Cálido';
+    if (cl === 'templado') return 'Templado';
+    return climate.charAt(0).toUpperCase() + climate.slice(1).toLowerCase();
+  }
+
+  public onImgError(event: Event): void {
+    const element = event.target as HTMLImageElement;
+    if (element && element.src !== this.defaultZoneImage) {
+      console.warn(`Error cargando imagen: ${element.src}. Usando fallback.`);
+      element.src = this.defaultZoneImage;
     }
+  }
 
-    public getZoneClimateText(climate?: ZoneData['climate'] | string): string {
-        if (!climate) return 'N/A';
-        const cl = climate.toLowerCase().trim();
-        if (cl === 'frio' || cl === 'frío') return 'Frío';
-        if (cl === 'calido' || cl === 'cálido') return 'Cálido';
-        if (cl === 'templado') return 'Templado';
-        return climate.charAt(0).toUpperCase() + climate.slice(1).toLowerCase();
-    }
-
-   public onImgError(event: Event): void {
-     const element = event.target as HTMLImageElement;
-     if (element && element.src !== this.defaultZoneImage) {
-       console.warn(`Error cargando imagen: ${element.src}. Usando fallback.`);
-       element.src = this.defaultZoneImage;
-     }
-   }
-
-     // *** MÉTODO ORIGINAL DE NAVEGACIÓN (ahora llamado por handleExploreClick en modo privado) ***
+  // *** MÉTODO ORIGINAL DE NAVEGACIÓN (ahora llamado por handleExploreClick en modo privado) ***
   private navigateToScene(aggregated: AggregatedZone): void {
     // La validación de aggregated.zone.id ya se hizo en handleExploreClick
     this.router.navigate(
@@ -532,72 +532,72 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
 
-   goBack(): void { this.location.back(); }
-   openFilterModal(): void { this.filterModalOpen = true; this.cdRef.markForCheck(); }
-   closeFilterModal(): void { this.filterModalOpen = false; this.cdRef.markForCheck(); }
+  goBack(): void { this.location.back(); }
+  openFilterModal(): void { this.filterModalOpen = true; this.cdRef.markForCheck(); }
+  closeFilterModal(): void { this.filterModalOpen = false; this.cdRef.markForCheck(); }
 
-   applyFilter(): void {
-     const nameQuery = this.filterName.trim().toLowerCase();
-     const tipoQuery = this.filterTipoZona;
-     this.aggregatedZones = this.allAggregatedZones.filter(agg => {
-         const z = agg.zone;
-         const nameMatch = nameQuery ? z.name.toLowerCase().includes(nameQuery) : true;
-         const typeMatch = tipoQuery ? z.tipoZona === tipoQuery : true;
-         return nameMatch && typeMatch;
-     });
+  applyFilter(): void {
+    const nameQuery = this.filterName.trim().toLowerCase();
+    const tipoQuery = this.filterTipoZona;
+    this.aggregatedZones = this.allAggregatedZones.filter(agg => {
+      const z = agg.zone;
+      const nameMatch = nameQuery ? z.name.toLowerCase().includes(nameQuery) : true;
+      const typeMatch = tipoQuery ? z.tipoZona === tipoQuery : true;
+      return nameMatch && typeMatch;
+    });
 
-      const selectedStillVisible = this.selectedZone && this.aggregatedZones.some(agg => agg.zone.id === this.selectedZone?.zone.id);
-      if (!selectedStillVisible) {
-          const newSelected = this.aggregatedZones.length > 0 ? this.aggregatedZones[0] : null;
-           if (this.selectedZone?.zone.id !== newSelected?.zone.id) {
-              if (newSelected) { this.selectZone(newSelected); }
-              else {
-                 if (this.selectedZone && this.zoneLoaded[this.selectedZone.zone.id]) { this.zoneLoaded[this.selectedZone.zone.id] = false; }
-                 if (this.territoryServiceInitialized) { this.territoryService.stopAnimation(); }
-                 this.selectedZone = null;
-              }
-           }
+    const selectedStillVisible = this.selectedZone && this.aggregatedZones.some(agg => agg.zone.id === this.selectedZone?.zone.id);
+    if (!selectedStillVisible) {
+      const newSelected = this.aggregatedZones.length > 0 ? this.aggregatedZones[0] : null;
+      if (this.selectedZone?.zone.id !== newSelected?.zone.id) {
+        if (newSelected) { this.selectZone(newSelected); }
+        else {
+          if (this.selectedZone && this.zoneLoaded[this.selectedZone.zone.id]) { this.zoneLoaded[this.selectedZone.zone.id] = false; }
+          if (this.territoryServiceInitialized) { this.territoryService.stopAnimation(); }
+          this.selectedZone = null;
+        }
       }
+    }
 
-     if (this.aggregatedZones.length === 0 && this.allAggregatedZones.length > 0) {
-         this.toastr.info('No se encontraron zonas con esos filtros.', 'Sin Resultados');
-     }
-     this.closeFilterModal();
-     this.cdRef.detectChanges();
-     this.startPreloadingQueue( this.aggregatedZones.map(agg => agg.zone).filter(z => this.zoneHasModels(z) && !this.zoneModelsReady[z.id]));
-   }
-
-   resetFilter(): void {
-     this.filterName = ''; this.filterTipoZona = '';
-     this.aggregatedZones = [...this.allAggregatedZones];
-     if (!this.selectedZone && this.aggregatedZones.length > 0) {
-         this.selectZone(this.aggregatedZones[0]);
-     } else { this.cdRef.detectChanges(); }
-     this.closeFilterModal();
-     this.startPreloadingQueue( this.aggregatedZones.map(agg => agg.zone).filter(z => this.zoneHasModels(z) && !this.zoneModelsReady[z.id]));
-   }
- // *** MÉTODO INTERMEDIARIO PARA EL BOTÓN "EXPLORAR EN 3D" ***
- public handleExploreClick(): void {
-  if (!this.selectedZone) {
-    this.toastr.warning('Por favor, selecciona una zona primero.', 'Acción no disponible');
-    return;
+    if (this.aggregatedZones.length === 0 && this.allAggregatedZones.length > 0) {
+      this.toastr.info('No se encontraron zonas con esos filtros.', 'Sin Resultados');
+    }
+    this.closeFilterModal();
+    this.cdRef.detectChanges();
+    this.startPreloadingQueue(this.aggregatedZones.map(agg => agg.zone).filter(z => this.zoneHasModels(z) && !this.zoneModelsReady[z.id]));
   }
-  if (!this.selectedZone.zone.id) {
+
+  resetFilter(): void {
+    this.filterName = ''; this.filterTipoZona = '';
+    this.aggregatedZones = [...this.allAggregatedZones];
+    if (!this.selectedZone && this.aggregatedZones.length > 0) {
+      this.selectZone(this.aggregatedZones[0]);
+    } else { this.cdRef.detectChanges(); }
+    this.closeFilterModal();
+    this.startPreloadingQueue(this.aggregatedZones.map(agg => agg.zone).filter(z => this.zoneHasModels(z) && !this.zoneModelsReady[z.id]));
+  }
+  // *** MÉTODO INTERMEDIARIO PARA EL BOTÓN "EXPLORAR EN 3D" ***
+  public handleExploreClick(): void {
+    if (!this.selectedZone) {
+      this.toastr.warning('Por favor, selecciona una zona primero.', 'Acción no disponible');
+      return;
+    }
+    if (!this.selectedZone.zone.id) {
       this.toastr.error('La zona seleccionada no tiene un ID válido.');
       return;
-  }
+    }
 
-  console.log(`handleExploreClick - Modo actual: ${this.currentMode}`);
+    console.log(`handleExploreClick - Modo actual: ${this.currentMode}`);
 
-  if (this.currentMode === 'public') {
-    // Modo Público: Mostrar el modal
-    console.log('Modo público detectado, abriendo modal...');
-    this.openLoginPromptModal();
-  } else {
-    // Modo Privado: Navegar como antes
-    console.log('Modo privado detectado, navegando a la escena...');
-    this.navigateToScene(this.selectedZone);
+    if (this.currentMode === 'public') {
+      // Modo Público: Mostrar el modal
+      console.log('Modo público detectado, abriendo modal...');
+      this.openLoginPromptModal();
+    } else {
+      // Modo Privado: Navegar como antes
+      console.log('Modo privado detectado, navegando a la escena...');
+      this.navigateToScene(this.selectedZone);
+    }
   }
-}
 }
 // FIN DEL CODIGO: zone.component.ts

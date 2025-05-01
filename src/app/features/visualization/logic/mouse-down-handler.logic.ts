@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { CameraService } from './camera-terrain.logic';
-import { ModeloPisoService } from '../models/floor.model';
+ import { ModeloPisoService } from '../models/floor.model';
+import { CameraService } from '../services/camera.service';
 
 
 /**
