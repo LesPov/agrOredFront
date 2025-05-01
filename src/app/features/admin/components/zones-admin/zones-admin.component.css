@@ -1,0 +1,432 @@
+.btn {
+    width: 100%;
+    padding: 12px;
+    background: #50b9ff;
+    color: #2c3e50;
+    border: none;
+    border-radius: 8px; 
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+/* Estilo para botón en hover */
+.btn:hover {
+    background: #2980b9;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para botón deshabilitado */
+.btn:disabled {
+    background: grey;
+    cursor: not-allowed;
+}
+
+/* El botón para cambiar imagen */
+.btn-upload {
+    background: #50b9ff;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 8px;
+    position: absolute;
+    top: 210px;
+    right: 140px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-upload:hover {
+    background: #2980b9;
+}
+
+.dropdown-list {
+    list-style: none;
+    padding: 0;
+    max-width: 500px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+/* Estilos para cada item de la lista */
+.dropdown-list li {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Último item sin borde */
+.dropdown-list li:last-child {
+    border-bottom: none;
+}
+
+/* Estilo para el título de cada opción */
+summary {
+    position: relative;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    padding: 15px 20px;
+    font-size: 18px;
+    user-select: none;
+    outline: none;
+    transition: background-color 0.3s;
+    /* Remueve el marcador de lista (Firefox) */
+    list-style: none;
+}
+
+summary:hover {
+    background-color: #eaeaea;
+}
+
+/* Oculta el marcador predeterminado en navegadores basados en WebKit */
+summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Oculta el marcador predeterminado en Firefox */
+summary::marker {
+    display: none;
+}
+
+/* Flecha a la derecha utilizando pseudo-elemento */
+summary::after {
+    content: '\25BA';
+    /* Flecha a la derecha */
+    position: absolute;
+    right: 20px;
+    font-size: 16px;
+    transition: transform 0.3s;
+}
+
+/* Cuando se expande la opción, la flecha rota */
+details[open] summary::after {
+    transform: rotate(90deg);
+}
+
+/* Contenido de cada opción desplegable */
+.update-profile-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 15px;
+    position: relative;
+}
+
+/* user-summary.component.css */
+.user-summary-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 15px;
+}
+
+.back-btn {
+    background: transparent;
+    cursor: pointer;
+    color: #2c3e50;
+    top: -5px;
+    left: 20px;
+    position: absolute;
+}
+
+.back-btn i {
+    margin-right: 0.5rem;
+    font-size: 2.5rem;
+}
+
+.card {
+    margin-top: 30px;
+    list-style: none;
+    padding: 0;
+    max-width: 500px;
+    border-radius: 8px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    overflow: hidden;
+    margin-bottom: 200px;
+}
+
+.card-header {
+    position: relative;
+    text-align: center;
+    background-color: #f7f7f7;
+    padding: 20px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.cardtwo {
+    margin-top: 30px;
+    list-style: none;
+    padding: 0;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: -1px 6px 5px 0px rgb(0 0 0 / 22%);
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.cardtwo-header {
+    position: relative;
+    text-align: center;
+    background-color: #f7f7f7;
+    padding: 20px;
+}
+
+.cardtwo-body {
+    padding: 20px;
+}
+
+.profile-img {
+    width: 120px;
+    height: 120px;
+    margin-top: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+
+
+
+/* Estilos del formulario */
+form {
+    width: 100%;
+    max-width: 450px;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Grupos y etiquetas */
+.group {
+    margin-bottom: 1.2rem;
+}
+
+.lbl {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.input {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    font-size: 1rem;
+    background: #f1f1f1;
+    transition: all 0.3s ease;
+}
+
+.input:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+.input::placeholder {
+    color: #bdc3c7;
+}
+
+
+
+.loading,
+.error {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+}
+
+/* Estilos para la vista de tabla */
+
+.zones-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.zones-table th,
+.zones-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.zones-table th {
+    background-color: #50b9ff;
+    color: white;
+    font-weight: bold;
+}
+
+.zones-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.loading,
+.error,
+.no-data {
+    text-align: center;
+    padding: 10px;
+    font-size: 1rem;
+}
+
+/* Contenedor para el botón de filtro y el contador */
+.filter-counter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 0 30px;
+}
+/* Opcional: Ajusta el contenedor del preview para centrar contenido */
+.zone-image-preview {
+    text-align: center;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-item {
+    margin-bottom: 1rem;
+}
+/* Estilo para la imagen de vista previa de la zona */
+.img-preview {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor para los íconos */
+.icon-container {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    right: 90px;
+    display: flex;
+    background: #50b9ff;
+    font-size: 1.8rem;
+    color: #fff;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 8px;
+    text-align: center;
+}
+.icon-container label{
+
+    cursor: pointer;
+}
+
+.counter-container {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Estilos del modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    text-align: center;
+}
+
+.button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-table th,
+  .user-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .user-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  .btn-action {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #3498db;
+  }
+
+  
+  .dropdown-menu {
+    position: fixed; /* Cambiamos a fixed para que se posicione respecto a la ventana */
+    background-color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 5px 0;
+    min-width: 150px;
+    border: 1px solid #e0e0e0;
+    transform: translateX(-62%) translateY(-46px);
+
+    z-index: 99999; /* Z-index muy alto para asegurar que esté por encima de todo */
+  }
+  .dropdown-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .dropdown-menu li {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.3s;
+  }
+  
+  .dropdown-menu li:last-child {
+    border-bottom: none;
+  }
+  
+  .dropdown-menu li:hover {
+    background-color: #f1f1f1;
+  }
+  

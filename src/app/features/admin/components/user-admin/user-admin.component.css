@@ -1,0 +1,584 @@
+.pdf-download {
+    text-align: center;
+    margin-top: 70px;
+    width: 100%;
+    position: fixed;
+    left: 0;
+  
+  }
+  
+  .pdf-download button { 
+    cursor: pointer;
+    background: #e77733;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  /* Estilos para la vista de tabla */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+  
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .user-table th,
+  .user-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .user-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .table-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .table-view-button {
+    background: #232949;
+    border: none;
+    padding: 5px 10px;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .table-view-button:hover {
+    background: #0056b3;
+  }
+  
+  /* Estilos para los controles de paginación */
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    left: 0;
+    width: 100%;
+    margin-top: 20px;
+    position: fixed;
+  }
+  
+  .pagination-controls button {
+    padding: 5px 10px;
+    border: none;
+    background: #232949;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .pagination-controls button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+  
+  
+  /* Estilos para la imagen dentro del contenedor */
+  .card1 .imgbx img {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    object-position: center;
+    border-radius: 15px;
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 170px;
+    justify-content: center;
+    overflow-x: auto;
+  
+  }
+  
+  .view-toggle {
+    border-radius: 5px;
+    background: none;
+    color: #000000;
+    font-size: 16px;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  /* Estilos para el badge de status */
+  .status-badge {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    color: #fff;
+    /* Texto en blanco para buen contraste */
+  }
+  
+  /* Clases para colores según el status */
+  .status-activado {
+    background-color: #28a745;
+    /* Verde para activado */
+  }
+  
+  .status-desactivado {
+    background-color: #dc3545;
+    /* Rojo para desactivado */
+  }
+  
+  .status-default {
+    background-color: #6c757d;
+    /* Gris para valores por defecto */
+  }
+  
+  /* Estilos para el grupo de checkboxes en el modal */
+  .checkbox-group {
+    margin-top: 5px;
+  }
+  
+  .checkbox-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  /* Estilos base */
+  .container_zona {
+    padding: 25px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+  
+  }
+  
+  /* Ocultar la barra de scroll en Chrome, Safari y Opera */
+  .container_zona::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .container_zona p {
+    font-size: 25px;
+    font-weight: bold;
+  }
+  
+  .cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-bottom: 100px;
+    overflow-x: auto;
+  
+  }
+  
+  .input {
+    width: 100%;
+    height: 35px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .card1 {
+    position: relative;
+    width: 320px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
+    margin: 0px 40px;
+  }
+  
+  .card1 .imgbx {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    border-radius: 15px;
+    background-size: cover;
+    box-shadow: 0 0 3px #717171;
+  }
+  
+  .card1 .user-id {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    z-index: 2;
+  }
+  
+  .card1 .imgbx::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: -10px 10px 0 #fff;
+  }
+  
+  .card1 .imgbx::after {
+    content: '';
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: -10px 10px 0 #fff;
+  }
+  
+  .card1 .content {
+    position: absolute;
+    width: 100%;
+    bottom: 50px;
+    height: 100px;
+    background: #d5d5d5;
+    border-radius: 15px;
+  }
+  
+  .card1 .content .btn {
+    position: absolute;
+    top: -80px;
+    height: 80px;
+    width: 50%;
+    border-top: 10px solid #fff;
+    border-right: 10px solid #fff;
+    border-top-right-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .card1 .content .btn::before {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: -10px -10px 0 #fff;
+    top: 0;
+    left: 0;
+  }
+  
+  .card1 .content .btn::after {
+    content: "";
+    position: absolute;
+    bottom: 10px;
+    right: 0px;
+    width: 25px;
+    transform: rotateZ(0deg);
+    height: 25px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: 10px 10px #fff;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+  
+    50% {
+      transform: scale(1.1);
+    }
+  
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .card1 .content .btn .button {
+    background: #232949;
+    padding: 10px 20px;
+    border-radius: 10px;
+    margin-top: 7px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+  }
+  
+  .card1 .content .btn .button i {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-left: 10px;
+    color: white;
+  }
+  
+  .card1 .content .btn .button .txt {
+    position: relative;
+    font-family: sans-serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    overflow: hidden;
+    color: #d5d5d5;
+    font-weight: 900;
+  }
+  
+  .info-list ul {
+    list-style: none;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .info-list ul li {
+    padding: 5px 20px;
+    font-weight: 100;
+    font-size: 12px;
+  }
+  
+  .info-list ul li.name {
+    padding: 5px 10px;
+    text-align: start;
+    font-weight: 900;
+    font-size: 1.2em;
+    color: #000;
+  }
+  
+  .info-list ul li.campiamigos,
+  .info-list ul li.productos {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+    margin-left: 5px;
+    color: #fff;
+    font-weight: 200;
+  }
+  
+  .info-list ul li.campiamigos .icon,
+  .info-list ul li.productos .icon {
+    font-size: 1.2em;
+  }
+  
+  /* Botón de Filtrar */
+  .filter-button {
+    border-radius: 5px;
+    background: none;
+    color: #000000;
+    font-size: 16px;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  /* Estilos para el modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+  }
+  
+  .filter-field {
+    margin-bottom: 15px;
+  }
+  
+  .filter-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .filter-field input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  /* Botones del modal */
+  .modal-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .modal-actions button:first-child {
+    background: #000;
+    /* Fondo azul para el botón Aceptar */
+    color: #fff;
+  }
+  
+  .modal-actions button:first-child:hover:not(:disabled) {
+    background: #0056b3;
+  
+  }
+  
+  .modal-actions button:first-child:disabled {
+    background: #000;
+    /* Azul claro para estado deshabilitado */
+    cursor: not-allowed;
+    color: #000;
+  
+  }
+  
+  .modal-actions button:last-child {
+    background: #ccc;
+    color: #000;
+  }
+  
+  /* Media Query (Pantallas < 400px de ancho) */
+  @media (max-width: 380px) {
+    .container_zona {
+      padding: 40px 10px;
+    }
+  
+    .container_zona p {
+      font-size: 18px;
+    }
+  
+    .cards {
+      gap: 16px;
+      margin-bottom: 80px;
+    }
+  
+    .card1 {
+      width: 256px;
+      height: 320px;
+      margin: 0px 32px;
+      margin-bottom: 120px;
+    }
+  
+    .card1 .imgbx {
+      height: 192px;
+    }
+  
+    .card1 .imgbx::before {
+      width: 16px;
+      height: 16px;
+      box-shadow: -8px 8px 0 #fff;
+    }
+  
+    .card1 .imgbx::after {
+      bottom: 56px;
+      width: 16px;
+      height: 16px;
+      box-shadow: -8px 8px 0 #fff;
+    }
+  
+    .card1 .content {
+      height: 120px;
+    }
+  
+    .card1 .content .btn {
+      top: -64px;
+      height: 64px;
+      border-top: 8px solid #fff;
+      border-right: 8px solid #fff;
+      border-top-right-radius: 20px;
+    }
+  
+    .card1 .content .btn::before {
+      width: 20px;
+      height: 20px;
+      box-shadow: -8px -8px 0 #fff;
+    }
+  
+    .card1 .content .btn::after {
+      right: -20px;
+      width: 20px;
+      height: 20px;
+      box-shadow: -8px 8px 0 #d5d5d5;
+    }
+  
+    .card1 .content .btn .button {
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+  
+    .card1 .content .btn .button i {
+      font-size: 1.2em;
+    }
+  
+    .card1 .content .btn .button .txt {
+      font-size: 14px;
+      letter-spacing: 3px;
+    }
+  
+    .info-list ul {
+      margin: 8px 0 0 0;
+      gap: 8px;
+    }
+  
+    .info-list ul li {
+      padding: 4px 8px;
+    }
+  
+    .info-list ul li.name {
+      font-size: 1em;
+    }
+  
+    .info-list ul li.campiamigos,
+    .info-list ul li.productos {
+      font-size: 0.8em;
+    }
+  
+    .info-list ul li.campiamigos .icon,
+    .info-list ul li.productos .icon {
+      font-size: 1em;
+    }
+  }

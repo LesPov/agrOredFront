@@ -1,10 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { authService } from '../../services/auths';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { authService } from '../../services/auths';
 
 @Component({
   selector: 'app-email',

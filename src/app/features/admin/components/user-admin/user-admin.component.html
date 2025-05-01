@@ -1,0 +1,123 @@
+<div class="container_zona">
+    <p>Usuarios</p>
+    <!-- Botón de Filtrar sin borde, solo texto -->
+    <div class="header-actions">
+      <button class="filter-button" (click)="openFilterModal()">
+        Filtrar <i class='bx bx-filter'></i>
+      </button>
+      <button class="view-toggle" (click)="toggleView()">
+        <i class='bx bx-detail'></i>
+        {{ viewMode === 'card' ? 'Tabla' : 'Tarjetas' }}
+      </button>
+    </div>
+  
+    <!-- Modal de filtrado -->
+    <div class="modal-overlay" *ngIf="showFilterModal">
+      <div class="modal-content">
+        <h2>Filtrar Usuarios</h2>
+        <div class="filter-field">
+          <label>ID:</label>
+          <input type="text" [(ngModel)]="filterId">
+        </div>
+        <div class="filter-field">
+          <label>Username:</label>
+          <input type="text" [(ngModel)]="filterUsername">
+        </div>
+        <div class="filter-field">
+          <label>Email:</label>
+          <input type="text" [(ngModel)]="filterEmail">
+        </div>
+        <div class="filter-field">
+          <label>Rol:</label>
+          <select [(ngModel)]="filterRol" class="input">
+            <option value="">Seleccione un rol</option>
+            <option value="client">Cliente</option>
+            <option value="campesino">Campesino</option>
+            <option value="admin">Administrador</option>
+            <option value="todos">Todos</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <!-- El botón "Aceptar" se activa solo si se ingresa algún criterio -->
+          <button (click)="applyFilter()" [disabled]="!isFilterValid()">Aceptar</button>
+          <button (click)="closeFilterModal()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Vista de tarjetas -->
+    <div *ngIf="viewMode === 'card'" class="cards">
+      <div class="card1" *ngFor="let user of users">
+        <div class="imgbx">
+          <img [src]="getImageUrl(user.userProfile.profilePicture)" alt="Imagen de {{ user.username }}">
+          <div class="status-badge" [ngClass]="getStatusClass(user.status)">
+            {{ user.status }}
+          </div>
+        </div>
+        <div class="content">
+          <span class="btn">
+            <!-- El botón "Ver" redirige al componente de detalle -->
+            <button class="button" [routerLink]="['/admin/user-summary', user.id]">
+              <p class="txt">Ver</p>
+              <i class="bx bx-chevron-right bx-burst"></i>
+            </button>
+          </span>
+          <div class="info-list">
+            <ul>
+              <div class="user-id">Id: {{ user.id }}</div>
+              <li class="name">Nombre: {{ user.username }}</li>
+              <li>Email: {{ user.email }}</li>
+              <li>Rol: {{ user.rol }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Vista de tabla -->
+    <!-- Vista de tabla -->
+    <div *ngIf="viewMode === 'table'" class="table-container">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Imagen</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Status</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of paginatedUsers">
+            <td>{{ user.id }}</td>
+            <td>
+              <img [src]="getImageUrl(user.userProfile.profilePicture)" alt="Imagen de {{ user.username }}"
+                class="table-image">
+            </td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.rol }}</td>
+            <td>
+              <span [ngClass]="getStatusClass(user.status)">{{ user.status }}</span>
+            </td>
+            <td>
+              <button class="table-view-button" [routerLink]="['/admin/user-summary', user.id]">Ver</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+  
+      <!-- Controles de paginación -->
+      <div class="pagination-controls">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">Anterior</button>
+        <span>Página {{ currentPage }} de {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">Siguiente</button>
+      </div>
+  
+      <!-- Botón para descargar PDF -->
+      <div class="pdf-download">
+        <button (click)="downloadPdf()">Descargar PDF</button>
+      </div>
+    </div>

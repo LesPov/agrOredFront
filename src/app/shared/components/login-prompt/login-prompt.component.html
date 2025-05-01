@@ -1,0 +1,14 @@
+<div class="login-prompt-backdrop" (click)="close()">
+    <div class="login-prompt-content" (click)="$event.stopPropagation()">
+      <button class="close-button" (click)="close()" aria-label="Cerrar modal">×</button>
+      <!-- Usa el Input para el título -->
+      <h2>{{ modalTitle }}</h2>
+      <!-- Usa el Input para el mensaje -->
+      <p>{{ modalMessage }}</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" (click)="goToLogin()">Iniciar Sesión</button>
+        <button class="btn btn-secondary" (click)="goToRegister()">Registrarme</button>
+        <button class="btn btn-tertiary" (click)="close()">Cancelar</button>
+      </div>
+    </div>
+  </div>

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { authService } from '../../services/auths';
-import { ActivatedRoute, Router } from '@angular/router';
+ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http'; 
 import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { authService } from '../../services/auths';
 
 @Component({
   selector: 'app-number',

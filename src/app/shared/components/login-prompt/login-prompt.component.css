@@ -1,0 +1,112 @@
+.login-prompt-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    /* Asegura que esté por encima */
+}
+
+.login-prompt-content {
+    background-color: white;
+    padding: 25px 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+}
+
+.login-prompt-content h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #15803d;
+    font-size: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.login-prompt-content h2::before {
+    border-radius: 8px;
+    content: " ";
+    width: 80px;
+    position: absolute;
+    height: 4px;
+    background: #59e297;
+    margin-top: 30px;
+
+}
+
+.login-prompt-content p {
+    margin-bottom: 25px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.modal-actions .btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+}
+
+.modal-actions .btn-primary {
+    background-color: var(--primary-color, #28a745);
+    /* Usa tu variable si existe */
+    color: white;
+}
+
+.modal-actions .btn-primary:hover {
+    background-color: var(--primary-hover-color, #218838);
+}
+
+.modal-actions .btn-secondary {
+    background-color: var(--secondary-color, #6c757d);
+    color: white;
+}
+
+.modal-actions .btn-secondary:hover {
+    background-color: var(--secondary-hover-color, #5a6268);
+}
+
+.modal-actions .btn-tertiary {
+    background-color: #f8f9fa;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.modal-actions .btn-tertiary:hover {
+    background-color: #e2e6ea;
+}
+
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-button:hover {
+    color: #333;
+}

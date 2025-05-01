@@ -1,0 +1,58 @@
+<div class="container_zona">
+    <h2>Zonas</h2>
+    <div class="cards" *ngIf="aggregatedZones.length; else noZones">
+      <div *ngFor="let aggregated of aggregatedZones; let i = index" class="card1">
+        
+        <!-- Overlay condicional -->
+        <div *ngIf="!canViewModel(aggregated.zone)" class="overlay">
+          <!-- Puedes personalizar el mensaje o contenido que desees mostrar -->
+          <p class="overlay-text">Zona Inactiva</p>
+        </div>
+  
+        <!-- Imagen de la zona -->
+        <div class="imgbx">
+          <img [src]="getZoneImage(aggregated.zone)" 
+               alt="{{ aggregated.zone.name }}"
+               [attr.fetchpriority]="i === 0 ? 'high' : 'auto'"
+               width="320" height="210">
+        </div>
+        
+        <!-- Contenido de la tarjeta -->
+        <div class="content">
+          <span class="btn"> 
+            <button class="button" (click)="viewScene(aggregated)">
+              <p class="txt">Ver</p>
+              <i class='bx bx-chevron-right bx-burst'></i>
+            </button>
+          </span>
+          <div class="info-list">
+            <ul>
+              <li class="name">{{ aggregated.zone.name }}</li>
+              <li class="departamento">
+                <span class="icon"><i class="bx bx-building"></i></span>
+                <span class="text">{{ aggregated.zone.departamentoName }}</span>
+              </li>
+              <li class="campiamigos">
+                <span class="icon"><i class="bx bxs-city"></i></span>
+                <span class="text">{{ aggregated.zone.tipoZona }}</span>
+              </li>
+              <li class="infoZone">
+                <span class="icon"><i class="bx bx-cloud"></i></span>
+                <span class="text">
+                  {{ aggregated.zone.climate === 'calido' ? 'Clima Cálido' : 'Clima Frío' }}
+                </span>
+              </li>
+              <li class="counter">
+                <span class="icon"><i class="bx bx-group"></i></span>
+                <span class="text">{{ aggregated.count }} Campiamigo(s)</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noZones>
+      <p>No se encontraron zonas para el clima seleccionado.</p>
+    </ng-template>
+  </div>
+  

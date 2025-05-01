@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr'; 
 import { authService } from '../../services/auths';
-
+ 
 @Component({
   selector: 'app-verify-number',
   imports: [CommonModule, FormsModule],

@@ -5,13 +5,27 @@ export const inicioRouter: Routes = [
     {
         path: 'inicio',
         loadComponent: () =>
-            import('../landing/layouts/body-inicio/body-inicio.component').then(m => m.BodyInicioComponent), 
+            import('../landing/layouts/body-inicio/body-inicio.component').then(m => m.BodyInicioComponent),
         children: [
             {
-                path: '', 
+                path: '',
                 loadComponent: () =>
-                    import('../landing/components/inicio/inicio.component').then(m => m.InicioComponent) 
+                    import('../landing/components/inicio/inicio.component').then(m => m.InicioComponent)
             },
+             {
+                path: 'zonas',  
+                loadComponent: () =>
+                    import('../landing/components/zonas-shared/zonas-shared.component') 
+                        .then(m => m.ZonasSharedComponent),
+                data: { mode: 'public' }  
+            },
+
+            // {
+            //     path: 'scene/:zoneId',
+            //     loadComponent: () => import('../../../users/layaut/three/scene/scene.component')
+            //         .then(m => m.SceneComponent),
+            //     data: { mode: 'public' }  
+            // },
             // {
             //     path: 'productos',  
             //     loadComponent: () =>
@@ -26,21 +40,8 @@ export const inicioRouter: Routes = [
             //             .then(m => m.DetalleProductsComponent),
             //     data: { mode: 'public' }  
             // },
-            //  {
-            //     path: 'zonas',  
-            //     loadComponent: () =>
-            //         import('../../../users/layaut/three/zone/zone.component') 
-            //             .then(m => m.ZoneComponent),
-            //     data: { mode: 'public' }  
-            // },
-            
-            // {
-            //     path: 'scene/:zoneId',
-            //     loadComponent: () => import('../../../users/layaut/three/scene/scene.component')
-            //         .then(m => m.SceneComponent),
-            //     data: { mode: 'public' }  
-            // },
-          
+
+
         ]
     }
 ];

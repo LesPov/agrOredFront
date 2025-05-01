@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { inicioRouter } from './landing/landing.routes';
 import { authenticationRoutes } from './features/auth/routes/auth.router';
+import { adminRouter } from './features/admin/routes/admin.routes';
 
 export const routes: Routes = [
     ...inicioRouter,
     ...authenticationRoutes,
-    // ...adminRouter,
+    ...adminRouter,
     // ...userRouter,
     // ...campiamigoRouter,
     { path: 'loading', loadComponent: () => import('./shared/components/loading/loading.component').then(m => m.LoadingComponent) },

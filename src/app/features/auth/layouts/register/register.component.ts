@@ -3,9 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { auth } from '../../interfaces/auth';
-import { authService } from '../../services/auths';
-import { CommonModule, Location } from '@angular/common';
+ import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { authService } from '../../services/auths';
 
 @Component({
   selector: 'app-register',

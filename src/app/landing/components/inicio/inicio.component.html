@@ -90,8 +90,7 @@
               <h3>{{ activeTerritoryZone.name | uppercase }}</h3>
               <span class="region">{{ activeTerritoryZone.departamentoName | uppercase }}</span>
             </div>
-            <a class="link-detail">Ver detalles</a>
-          </div>
+            <a class="link-detail" (click)="openLoginPromptModal()" role="button" style="cursor: pointer;">Ver detalles</a>          </div>
           <p class="card-desc">
             {{ activeTerritoryZone.description || 'Descripción no disponible.' }}
           </p>
@@ -528,3 +527,10 @@
   <!-- ==================================== -->
 
 </div> <!-- Fin dashboard-container -->
+  <!-- *** AÑADE EL MODAL DE LOGIN AQUÍ *** -->
+  <app-login-prompt
+    *ngIf="showLoginModal"
+    (closeModal)="closeLoginPromptModal()">
+  </app-login-prompt>
+  
+  <!-- FIN DEL CODIGO: zone.component.html -->

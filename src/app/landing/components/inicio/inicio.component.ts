@@ -19,6 +19,10 @@ import { Swiper } from 'swiper';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { CommonModule } from '@angular/common';
 import { BotInfoService } from '../../../features/admin/services/botInfo.service';
+import { LoginPromptComponent } from '../../../shared/components/login-prompt/login-prompt.component';
+interface ExtendedZoneData extends ZoneData {
+  productosPrincipales?: string[];
+}
 
 // --- Interface Definition ---
 interface DisplayProductInicio extends Product {
@@ -31,11 +35,15 @@ interface DisplayProductInicio extends Product {
   originalPrice?: number;
   ratingCount?: number;
 }
-
+interface AggregatedZone {
+  zone: ExtendedZoneData;
+  count: number;
+  campiamigoIds: number[];
+}
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule,LoginPromptComponent],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.css',
 })
@@ -86,7 +94,10 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly defaultProductImage = 'assets/img/default-product.png';
   private readonly defaultTerritoryImage = 'assets/img/default-zone.png';
   private readonly baseAssetUrl = environment.endpoint.endsWith('/') ? environment.endpoint : environment.endpoint + '/';
-
+  public showLoginModal: boolean = false;
+  selectedZone: AggregatedZone | null = null;
+  public currentMode: 'public' | 'private' = 'private'; // Por defecto privado (más seguro)
+ 
   private territoryObserver: IntersectionObserver | null = null;
   private productSwiperInstance: Swiper | null = null;
   private productServiceInitialized = false;
@@ -456,5 +467,44 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   private async ensureCanvasIsReady(canvasElement: HTMLCanvasElement): Promise<void> { let attempts = 0; const maxAttempts = 10; const delay = 50; while ((!canvasElement.clientWidth || !canvasElement.clientHeight) && attempts < maxAttempts) { await new Promise(resolve => setTimeout(resolve, delay)); attempts++; } if (!canvasElement.clientWidth || !canvasElement.clientHeight) { console.error("Canvas dimensions not valid after waiting.", canvasElement); throw new Error("Canvas no tiene dimensiones válidas después de esperar."); } }
   public closeModal(): void { this.showModal = false; this.cdRef.detectChanges(); }
   public goToAllProducts(): void { this.router.navigate(['/inicio/productos']); }
+ // *** MÉTODOS PARA MANEJAR EL MODAL ***
+ public openLoginPromptModal(): void {
+  this.showLoginModal = true;
+  this.cdRef.detectChanges(); // Importante con OnPush
+}
 
+public closeLoginPromptModal(): void {
+  this.showLoginModal = false;
+  this.cdRef.detectChanges(); // Importante con OnPush
+}
+public handleExploreClick(): void {
+  if (!this.selectedZone) {
+    this.toastr.warning('Por favor, selecciona una zona primero.', 'Acción no disponible');
+    return;
+  }
+  if (!this.selectedZone.zone.id) {
+      this.toastr.error('La zona seleccionada no tiene un ID válido.');
+      return;
+  }
+
+  console.log(`handleExploreClick - Modo actual: ${this.currentMode}`);
+
+  if (this.currentMode === 'public') {
+    // Modo Público: Mostrar el modal
+    console.log('Modo público detectado, abriendo modal...');
+    this.openLoginPromptModal();
+  } else {
+    // Modo Privado: Navegar como antes
+    console.log('Modo privado detectado, navegando a la escena...');
+    this.navigateToScene(this.selectedZone);
+  }
+}
+     // *** MÉTODO ORIGINAL DE NAVEGACIÓN (ahora llamado por handleExploreClick en modo privado) ***
+     private navigateToScene(aggregated: AggregatedZone): void {
+      // La validación de aggregated.zone.id ya se hizo en handleExploreClick
+      this.router.navigate(
+        ['/user/estaciones/scene', aggregated.zone.id], // Ruta privada
+        { queryParams: { count: aggregated.count, campiamigoIds: JSON.stringify(aggregated.campiamigoIds) } }
+      );
+    }
 } // Fin Clase InicioComponent

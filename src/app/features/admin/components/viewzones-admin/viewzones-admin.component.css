@@ -1,0 +1,350 @@
+ /* ================================
+   Estilos Base (Pantallas ≥ 400px de ancho)
+   ================================ */
+   .container_zona {
+    padding:  10px;
+    height: 100%;
+    display: flex
+  ;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+  }
+  
+  .container_zona h2{
+    font-size: 30px;
+    font-weight: bold;
+    padding: 8px;
+  }
+  
+  .cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+    padding-bottom: 100px;
+  }
+  
+  .card1 {
+    position: relative;
+    width: 320px;
+    height: 420px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1;
+    margin: 0px 40px;
+    margin-bottom: 20px;
+  }
+  
+  .card1 .imgbx {
+    position: relative;
+    width: 100%;
+    height: 210px;
+    border-radius: 15px;
+    background-size: cover;
+    box-shadow: 0 0 3px #717171;
+  }
+  
+  .img-pasca {
+    background: url('/assets/img/pasca.jpg') no-repeat center/cover;
+  }
+  
+  .card1 .imgbx::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: -10px 10px 0 #fff;
+  }
+  
+  .card1 .imgbx::after {
+    content: '';
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: -10px 10px 0 #fff;
+  }
+  
+  .card1 .content {
+    position: relative;
+    width: 100%;
+    top: 10px;
+    height: 210PX;
+    background: #232949;
+    border-radius: 15px;
+    border-top-left-radius: 0;
+  }
+  /* Overlay para las zonas sin video ni modelo */
+.card1 .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 102%;
+  background-color: rgba(0, 0, 0, 0.759); /* Fondo oscuro semitransparente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;  /* Se coloca sobre los elementos base de la tarjeta */
+  border-radius: 15px;
+}
+
+
+.card1 .overlay .overlay-text {
+  color: #ff5500;
+    font-size: 25px;
+    font-weight: bold;
+    max-width: 110px;
+    text-align: center;
+}
+
+  .card1 .content .btn {
+    position: absolute;
+    top: -80px;
+    height: 80px;
+    width: 50%;
+    background: #232949;
+    border-top: 10px solid #fff;
+    border-right: 10px solid #fff;
+    border-top-right-radius: 25px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .card1 .content .btn::before {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: -10px -10px 0 #fff;
+    top: 0;
+    left: 0;
+  }
+  
+  .card1 .content .btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -25px;
+    width: 25px;
+    height: 25px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: -10px 10px 0 #232949;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+  
+    50% {
+      transform: scale(1.1);
+    }
+  
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .card1 .content .btn .button {
+    background: #d5c934;
+    padding: 10px ;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+  }
+  
+  .card1 .content .btn .button i {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin-left: 10px;
+  }
+  
+  .card1 .content .btn .button .txt {
+    position: relative;
+    font-family: sans-serif;
+    font-size: 18px;
+    letter-spacing: 4px;
+    overflow: hidden;
+    color: #232949;
+    font-weight: 900;
+  }
+  
+  .info-list ul {
+    list-style: none;
+    margin: 10px 0 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .info-list ul li {
+    padding: 5px 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+    margin-left: 5px;
+    color: #fff;
+    font-weight: 200;
+  }
+  
+  .info-list ul li.name {
+    text-align: center;
+    font-weight: medium;
+    font-size: 1.2em;
+    color: #fff;
+  }
+  
+  .info-list ul li.campiamigos,
+  .info-list ul li.infoZone {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9em;
+    margin-left: 5px;
+    color: #fff;
+    font-weight: 200;
+  }
+  
+  .info-list ul li.campiamigos .icon,
+  .info-list ul li.infoZone .icon {
+    font-size: 1.2em;
+  }
+  
+  /* ================================
+     Media Query (Pantallas < 400px de ancho)
+     Se escala la card al 80% de las medidas originales
+     ================================ */
+  @media (max-width: 380px) {
+    .container_zona {
+      padding: 40px 10px;
+    }
+  
+    .container_zona p {
+      font-size: 18px;
+    }
+  
+    .cards {
+      gap: 16px;
+      margin-bottom: 80px;
+    }
+  
+    /* .card1 {
+      width: 256px;
+      height: 320px;
+      margin: 0px 32px;
+      margin-bottom: 120px;
+    }
+  
+    .card1 .imgbx {
+      height: 192px;
+    }
+  
+    .card1 .imgbx::before {
+      width: 16px;
+      height: 16px;
+      box-shadow: -8px 8px 0 #fff;
+    }
+  
+    .card1 .imgbx::after {
+      bottom: 56px;
+      width: 16px;
+      height: 16px;
+      box-shadow: -8px 8px 0 #fff;
+    }
+  
+    .card1 .content {
+      height: 120px;
+    }
+  
+    .card1 .content .btn {
+      top: -64px;
+      height: 64px;
+      border-top: 8px solid #fff;
+      border-right: 8px solid #fff;
+      border-top-right-radius: 20px;
+    }
+  
+    .card1 .content .btn::before {
+      width: 20px;
+      height: 20px;
+      box-shadow: -8px -8px 0 #fff;
+    }
+  
+    .card1 .content .btn::after {
+      right: -20px;
+      width: 20px;
+      height: 20px;
+      box-shadow: -8px 8px 0 #232949;
+    }
+  
+    .card1 .content .btn .button {
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+  
+    .card1 .content .btn .button i {
+      font-size: 1.2em;
+    }
+  
+    .card1 .content .btn .button .txt {
+      font-size: 14px;
+      letter-spacing: 3px;
+    }
+  
+    .info-list ul {
+      margin: 8px 0 0 0;
+      gap: 8px;
+    }
+  
+    .info-list ul li {
+      padding: 4px 8px;
+    }
+  
+    .info-list ul li.name {
+      font-size: 1em;
+    }
+  
+    .info-list ul li.campiamigos,
+    .info-list ul li.infoZone {
+      font-size: 0.8em;
+    }
+  
+    .info-list ul li.campiamigos .icon,
+    .info-list ul li.infoZone .icon {
+      font-size: 1em;
+    } */
+  }

@@ -1,0 +1,305 @@
+<!-- Overlay de carga -->
+<div *ngIf="showOverlay" class="loading-overlay">
+    <video #loadingVideo autoplay muted preload="auto" (ended)="onVideoEnded()" class="loading-video">
+      <source [src]="zoneVideoSource" type="video/mp4">
+      Tu navegador no soporta el elemento de video.
+    </video>
+    <button *ngIf="zoneActive && modelsLoaded" class="btn-ver" (click)="onViewModel()">Ver Modelo</button>
+  </div>
+  
+  <!-- Contenedor de Three.js -->
+  <div #rendererContainer class="renderer-container" [class.hidden]="showOverlay"></div>
+  
+  <!-- Botón para animar el sol -->
+  <div class="botonsol" (click)="toggleSunAnimation()">
+    <i *ngIf="sunRotating; else sunIcon" class='bx bxs-brightness-half'></i>
+    <ng-template #sunIcon>
+      <i class='bx bxs-sun'></i>
+    </ng-template>
+  </div>
+  
+  <!-- Botón de edición (solo para administradores) -->
+  <div class="future-button" *ngIf="isAdmin" (click)="onFutureButtonClick()">
+    <i *ngIf="!editMode; else editIcon" class='bx bxs-edit-location'></i>
+    <ng-template #editIcon>
+      <i class='bx bxs-edit'></i>
+    </ng-template>
+  </div>
+  
+  <!-- Menú inferior con lista dinámica de indicadores -->
+  <div class="bottom-menu" [class.expanded]="isExpanded">
+    <div class="menu-header" (click)="toggleMenu()">
+      <i [class]="isExpanded ? 'bx bx-exit-fullscreen' : 'bx bx-target-lock'"></i>
+    </div>
+    <div class="menu-content">
+      <!-- ESTA PARTE NO CAMBIA -->
+      <button *ngFor="let indicator of indicatorData; let i = index" (click)="goToIndicator(i)">
+        {{ indicator.firstName || 'Sin nombre' }} {{ indicator.lastName || '' }}
+      </button>
+      <!-- FIN ESTA PARTE NO CAMBIA -->
+    </div>
+  </div>
+  
+  <!-- Modal para mostrar información completa (Perfil y Productos) -->
+  <div class="modal" *ngIf="modalVisible">
+    <div class="modal-content">
+  
+      <div *ngIf="modalIndicatorData as data">
+  
+        <!-- Encabezado con foto y nombre -->
+        <ng-container *ngIf="data.userProfile; let profile">
+          <div class="profile-header">
+            <!-- Botón Cerrar en la esquina -->
+            <span class="close" (click)="closeModal()">&times;</span>
+            <!-- Imagen de perfil y nombre -->
+            <img [src]="getFullProfileImageUrl(profile?.profilePicture)" alt="Foto de Perfil" class="profile-img" />
+            <div>
+              <h2>{{ profile?.firstName }} {{ profile?.lastName }}</h2>
+              <!-- dentro de tu <div class="profile-header"> … -->
+              <div class="profile-badges">
+                <!-- Badge de estado (aprobado/pendiente/rechazado) -->
+                <ng-container *ngIf="getStatusBadge(profile.status) as s">
+                  <span class="badge" [ngStyle]="{ 'background-color': s.bg, 'color': s.fg }">
+                    {{ s.label }}
+                  </span>
+                </ng-container>
+  
+                <!-- Badges de tags -->
+                <span class="badge badge-tag" *ngFor="let tag of profile.tags || []; trackBy: trackByTagId" [ngStyle]="{
+        'background-color': tag.color,
+        'color': getContrastColor(tag.color)
+      }">
+                  {{ tag.name }}
+                </span>
+              </div>
+  
+  
+            </div>
+          </div>
+        </ng-container>
+  
+        <!-- Pestañas -->
+        <div class="modal-tabs">
+          <button [class.active]="activeTab === 'perfil'" (click)="activeTab = 'perfil'">
+            Perfil
+          </button>
+          <button [class.active]="activeTab === 'productos'" (click)="activeTab = 'productos'">
+            Productos ({{ data?.userProfile?.auth?.products?.length || 0 }})
+          </button>
+        </div>
+  
+        <div class="tab-content">
+          <!-- PESTAÑA PERFIL -->
+          <div *ngIf="activeTab === 'perfil'" class="perfil-section modern-profile-section">
+  
+            <ng-container *ngIf="data.userProfile; let profile">
+              <!-- Tarjeta: Información Personal -->
+              <div class="modern-profile-card">
+                <h3 class="profile-card-title">Información Personal</h3>
+  
+                <div class="info-row">
+                  <i class="bx bxs-user"></i>
+                  <span>
+                    <strong>Nombre Completo:</strong>
+                    {{ profile?.firstName }} {{ profile?.lastName }}
+                  </span>
+                </div>
+  
+                <div class="info-row">
+                  <i class="bx bxs-calendar"></i>
+                  <span>
+                    <strong>Fecha de Nacimiento:</strong>
+                    {{ profile?.birthDate }}
+                  </span>
+                </div>
+  
+                <div class="info-row" *ngIf="profile?.identificationNumber">
+                  <i class="bx bxs-id-card"></i>
+                  <span>
+                    <strong>Identificación:</strong>
+                    {{ profile?.identificationType }}: {{ profile?.identificationNumber }}
+                  </span>
+                </div>
+  
+                <div class="info-row">
+                  <i class="bx bxs-user-circle"></i>
+                  <span>
+                    <strong>Género:</strong>
+                    {{ profile?.gender }}
+                  </span>
+                </div>
+                <!-- Tarjeta: Biografía -->
+                <div class="modern-profile-card">
+                  <h3 class="profile-card-title">Biografía</h3>
+                  <p *ngIf="profile?.biography">{{ profile?.biography }}</p>
+                  <p *ngIf="!profile?.biography">No se ha proporcionado biografía.</p>
+                </div>
+              </div>
+  
+  
+  
+              <!-- Tarjeta: Ubicación (ejemplo de dirección y zona) -->
+              <div class="modern-profile-card" *ngIf="profile?.direccion || data.zone?.name">
+                <h3 class="profile-card-title">Ubicación</h3>
+  
+                <div class="info-row" *ngIf="profile?.direccion">
+                  <i class="bx bxs-map"></i>
+                  <span>
+                    <strong>Dirección:</strong>
+                    {{ profile?.direccion }}
+                  </span>
+                </div>
+  
+                <div class="info-row" *ngIf="data.zone?.name">
+                  <i class="bx bxs-map-pin"></i>
+                  <span>
+                    <strong>Zona:</strong>
+                    {{ data.zone?.name }}
+                  </span>
+                </div>
+              </div>
+  
+              <!-- Tarjeta: Contacto -->
+              <div class="modern-profile-card">
+                <h3 class="profile-card-title">Contacto</h3>
+  
+                <div class="info-row" *ngIf="profile?.auth?.email">
+                  <i class="bx bxs-envelope"></i>
+                  <span>
+                    <strong>Correo Electrónico:</strong>
+                    {{ profile?.auth?.email }}
+                  </span>
+                </div>
+  
+                <div class="info-row" *ngIf="profile?.auth?.phoneNumber">
+                  <i class="bx bxs-phone"></i>
+                  <span>
+                    <strong>Teléfono:</strong>
+                    {{ profile?.auth?.phoneNumber }}
+                  </span>
+                </div>
+              </div>
+  
+  
+  
+              <!-- Tarjeta: Resumen de productos -->
+              <div class="modern-profile-card">
+                <h3 class="profile-card-title">Resumen de Productos</h3>
+                <div class="info-row">
+                  <span>
+                    {{ profile?.auth?.products?.length || 0 }}
+                    <strong>Productos registrados </strong>
+  
+                  </span>
+                </div>
+                <button class="btn-details" style="margin-top: 10px;" (click)="activeTab = 'productos'">
+                  Ver Productos
+                </button>
+              </div>
+  
+            </ng-container>
+          </div>
+  
+          <!-- PESTAÑA PRODUCTOS -->
+          <div *ngIf="activeTab === 'productos'" class="productos-section">
+            <h2>Productos de {{ data?.userProfile?.firstName }}</h2>
+            <p class="productos-subtitle">Productos cultivados y elaborados por este Campesino/Campiamigo</p>
+  
+            <div *ngIf="data?.userProfile?.auth?.products?.length; else noProducts">
+              <div class="modern-product-list">
+                <div class="modern-product-card" *ngFor="let prod of data?.userProfile?.auth?.products; let i = index">
+                  <!-- Área de media con botones superpuestos -->
+                  <div class="modern-product-media">
+                    <ng-container [ngSwitch]="getMediaMode(i)">
+                      <!-- Modo Imagen -->
+                      <ng-container *ngSwitchCase="'image'">
+                        <ng-container *ngIf="prod?.image; else noImageBlock">
+                          <img [src]="getFullProductImageUrl(prod.image)" alt="{{ prod.name }}"
+                            class="modern-product-image" />
+                        </ng-container>
+                        <ng-template #noImageBlock>
+                          <div class="no-image-placeholder">
+                            <i class="bx bxs-image-alt"></i>
+                          </div>
+                        </ng-template>
+                      </ng-container>
+  
+                      <!-- Modo Video -->
+                      <ng-container *ngSwitchCase="'video'">
+                        <video width="100%" height="180" controls>
+                          <source [src]="getFullProductVideoUrl(prod.video)" type="video/mp4">
+                          Tu navegador no soporta el elemento de video.
+                        </video>
+                      </ng-container>
+  
+                      <!-- Modo 3D -->
+                      <ng-container *ngSwitchCase="'3d'">
+                        <canvas width="100%" height="180" class="modern-product-canvas">
+                          Tu navegador no soporta canvas.
+                        </canvas>
+                      </ng-container>
+                    </ng-container>
+  
+                    <!-- Botones para cambiar la vista -->
+                    <div class="media-switch-buttons">
+                      <button (click)="switchMediaView(i, 'video')">Video</button>
+                      <button (click)="switchMediaView(i, '3d', prod.glbFile)">3D</button>
+                      <button (click)="switchMediaView(i, 'image')">Imagen</button>
+                    </div>
+                  </div>
+  
+                  <!-- Información principal del producto -->
+                  <div class="modern-product-details">
+                    <div class="modern-product-header">
+                      <h4 class="modern-product-title">{{ prod.name }}</h4>
+                      <div class="modern-product-rating">
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star'></i>
+                        <i class='bx bxs-star-half'></i>
+                        <span class="rating-value">4.8</span>
+                      </div>
+                    </div>
+                    <div class="modern-product-price">
+                      ${{ prod.price }}
+                    </div>
+                    <p class="modern-product-description">
+                      {{ prod.description || 'Sin descripción' }}
+                    </p>
+                    <p class="modern-product-meta">
+                      <i class='bx bxs-map'></i>
+                    </p>
+                  </div>
+  
+                  <!-- Botones de acción -->
+                  <div class="modern-product-actions">
+                    <button class="btn-buy">Comprar</button>
+                    <button class="btn-details">Ver Detalles</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ng-template #noProducts>
+              <p>Este usuario no tiene productos registrados.</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Botón Cerrar al final, opcional -->
+      <button class="modal-close-btn" (click)="closeModal()">Cerrar</button>
+    </div>
+  </div>
+  
+  <!-- Modal para selección de color (modo edición) -->
+  <div class="modal" *ngIf="colorModalVisible">
+    <div class="modal-content">
+      <span class="close" (click)="closeColorModal()">&times;</span>
+      <h2>Selecciona un color</h2>
+      <div class="color-options">
+        <button (click)="setIndicatorColor('#ff0000')" style="background-color: #ff0000;">Rojo</button>
+        <button (click)="setIndicatorColor('#00ff00')" style="background-color: #00ff00;">Verde</button>
+        <button (click)="setIndicatorColor('#0000ff')" style="background-color: #0000ff;">Azul</button>
+      </div>
+    </div>
+  </div>

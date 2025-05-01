@@ -625,11 +625,11 @@
 
     0%,
     100% {
-        transform: scale(0.4) rotate(350deg) translateX(8px) translateY(12px);
+        transform: scale(0.8) rotate(350deg) translateX(8px) translateY(12px);
     }
 
     50% {
-        transform: scale(1.5) rotate(280deg) translateX(-65px) translateY(-70px);
+        transform: scale(1.8) rotate(280deg) translateX(-60px) translateY(-50px);
     }
 }
 
@@ -1573,12 +1573,12 @@
 }
 
 .product-carousel-container .product-swiper-button-prev {
-    left: 10px;
+    left: -5px;
     /* Ajustar si se usa padding/margin en .product-carousel */
 }
 
 .product-carousel-container .product-swiper-button-next {
-    right: 10px;
+    right: -5px;
     /* Ajustar si se usa padding/margin en .product-carousel */
 }
 

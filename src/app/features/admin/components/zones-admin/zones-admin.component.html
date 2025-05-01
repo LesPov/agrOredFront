@@ -1,0 +1,167 @@
+<div class="user-summary-container">
+    <!-- Botón para volver atrás -->
+    <button type="button" class="back-btn" (click)="goBack()">
+      <i class="bx bx-left-arrow-alt"></i>
+    </button>
+  
+    <div class="card">
+      <ul class="dropdown-list">
+        <!-- Sección: Zona (Crear/Actualizar) -->
+        <li>
+          <!-- Añade [open]="!zoneExists" si quieres que esté abierto por defecto al crear y cerrado al editar -->
+          <details #zoneDetails>
+            <summary>{{ zoneExists ? 'Editar Zona' : 'Crear Nueva Zona' }}</summary> <!-- Título dinámico -->
+            <form #zoneForm="ngForm" (ngSubmit)="createZone()">
+  
+              <!-- Imágenes: ciudad y zona -->
+              <div class="zone-image-preview">
+                <div class="preview-item">
+                  <div class="icon-container">
+                    <label for="cityImageInput" class="icon-label" title="Seleccionar imagen de ciudad">
+                      <i class="bx bx-image-add"></i>
+                    </label>
+                    <input type="file" id="cityImageInput" (change)="onCityImageSelected($event)" accept="image/*" style="display: none;">
+                  </div>
+                  <img [src]="getCityImageUrl()" alt="Previsualización Ciudad" class="img-preview">
+                </div>
+                <div class="preview-item">
+                  <div class="icon-container">
+                    <label for="zoneImageInput" class="icon-label" title="Seleccionar imagen de zona">
+                      <i class="bx bx-image-add"></i>
+                    </label>
+                    <input type="file" id="zoneImageInput" (change)="onZoneImageSelected($event)" accept="image/*" style="display: none;">
+                  </div>
+                  <img [src]="getZoneImageUrl()" alt="Previsualización Zona" class="img-preview">
+                </div>
+              </div>
+  
+              <!-- Campos de texto -->
+              <div class="group">
+                <label class="lbl" for="name">Nombre de la Zona <span class="required">*</span></label>
+                <input type="text" id="name" class="input" [(ngModel)]="zoneData.name" name="name" required placeholder="Ej: Anserma">
+              </div>
+              <div class="group">
+                <label class="lbl" for="tipoZona">Tipo de Zona <span class="required">*</span></label>
+                <select id="tipoZona" class="input" [(ngModel)]="zoneData.tipoZona" name="tipoZona" required>
+                  <option value="" disabled>Seleccione un tipo</option> <!-- Opción deshabilitada -->
+                  <option value="municipio">Municipio</option>
+                  <option value="departamento">Departamento</option>
+                  <option value="vereda">Vereda</option>
+                  <option value="ciudad">Ciudad</option>
+                </select>
+              </div>
+              <div class="group">
+                <label class="lbl" for="description">Descripción</label>
+                <textarea id="description" class="input" [(ngModel)]="zoneData.description" name="description" rows="3" placeholder="Breve descripción de la zona..."></textarea>
+              </div>
+              <div class="group">
+                <label class="lbl" for="climate">Clima</label>
+                <select id="climate" class="input" [(ngModel)]="zoneData.climate" name="climate">
+                  <option value="">(Opcional)</option> <!-- Opción para no seleccionar clima -->
+                  <option value="frio">Frío</option>
+                  <option value="calido">Cálido</option>
+                </select>
+              </div>
+              <div class="group">
+                <label class="lbl" for="departamentoName">Nombre del Departamento Asociado</label> <!-- Cambiado 'cityName' a 'departamentoName' para claridad -->
+                <input type="text" id="departamentoName" class="input" [(ngModel)]="zoneData.departamentoName" name="departamentoName" placeholder="Ej: Caldas (si aplica)">
+              </div>
+  
+              <!-- --- NUEVOS CAMPOS AÑADIDOS --- -->
+              <div class="group">
+                <label class="lbl" for="elevation">Elevación (msnm)</label>
+                <input type="number" id="elevation" class="input" [(ngModel)]="zoneData.elevation" name="elevation" placeholder="Ej: 1700 (metros sobre nivel del mar)">
+              </div>
+  
+              <div class="group">
+                <label class="lbl" for="temperature">Temperatura Promedio (°C)</label>
+                <input type="number" id="temperature" class="input" [(ngModel)]="zoneData.temperature" name="temperature" step="0.1" placeholder="Ej: 18.5"> <!-- step permite decimales -->
+              </div>
+  
+              <div class="group">
+                <label class="lbl" for="about">Acerca de la Zona</label>
+                <textarea id="about" class="input" [(ngModel)]="zoneData.about" name="about" rows="4" placeholder="Información adicional, historia, datos de interés..."></textarea>
+              </div>
+              <!-- --- FIN NUEVOS CAMPOS --- -->
+  
+              <!-- Video, modelo 3D y título -->
+              <div class="group">
+                <label class="lbl" for="videoInput">Video de la Zona (Opcional)</label>
+                <input type="file" id="videoInput" (change)="onVideoSelected($event)" accept="video/mp4,video/webm,video/ogg" class="input">
+                <div *ngIf="videoPreview" class="preview-container">
+                  <video [src]="videoPreview" controls width="300"></video>
+                  <button type="button" class="remove-file-btn" (click)="selectedVideo = null; videoPreview = null" title="Quitar video">×</button>
+                </div>
+              </div>
+              <div class="group">
+                <label class="lbl" for="modelInput">Modelo 3D (Terreno .glb/.gltf)</label>
+                <input type="file" id="modelInput" (change)="onModelFileSelected($event)" accept=".glb,.gltf" class="input">
+                <div *ngIf="modelFileName" class="file-info">
+                  <span>Archivo: {{ modelFileName }}</span>
+                  <button type="button" class="remove-file-btn" (click)="selectedModelFile = null; modelFileName = ''" title="Quitar modelo 3D">×</button>
+                </div>
+              </div>
+              <div class="group">
+                <label class="lbl" for="titleGlbInput">Título 3D (.glb/.gltf)</label>
+                <input type="file" id="titleGlbInput" (change)="onTitleGlbSelected($event)" accept=".glb,.gltf" class="input">
+                <div *ngIf="titleGlbFileName" class="file-info">
+                  <span>Archivo: {{ titleGlbFileName }}</span>
+                   <button type="button" class="remove-file-btn" (click)="selectedTitleGlb = null; titleGlbFileName = ''" title="Quitar título 3D">×</button>
+                </div>
+              </div>
+  
+              <!-- Botón de envío -->
+              <button type="submit" class="btn submit-btn" [disabled]="zoneForm.invalid">
+                {{ zoneExists ? 'Actualizar Zona' : 'Crear Zona' }}
+              </button>
+              <!-- Botón para cancelar edición (si estás editando) -->
+               <button type="button" *ngIf="zoneExists" class="btn cancel-btn" (click)="loadZone()">Cancelar Cambios</button>
+  
+            </form>
+          </details>
+        </li>
+        <!-- Sección: Listado de Zonas -->
+        <li>
+          <details open>
+            <summary>Todas las Zonas</summary>
+            <div class="filter-counter-container">
+              <div class="filter-container">
+                <button class="btn" (click)="openFilterModal()">Filtrar</button>
+              </div>
+              <div class="counter-container">
+                <span>Total: {{ filteredZones.length }}</span>
+              </div>
+            </div>
+            <div *ngIf="isZonesLoading" class="loading">Cargando zonas...</div>
+            <div *ngIf="!isZonesLoading && zonesErrorMessage" class="error">{{ zonesErrorMessage }}</div>
+            <div class="table-container">
+              <table *ngIf="!isZonesLoading && filteredZones.length > 0" class="user-table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Tipo</th>
+                    <th>Clima</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let zone of filteredZones">
+                    <td>{{ zone.name }}</td>
+                    <td>{{ zone.tipoZona }}</td>
+                    <td>{{ zone.climate || 'N/A' }}</td>
+                    <td>
+                      <button type="button" class="btn" (click)="deleteZone(zone)">Eliminar</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div *ngIf="!isZonesLoading && filteredZones.length === 0" class="no-data">
+                No se encontraron zonas que coincidan con los filtros.
+              </div>
+            </div>
+          </details>
+        </li>
+      </ul>
+   
+    </div>
+  </div>

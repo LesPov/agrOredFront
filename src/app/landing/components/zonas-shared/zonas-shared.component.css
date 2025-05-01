@@ -1,0 +1,924 @@
+/* ================================
+   Estilos Generales del Contenedor y Título
+   ================================ */
+   .container_zona {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2rem;
+    background-color: #f4f7f6;
+    /* Fondo ligeramente verde/gris */
+  }
+  
+  .container_zona .title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #2c3e50;
+    height: 60px;
+  }
+  
+  .container_zona .title .back-icon,
+  .container_zona .title .filter-icon {
+    display: inline-flex;
+    /* Para alinear bien el icono */
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    /* Hacer área clickeable más grande */
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    /* Evitar highlight en móviles */
+  }
+  
+  .container_zona .title .back-icon:hover,
+  .container_zona .title .filter-icon:hover {
+    background-color: #f1f3f5;
+    /* Gris claro al pasar el mouse */
+  }
+  
+  .container_zona .title .back-icon:focus,
+  .container_zona .title .filter-icon:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 1px;
+    background-color: #e9ecef;
+  }
+  
+  .container_zona .title .bx {
+    font-size: 1.7rem;
+    /* Iconos un poco más grandes */
+    color: #52677c;
+    /* Gris azulado */
+    vertical-align: middle;
+    /* Alinear icono */
+  }
+  
+  /* ======================================== */
+  /* NUEVO Contenedor Principal del Contenido */
+  /* ======================================== */
+  .territory-explorer-content {
+    width: 100%;
+    max-width: 1200px;
+    margin-bottom: 10rem;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+  }
+  
+  
+  /* ================================ */
+  /* Estilos Tarjeta Principal        */
+  /* ASUME que tienes estilos para    */
+  /* .main-territorio-card, .card-info */
+  /* .about-title, .product-section, */
+  /* .product-title, .product-pills,  */
+  /* .product-pill, .btn-explore-3d   */
+  /* Si no, necesitarás añadirlos     */
+  /* ================================ */
+  .main-territorio-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2.5rem;
+    overflow: hidden;
+    /* Para que el redondeo aplique al model-container */
+  }
+  
+  /* Reutiliza estilos existentes para model-container, canvas, placeholder, overlay, spinner, etc. */
+  /* Asegúrate que los estilos del overlay (territory-overlay-info) funcionen bien aquí */
+  .main-territorio-card .model-container {
+    position: relative;
+    /* Contenedor para elementos absolutos internos */
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 250px;
+    max-height: 500px;
+    background-color: #e0e0e0;
+    cursor: pointer;
+    /* *** REMOVIDO overflow: hidden; *** */
+    border-radius: 12px 12px 0 0;
+    /* Solo redondeo superior */
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .main-territorio-card .model-container canvas,
+  .main-territorio-card .model-container .placeholder-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.4s ease-in-out;
+    border-radius: inherit;
+    /* Heredar redondeo */
+  }
+  
+  .main-territorio-card .model-container canvas {
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+  }
+  
+  .main-territorio-card .model-container canvas.canvas-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .main-territorio-card .placeholder-content {
+    /* display: flex; Ya no necesario, la imagen se posiciona absolute */
+    background-color: #f0f0f0;
+    /* Fallback */
+    opacity: 1;
+    pointer-events: none;
+    /* El contenedor no necesita eventos, la imagen sí (error), el icono/spinner están fuera */
+    z-index: 6;
+    /* Encima del canvas base */
+    overflow: hidden;
+    /* *ESTE SÍ* puede tener overflow, para asegurar que la imagen no tape el icono que está *fuera* */
+    position: relative;
+    /* Para contener la imagen absoluta */
+  }
+  
+  .main-territorio-card .placeholder-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    border-radius: inherit;
+  }
+  
+  /* Estilos para el overlay de información DENTRO del model-container principal */
+  .main-territorio-card .territory-overlay-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px 20px;
+    z-index: 10;
+    pointer-events: none;
+    background: linear-gradient(to top, rgb(0 0 0) 20%, rgba(0, 0, 0, 0.3) 70%, #00000000 100%);
+    opacity: 1;
+    transition: background 0.3s ease;
+  }
+  
+  .info-item .info-content-wrapper {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .info-item .info-text-content {
+    display: flex
+    ;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        line-height: 1.2;
+  }
+  
+  /* Ajustes menores a los items dentro del overlay principal si es necesario */
+  .main-territorio-card .info-items-container {
+    display: flex;
+    gap: 15px;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    /* Mayor espacio */
+  }
+  
+  .main-territorio-card .info-item {
+    display: flex
+    ;
+        align-items: center;
+        gap: 8px;
+        color: #ffffff;
+        text-shadow: 0 0 7px rgb(255 255 255);
+        background-color: rgb(255 255 255 / 20%);
+        padding: 8px 12px;
+        border-radius: 8px;
+        backdrop-filter: blur(2px);
+    /* Efecto blur */
+  }
+  
+  .main-territorio-card .info-icon {
+    font-size: 0.8rem;
+    /* Icono más grande */
+  }
+  
+  .main-territorio-card .info-label {
+    font-size: 0.5rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  
+  .main-territorio-card .info-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  
+  
+  /* --- Icono Click Wrapper (MODIFICADO - Ahora hijo de model-container) --- */
+  .icon-click-wrapper {
+    position: absolute;
+    /* Relativo a model-container */
+    bottom: 65px;
+    left: 149px;
+    /* Misma posición visual relativa */
+    width: 50px;
+    height: 50px;
+    z-index: 8;
+    /* Encima de canvas(5) y placeholder(6) */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;
+    /* Debe ser clickeable */
+    /* border: 1px dashed blue; */
+    /* Para depurar posición */
+  }
+  
+  /* --- Icono de la Mano (Interno) --- */
+  .icon-click-wrapper .icon-click {
+    font-size: 2.5rem;
+    color: rgb(255, 255, 255);
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, -1px 0 0 #000, 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000;
+    animation: pulseSimpleHand 2s infinite ease-in-out;
+    transform-origin: center center;
+    position: relative;
+    /* Para z-index interno si fuera necesario */
+    z-index: 2;
+    /* Encima de .line-container */
+  }
+  
+  /* --- Contenedor Líneas (Interno) --- */
+  .icon-click-wrapper .line-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    /* Detrás del icono */
+    pointer-events: none;
+  }
+  
+  /* --- Estilos Líneas (::before, ::after) --- */
+  .icon-click-wrapper::before,
+  .icon-click-wrapper::after,
+  .icon-click-wrapper .line-container::before {
+    content: '';
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 2px;
+    opacity: 0;
+    /* Controlado por animación */
+    z-index: 1;
+    /* Mismo nivel que .line-container */
+    pointer-events: none;
+  }
+  
+  /* --- Posiciones y animaciones de las líneas (Sin cambios) --- */
+  .icon-click-wrapper::before {
+    width: 5px;
+    height: 20px;
+    top: 0%;
+    left: 80%;
+    transform: translate(-50%, 0);
+    transform-origin: bottom center;
+    opacity: 1;
+    animation: radiateTop 2s infinite ease-out;
+  }
+  
+  .icon-click-wrapper::after {
+    width: 20px;
+    height: 5px;
+    top: 50%;
+    left: 75%;
+    transform: translate(0, -50%);
+    transform-origin: center left;
+    opacity: 1;
+    animation: radiateRight 2s infinite ease-out;
+  }
+  
+  .icon-click-wrapper .line-container::before {
+    width: 5px;
+    height: 20px;
+    bottom: 0%;
+    left: 80%;
+    transform: translate(-50%, 0);
+    transform-origin: top center;
+    opacity: 1;
+    animation: radiateBottom 2s infinite ease-out;
+  }
+  
+  /* --- Animaciones (Sin cambios) --- */
+  @keyframes pulseSimpleHand {
+  
+    0%,
+    100% {
+      transform: scale(0.4) rotate(350deg) translateX(8px) translateY(12px);
+    }
+  
+    50% {
+      transform: scale(1.5) rotate(280deg) translateX(-65px) translateY(-70px);
+    }
+  }
+  
+  @keyframes radiateTop {
+    0% {
+      height: 0px;
+      opacity: 0;
+      transform: translate(-50%, 5px);
+    }
+  
+    1% {
+      height: 20px;
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  
+    20% {
+      height: 20px;
+      opacity: 0;
+      transform: translate(-50%, -10px);
+    }
+  
+    21%,
+    100% {
+      height: 0px;
+      opacity: 0;
+      transform: translate(-50%, -10px);
+    }
+  }
+  
+  @keyframes radiateRight {
+    0% {
+      width: 0px;
+      opacity: 0;
+      transform: translate(-5px, -50%);
+    }
+  
+    1% {
+      width: 20px;
+      opacity: 1;
+      transform: translate(0, -50%);
+    }
+  
+    20% {
+      width: 20px;
+      opacity: 0;
+      transform: translate(10px, -50%);
+    }
+  
+    21%,
+    100% {
+      width: 0px;
+      opacity: 0;
+      transform: translate(10px, -50%);
+    }
+  }
+  
+  @keyframes radiateBottom {
+    0% {
+      height: 0px;
+      opacity: 0;
+      transform: translate(-50%, -5px);
+    }
+  
+    1% {
+      height: 20px;
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  
+    20% {
+      height: 20px;
+      opacity: 0;
+      transform: translate(-50%, 10px);
+    }
+  
+    21%,
+    100% {
+      height: 0px;
+      opacity: 0;
+      transform: translate(-50%, 10px);
+    }
+  }
+  
+  .main-territorio-card .loading-spinner-overlay {
+    /* Mismos estilos deberían funcionar */
+    border-radius: 12px 12px 0 0;
+    /* Asegurar redondeo */
+  }
+  
+  
+  /* --- Info DEBAJO del modelo --- */
+  .main-territorio-card .card-info {
+    padding: 1.5rem 2rem;
+    /* Más padding */
+    background-color: white;
+    border-radius: 0 0 12px 12px;
+  }
+  
+  .main-territorio-card .about-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #343a40;
+    margin-top: 0;
+    margin-bottom: 0.8rem;
+  }
+  
+  .main-territorio-card .card-desc {
+    /* Asumiendo que tienes esta clase */
+    font-size: 0.95rem;
+    color: #495057;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* --- Sección Productos --- */
+  .product-section {
+    margin-bottom: 1.5rem;
+  }
+  
+  .product-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .product-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .product-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: #e9f5e9;
+    /* Verde claro */
+    color: #155724;
+    /* Verde oscuro */
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .product-pill .bx {
+    font-size: 1.1em;
+  }
+  
+  
+  /* --- Botón Explorar --- */
+  .main-territorio-card .btn-explore-3d {
+    /* Clase específica si necesitas diferenciar */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    /* Botón más grande */
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #fff;
+    background-color: #28a745;
+    /* Verde más vibrante */
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+  }
+  
+  .main-territorio-card .btn-explore-3d:hover {
+    background-color: #218838;
+    box-shadow: 0 2px 5px rgba(40, 167, 69, 0.4);
+  }
+  
+  .main-territorio-card .btn-explore-3d:active {
+    transform: scale(0.98);
+  }
+  
+  .main-territorio-card .btn-explore-3d:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  
+  .main-territorio-card .btn-explore-3d i {
+    font-size: 1.2em;
+  }
+  
+  .main-territorio-card .btn-explore-3d:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
+  }
+  
+  
+  /* ================================ */
+  /* Estilos Lista Zonas Destacadas   */
+  /* ASUME que tienes estilos para    */
+  /* .destacadas-section, .subtitle,  */
+  /* .destacadas-header, .ver-todas-link */
+  /* .destacadas-list, .destacada-card */
+  /* .dest-placeholder, .dest-thumb   */
+  /* .dest-title-group, .dest-name,  */
+  /* .dest-region, .dest-campiamigos */
+  /* .dest-actions, .small-pill,      */
+  /* .model-indicator-small, .active-zone */
+  /* Si no, necesitarás añadirlos     */
+  /* ================================ */
+  .destacadas-section {
+    margin-top: 2.5rem;
+  }
+  
+  .destacadas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .destacadas-section .subtitle {
+    font-size: 1.3rem;
+    color: #343a40;
+    margin: 0;
+    font-weight: 600;
+  }
+  
+  .ver-todas-link {
+    font-size: 0.85rem;
+    color: #007bff;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .ver-todas-link:hover {
+    color: #0056b3;
+  }
+  
+  .ver-todas-link .bx {
+    font-size: 1.1em;
+  }
+  
+  
+  .destacadas-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    /* Usar grid para la lista */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* Responsivo */
+    gap: 1rem;
+  }
+  
+  .destacada-card {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    /* Alinear verticalmente */
+    gap: 1rem;
+    /* Espacio entre placeholder y texto */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    cursor: pointer;
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    /* Para text-overflow */
+  }
+  
+  .destacada-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  }
+  
+  .destacada-card.active-zone {
+    background-color: #e6f4ea;
+    /* Un verde muy pálido */
+    border-color: #8fd19e;
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.15);
+  }
+  
+  .destacada-card:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+  }
+  
+  .destacada-card.active-zone:focus {
+    outline-color: #28a745;
+  }
+  
+  
+  .dest-placeholder {
+    flex-shrink: 0;
+    /* Evitar que se encoja */
+    width: 50px;
+    /* Tamaño fijo */
+    height: 50px;
+    background-color: #f1f3f5;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .dest-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  
+  .dest-title-group {
+    flex-grow: 1;
+    /* Ocupar espacio disponible */
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    /* Espacio entre textos */
+    overflow: hidden;
+    /* Para ellipsis */
+  }
+  
+  .dest-name {
+    font-weight: 600;
+    color: #343a40;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Cortar texto largo */
+  }
+  
+  .dest-region {
+    font-size: 0.75rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .dest-campiamigos {
+    font-size: 0.75rem;
+    color: #495057;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 3px;
+  }
+  
+  .dest-campiamigos .bx {
+    font-size: 1em;
+    color: #6c757d;
+  }
+  
+  
+  .dest-actions {
+    display: flex;
+    flex-direction: column;
+    /* Apilar clima y icono 3D */
+    align-items: flex-end;
+    /* Alinear a la derecha */
+    gap: 5px;
+    flex-shrink: 0;
+    /* Evitar que se encoja */
+  }
+  
+  /* Clima pill pequeño */
+  .small-pill {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+  }
+  
+  .small-pill.cold {
+    background-color: #eaf6fa;
+    color: #1c6a8e;
+    border-color: #c1e3f2;
+  }
+  
+  .small-pill.hot {
+    background-color: #fff8e1;
+    color: #8d5d00;
+    border-color: #ffecb3;
+  }
+  
+  .small-pill.other {
+    background-color: #f1f3f5;
+    color: #495057;
+    border-color: #dee2e6;
+  }
+  
+  /* Indicador 3D pequeño */
+  .model-indicator-small {
+    font-size: 1.1rem;
+    /* Un poco más grande */
+    color: #adb5bd;
+    /* Gris claro */
+    opacity: 0.9;
+    transition: color 0.2s, opacity 0.2s;
+  }
+  
+  .destacada-card:hover .model-indicator-small {
+    color: #6c757d;
+    /* Gris más oscuro al pasar el ratón */
+    opacity: 1;
+  }
+  
+  .destacada-card.active-zone .model-indicator-small {
+    color: #28a745;
+    /* Verde si está activa */
+    opacity: 1;
+  }
+  
+  /* ================================ */
+  /* Estilos Mensajes y Modal         */
+  /* (Reutilizan clases existentes)   */
+  /* ================================ */
+  .no-zones-message {
+    grid-column: 1 / -1;
+    /* Aplica si el contenedor es grid */
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    margin: 2rem auto;
+    /* Centrado */
+    color: #52677c;
+    background-color: #ffffff;
+    border-radius: 8px;
+    border: 1px dashed #ced4da;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    max-width: 600px;
+    /* Ancho máximo para mensajes */
+  }
+  
+  .no-zones-message .bx {
+    font-size: 2rem;
+    color: #aeb7c1;
+  }
+  
+  .no-zones-message .btn-link {
+    background: none;
+    border: none;
+    color: #1abc9c;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+  
+  .no-zones-message .btn-link:hover {
+    color: #16a085;
+  }
+  
+  /* Estilos del modal (sin cambios respecto a tu versión anterior) */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(44, 62, 80, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    backdrop-filter: blur(3px);
+  }
+  
+  .modal-content {
+    background: #fff;
+    padding: 25px 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    animation: modalIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  @keyframes modalIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95) translateY(10px);
+    }
+  
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  .modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 1.8rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  
+  .modal-content input[type="text"],
+  .modal-content select {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 1rem;
+    border-radius: 6px;
+    border: 1px solid #dce1e5;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    background-color: #f8f9fa;
+  }
+  
+  .modal-content input[type="text"]::placeholder {
+    color: #95a5a6;
+  }
+  
+  .modal-content input[type="text"]:focus,
+  .modal-content select:focus {
+    border-color: #1abc9c;
+    background-color: #fff;
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.2);
+  }
+  
+  .modal-buttons {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  
+  .modal-buttons button {
+    padding: 11px 15px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  }
+  
+  .modal-buttons button.btn-primary {
+    background-color: #1abc9c;
+    color: #fff;
+    grid-column: 1 / -1;
+  }
+  
+  .modal-buttons button.btn-primary:hover {
+    background-color: #16a085;
+  }
+  
+  .modal-buttons button.btn-secondary {
+    background-color: #bdc3c7;
+    color: #fff;
+  }
+  
+  .modal-buttons button.btn-secondary:hover {
+    background-color: #a1a8ac;
+  }
+  
+  .modal-buttons button.btn-tertiary {
+    background-color: #f1f3f5;
+    color: #52677c;
+    border: 1px solid #dce1e5;
+  }
+  
+  .modal-buttons button.btn-tertiary:hover {
+    background-color: #e4e8eb;
+  }
+  
+  .modal-buttons button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.3);
+    z-index: 1;
+  }
+  
+  .modal-buttons button:active {
+    transform: scale(0.98);
+  }

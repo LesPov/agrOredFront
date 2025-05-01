@@ -1,0 +1,185 @@
+<!-- INICIO DEL CODIGO: zone.component.html (MODIFICADO) -->
+<div class="container_zona">
+    <!-- ... (resto del encabezado sin cambios) ... -->
+     <div class="title">
+      <span (click)="goBack()" class="back-icon" role="button" aria-label="Volver" tabindex="0">
+        <i class='bx bx-chevron-left'></i>
+      </span>
+      <span>Explora el Territorio</span>
+      <span (click)="openFilterModal()" class="filter-icon" role="button" aria-label="Abrir filtros" tabindex="0">
+        <i class='bx bx-filter'></i>
+      </span>
+    </div>
+  
+    <!-- Contenido Principal -->
+    <div class="territory-explorer-content">
+  
+      <!-- *** Tarjeta Principal Destacada *** -->
+      <div class="main-territorio-card" *ngIf="selectedZone">
+  
+        <!-- ... (model-container y canvas sin cambios) ... -->
+          <!-- Contenedor Modelo/Imagen Principal -->
+        <div class="model-container" (click)="onZoneCanvasClick()" [class.has-model]="zoneHasModels(selectedZone.zone)"
+          tabindex="0"
+          title="{{ zoneHasModels(selectedZone.zone) ? (zoneModelsReady[selectedZone.zone.id] ? 'Clic para MOSTRAR modelo 3D' : (isZoneLoading[selectedZone.zone.id] ? 'Cargando modelo...' : (isZonePreloading[selectedZone.zone.id] ? 'Precargando modelo...' : 'Clic para CARGAR modelo 3D'))) : 'Modelo 3D no disponible' }}">
+  
+          <!-- Canvas ÚNICO para la zona seleccionada -->
+          <canvas #mainZoneCanvas [attr.data-zone-id]="selectedZone.zone.id"
+            [class.canvas-visible]="zoneLoaded[selectedZone.zone.id]" aria-hidden="true">
+          </canvas>
+  
+          <!-- Placeholder (Imagen) - Se muestra solo cuando el canvas NO está visible -->
+          <div class="placeholder-content" *ngIf="!zoneLoaded[selectedZone.zone.id]" aria-hidden="true">
+            <img [src]="getZoneImageUrl(selectedZone.zone)" [alt]="'Vista previa de ' + selectedZone.zone.name"
+              class="placeholder-image" (error)="onImgError($event)" />
+          </div>
+  
+          <!-- Info Superpuesta - AHORA SOLO VISIBLE CUANDO EL CANVAS ESTÁ CARGADO -->
+          <!-- Se añade *ngIf="zoneLoaded[selectedZone.zone.id]" -->
+          <div class="territory-overlay-info" *ngIf="zoneLoaded[selectedZone.zone.id]">
+            <div class="info-items-container">
+              <!-- Items de Información (con sus propios *ngIf si el dato existe) -->
+              <div class="info-item elevation"
+                *ngIf="selectedZone.zone.elevation !== null && selectedZone.zone.elevation !== undefined">
+                <div class="info-content-wrapper">
+                  <i class='bx bx-landscape info-icon'></i>
+                  <div class="info-text-content">
+                    <span class="info-label">Elevación</span>
+                     <span class="info-value">{{selectedZone.zone.elevation | number:'1.0-0' }}m</span> </div>
+                </div>
+              </div>
+              <div class="info-item temperature"
+                *ngIf="selectedZone.zone.temperature !== null && selectedZone.zone.temperature !== undefined">
+                <div class="info-content-wrapper"> <i class='bx bxs-thermometer info-icon'></i>
+                  <div class="info-text-content"> <span class="info-label">Temperatura</span> <span class="info-value">{{
+                      selectedZone.zone.temperature | number:'1.0-1' }}°C</span> </div>
+                </div>
+              </div>
+              <div class="info-item campiamigos-count"
+                *ngIf="selectedZone.count !== null && selectedZone.count !== undefined">
+                <div class="info-content-wrapper"> <i class='bx bx-group info-icon'></i>
+                  <div class="info-text-content"> <span class="info-label">CampiAmigos</span> <span class="info-value">{{
+                      selectedZone.count }}</span> </div>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Icono Clic (Debe mostrarse solo cuando el modelo está listo pero NO visible/cargando) -->
+          <div class="icon-click-wrapper"
+            *ngIf="zoneHasModels(selectedZone.zone) && zoneModelsReady[selectedZone.zone.id] && !isZoneLoading[selectedZone.zone.id] && !zoneLoaded[selectedZone.zone.id]">
+            <i class='bx bxs-hand-right icon-click' title="¡Clic para MOSTRAR modelo 3D!"></i>
+            <span class="line-container"></span>
+          </div>
+  
+          <!-- Spinner (Solo durante carga activa) -->
+          <div *ngIf="isZoneLoading[selectedZone.zone.id]" class="loading-spinner-overlay" role="status"
+            aria-live="polite">
+            <div class="spinner"></div>
+            <span>Cargando Modelo...</span>
+          </div>
+  
+        </div> <!-- Fin model-container -->
+  
+        <!-- Info Debajo del Modelo/Imagen -->
+        <div class="card-info">
+          <h4 class="about-title">Acerca de {{ selectedZone.zone.name | uppercase }}</h4>
+          <p class="card-desc" *ngIf="selectedZone.zone.description">
+            {{ selectedZone.zone.description }}
+          </p>
+          <div class="product-section"
+            *ngIf="selectedZone.zone.productosPrincipales && selectedZone.zone.productosPrincipales.length > 0">
+            <h5 class="product-title">Productos principales:</h5>
+            <div class="product-pills">
+              <span *ngFor="let producto of selectedZone.zone.productosPrincipales" class="product-pill">
+                <i class='bx bx-leaf'></i> {{ producto }}
+              </span>
+            </div>
+          </div>
+  
+          <!-- *** CAMBIO AQUÍ: Llama a handleExploreClick en lugar de navigateToScene *** -->
+          <button class="btn btn-explore-3d"
+                  (click)="handleExploreClick()"
+                  [disabled]="!selectedZone.zone.id"
+                  title="Explorar escena completa de {{ selectedZone.zone.name }}">
+            Explorar en 3D
+            <i class='bx bx-right-arrow-alt'></i>
+          </button>
+  
+        </div>
+  
+      </div> <!-- Fin main-territorio-card -->
+  
+      <!-- ... (Mensajes de no zonas sin cambios) ... -->
+      <div *ngIf="!selectedZone && allAggregatedZones.length === 0" class="no-zones-message initial-empty">
+        <i class='bx bx-wind'></i> Aún no hay zonas disponibles para mostrar.
+      </div>
+      <div *ngIf="!selectedZone && aggregatedZones.length === 0 && allAggregatedZones.length > 0"
+        class="no-zones-message filter-empty">
+        <i class='bx bx-info-circle'></i> No se encontraron zonas que coincidan con los filtros.
+        <button (click)="resetFilter()" class="btn-link">Mostrar todas las zonas</button>
+      </div>
+  
+      <!-- ... (Sección Lista de Zonas Destacadas sin cambios) ... -->
+      <div class="destacadas-section" *ngIf="aggregatedZones.length > 0">
+        <div class="destacadas-header">
+          <h4 class="subtitle">Zonas Destacadas</h4>
+         </div>
+        <ul class="destacadas-list">
+          <li *ngFor="let agg of aggregatedZones" class="destacada-card" (click)="selectZone(agg)"
+            [class.active-zone]="agg.zone.id === selectedZone?.zone?.id" role="button" tabindex="0"
+            [attr.aria-current]="agg.zone.id === selectedZone?.zone?.id ? 'true' : 'false'"
+            title="Seleccionar {{ agg.zone.name }}">
+            <div class="dest-placeholder">
+              <img [src]="getZoneImageUrl(agg.zone)" alt="" class="dest-thumb" (error)="onImgError($event)">
+            </div>
+            <div class="dest-title-group">
+              <span class="dest-name">{{ agg.zone.name | titlecase }}</span>
+              <span class="dest-region">{{ agg.zone.departamentoName | uppercase }}</span>
+              <span class="dest-campiamigos" *ngIf="agg.count > 0">
+                <i class='bx bxs-user-check'></i> {{ agg.count }} CampiAmigo{{ agg.count !== 1 ? 's' : '' }}
+              </span>
+            </div>
+            <div class="dest-actions">
+              <span class="climate-pill small-pill" [ngClass]="getZoneClimateClass(agg.zone.climate)">
+                {{ getZoneClimateText(agg.zone.climate) }}
+              </span>
+              <i *ngIf="zoneHasModels(agg.zone)" class='bx bx-cube-alt model-indicator-small'
+                title="Modelo 3D disponible"></i>
+            </div>
+          </li>
+        </ul>
+      </div>
+  
+    </div> <!-- Fin territory-explorer-content -->
+  
+  </div> <!-- Fin container_zona -->
+  
+  <!-- ... (Modal de Filtro sin cambios) ... -->
+  <div class="modal-backdrop" *ngIf="filterModalOpen">
+    <div class="modal-content">
+      <h2>Filtrar Zonas</h2>
+      <input type="text" placeholder="Buscar por nombre..." [(ngModel)]="filterName"
+        aria-label="Filtrar por nombre de zona" />
+      <select [(ngModel)]="filterTipoZona" aria-label="Filtrar por tipo de zona">
+        <option value="">-- Todos los Tipos --</option>
+        <option value="municipio">Municipio</option>
+        <option value="departamento">Departamento</option>
+        <option value="vereda">Vereda</option>
+        <option value="ciudad">Ciudad</option>
+      </select>
+      <div class="modal-buttons">
+        <button (click)="applyFilter()" class="btn-primary">Aplicar Filtros</button>
+        <button (click)="resetFilter()" class="btn-secondary">Limpiar Filtros</button>
+        <button (click)="closeFilterModal()" class="btn-tertiary">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- *** AÑADE EL MODAL DE LOGIN AQUÍ *** -->
+  <app-login-prompt
+    *ngIf="showLoginModal"
+    (closeModal)="closeLoginPromptModal()">
+  </app-login-prompt>
+  
+  <!-- FIN DEL CODIGO: zone.component.html -->
