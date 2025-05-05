@@ -1,0 +1,314 @@
+/* Contenedor principal */
+.container_zona {
+  height: 94vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.container_zona p {
+  color: #232949;
+
+  font-size: 30px;
+  font-weight: bold;
+  width: 100%;
+  padding: 8px 20px;
+  position: fixed;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* ===============================
+   Estilo original de las cards
+   =============================== */
+.card {
+  width: 70%;
+  height: 550px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 0 36px;
+  margin: 0 50px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.two {
+  margin-bottom: 150px;
+}
+
+.cover_image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.wrapper {
+  transition: all 0.5s;
+  position: absolute;
+  width: 110%;
+  height: 100%;
+  z-index: -1;
+  border-radius: 20px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wrapper::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: all 0.5s;
+  border-radius: 20px;
+  background: linear-gradient(to bottom, transparent 46%, rgba(12, 13, 19, 0.5) 68%, rgb(12, 13, 19) 97%);
+}
+
+.title {
+  width: 70%;
+  transition: transform 0.5s;
+}
+
+.character {
+  width: 100%;
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+  transition: all 0.5s;
+  cursor: none;
+}
+
+.card:hover .wrapper {
+  transform: perspective(900px) translateY(-5%) rotateX(25deg);
+  box-shadow: 0 35px 32px -8px rgba(0, 0, 0, 0.75);
+}
+
+.card:hover .title {
+  transform: translate3d(0%, -45%, 100px);
+}
+
+.two:hover .title {
+  transform: translate3d(0%, -45%, 100px);
+}
+
+.card:hover .wrapper::before {
+  opacity: 1;
+}
+
+.one:hover .character,
+.two:hover .character {
+  opacity: 1;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.one:hover .character {
+  transform: translate3d(0%, -80%, -100px) scale(1.3);
+}
+
+.two:hover .character {
+  transform: translate3d(0%, -160%, -100px) scale(1.3);
+}
+
+.icon-click {
+  position: relative;
+  bottom: 70px;
+  left: 225px;
+  font-size: 2.5rem;
+  color: #fff;
+  z-index: 100;
+  transition: transform 8s ease-in-out;
+}
+
+.card:hover .icon-click {
+  transform: translateY(-100px) rotateY(180deg) rotateZ(-50deg);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1) translateY(-100px) rotateY(180deg) rotateZ(-50deg);
+  }
+
+  50% {
+    transform: scale(1.4) translateY(-100px) rotateY(180deg) rotateZ(-50deg);
+  }
+
+  100% {
+    transform: scale(1) translateY(-100px) rotateY(180deg) rotateZ(-50deg);
+  }
+}
+
+/* ===================================================
+   Estilos para el carrusel y posicionamiento de botones
+   =================================================== */
+.carousel-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 100%;
+}
+
+.carousel-slides {
+  display: flex;
+  transition: transform 0.5s ease-out;
+}
+
+/* Cada slide ocupa el 100% del ancho del contenedor.
+   Se remueve el alineamiento vertical para conservar la posición natural de las cards. */
+.slide {
+  flex: 0 0 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+/* Botones sobrepuestos en el carrusel */
+.carousel-button {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  top: 40%;
+  border-radius: 50%;
+  background: #232949;
+  display: flex;
+  color: #fff;
+  font-size: 20px;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 200;
+  outline: none;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+
+}
+
+.carousel-button.left {
+  left: 8px;
+}
+
+.carousel-button.right {
+  right: 8px;
+}
+
+/* ===================================================
+   Media Queries para pantallas pequeñas
+   =================================================== */
+@media (max-width: 390px) {
+  /* .container_zona {
+    padding: 40px 10px;
+  } */
+
+  .container_zona p {
+    font-size: 25px;
+    padding: 4px;
+  }
+
+  .card {
+    width: 95%;
+    height: 400px;
+  }
+
+  .one:hover .character {
+    transform: translate3d(0%, -55%, -90px) scale(1.1);
+  }
+
+  .two:hover .character {
+    transform: translate3d(0%, -125%, -90px) scale(1.1);
+  }
+
+  .title {
+    width: 80%;
+    font-size: 18px;
+    transform: translate3d(0%, -10%, 100px);
+  }
+
+  .icon-click {
+    bottom: 85px;
+    left: 80%;
+    font-size: 2rem;
+  }
+
+  .card:hover .icon-click {
+    transform: translateY(-100px) rotateY(180deg) rotateZ(-50deg);
+    bottom: 60px;
+  }
+}
+
+@media (max-width: 350px) {
+  /* .container_zona {
+    padding: 40px 10px;
+  } */
+
+  .container_zona p {
+    font-size: 22px;
+    padding: 4px;
+  }
+
+  .card {
+    width: 95%;
+    height: 400px;
+  }
+
+  .title {
+    width: 80%;
+    font-size: 16px;
+    transform: translate3d(0%, -15%, 100px);
+  }
+
+  .one:hover .character {
+    transform: translate3d(0%, -50%, -90px) scale(1.1);
+  }
+
+  .two:hover .character {
+    transform: translate3d(0%, -110%, -90px) scale(1.1);
+  }
+
+  .icon-click {
+    bottom: 65px;
+    left: 75%;
+    font-size: 1.8rem;
+  }
+
+  .card:hover .icon-click {
+    bottom: -10px;
+  }
+
+  .wrapper::before {
+    background: linear-gradient(to bottom, transparent 50%, rgba(12, 13, 19, 0.5) 70%, rgb(12, 13, 19) 90%);
+  }
+}
+
+@media (max-width: 320px) {
+  .container_zona {
+    height: 85vh;
+  }
+
+  .wrapper {
+    width: 125%;
+  }
+
+  .card {
+    width: 50%;
+    height: 115%;
+  }
+
+  .two:hover .character {
+    transform: translate3d(0%, -175%, -90px) scale(1.5);
+  }
+
+  .character {
+    width: 80%;
+
+  }
+
+  .one:hover .character {
+    transform: translate3d(0%, -70%, -90px) scale(1.5);
+  }
+}

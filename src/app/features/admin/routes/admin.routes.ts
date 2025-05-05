@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { RoleGuard } from '../../../core/guard/autorization.guard';
- 
+
 export const adminRouter: Routes = [
 
     {
@@ -9,15 +9,16 @@ export const adminRouter: Routes = [
         canActivate: [RoleGuard],
         data: { allowedRoles: ['admin'] },
         children: [
-            // {
-            //     path: 'profile',
-            //     loadComponent: () => import('../../auth/layout/profile/layout/view-profile/view-profile.component').then(m => m.ViewProfileComponent)
-            // },
+            {
+                path: 'profile',
+                loadComponent: () => import('../../profile/component/view-profile/view-profile.component')
+                    .then(m => m.ViewProfileComponent)
+            },
             {
                 path: 'dashboard',
                 loadComponent: () => import('../components/dashboard-admin/dashboard-admin.component').then(m => m.DashboardAdminComponent)
             },
-            { 
+            {
                 path: 'users',
                 loadComponent: () => import('../components/user-admin/user-admin.component').then(m => m.UserAdminComponent)
             },
@@ -51,7 +52,7 @@ export const adminRouter: Routes = [
             },
             {
                 path: '',
-                redirectTo: 'dashboard', 
+                redirectTo: 'dashboard',
                 pathMatch: 'full'
             }
         ]

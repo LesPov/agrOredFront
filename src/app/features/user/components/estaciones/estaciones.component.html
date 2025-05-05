@@ -1,0 +1,46 @@
+<div class="container_zona">
+  <p>Nuestras Estaciones</p>
+  <!-- Contenedor del carrusel con overflow hidden -->
+  <div class="carousel-container"
+       (mousedown)="onDragStart($event)"
+       (mousemove)="onDragMove($event)"
+       (mouseup)="onDragEnd($event)"
+       (mouseleave)="onDragEnd($event)"
+       (touchstart)="onTouchStart($event)"
+       (touchmove)="onTouchMove($event)"
+       (touchend)="onTouchEnd($event)">
+    <!-- Contenedor de slides: se mueve horizontalmente según currentSlide -->
+    <div class="carousel-slides" [ngStyle]="{'transform': 'translateX(-' + (currentSlide * 100) + '%)'}">
+      <!-- Cada slide ocupa el 100% del ancho del contenedor -->
+      <div class="slide">
+        <div class="card one">
+          <div class="wrapper">
+            <img class="cover_image" src="assets/img/zonas/climacalido.avif" alt="Zona clima cálido" loading="lazy">
+            <i class='bx bxs-hand-right bx-flashing bx-flip-horizontal icon-click'></i>
+          </div>
+          <img class="title" src="assets/img/zonas/title.png" alt="Título zona cálido" loading="lazy"> 
+          <img class="character" src="assets/img/zonas/characterCalido.png" alt="Personaje zona cálido" loading="lazy"
+               (click)="seleccionarZona('clima cálido'); $event.stopPropagation()">
+        </div>
+      </div>
+      <div class="slide">
+        <div class="card two">
+          <div class="wrapper">
+            <img class="cover_image" src="assets/img/zonas/climafrio.avif" alt="Zona clima frío" loading="lazy">
+            <i class='bx bxs-hand-right bx-flashing bx-flip-horizontal icon-click'></i>
+          </div>
+          <img class="title" src="assets/img/zonas/titlefrio.png" alt="Título zona fría" loading="lazy">
+          <img class="character" src="assets/img/zonas/characterfrio1.png" alt="Personaje zona fría" loading="lazy"
+               (click)="seleccionarZona('clima frío'); $event.stopPropagation()">
+        </div>
+      </div>
+    </div>
+    <!-- Botones de navegación sobrepuestos -->
+    <button class="carousel-button left" (click)="prevSlide()">
+      <i class="bx bx-chevron-left"></i>
+    </button>
+    <button class="carousel-button right" (click)="nextSlide()">
+      <i class="bx bx-chevron-right"></i>
+    </button>
+  </div>
+</div>

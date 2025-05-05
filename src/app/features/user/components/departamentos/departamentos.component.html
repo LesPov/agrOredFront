@@ -1,0 +1,62 @@
+<div class="container_zona">
+  <p>
+    <i class='bx bx-chevron-left' (click)="goBack()"></i>
+    Departamentos
+    <!-- Ícono de filtros que abre el modal -->
+    <i class='bx bx-filter' (click)="openFilterModal()"></i>
+  </p>
+  <!-- Contenedor del carrusel con overflow hidden -->
+  <div class="carousel-container"
+       (mousedown)="onDragStart($event)"
+       (mousemove)="onDragMove($event)"
+       (mouseup)="onDragEnd($event)"
+       (mouseleave)="onDragEnd($event)"
+       (touchstart)="onTouchStart($event)"
+       (touchmove)="onTouchMove($event)"
+       (touchend)="onTouchEnd($event)">
+    
+    <!-- Contenedor de slides que se desplaza -->
+    <div class="carousel-slides" [ngStyle]="{'transform': 'translateX(-' + (currentSlide * 100) + '%)'}">
+      <!-- Recorrido de cada departamento -->
+      <div class="slide" *ngFor="let ciudad of ciudadesUnicas; let i = index">
+        <div class="card one">
+          <div class="wrapper">
+            <img class="cover_image" [src]="ciudad.cityImage" alt="{{ ciudad.departamentoName }}" loading="lazy">
+            <h3 class="title" (click)="navigateToZone(ciudad)">
+              {{ ciudad.departamentoName }}
+              <i class="bx bxs-hand-right bx-flashing bx-flip-horizontal icon-click"></i>
+            </h3>
+          </div>
+          <span *ngIf="ciudad.characterImage !== ''" class="best-campiamigo">CampiAmigo Destacado</span>
+
+          <img *ngIf="ciudad.characterImage !== ''" class="character" [src]="ciudad.characterImage"
+               alt="Personaje de {{ ciudad.departamentoName }}" loading="lazy">
+               <span *ngIf="ciudad.characterImage !== ''" class="best">de </span>
+          <!-- Overlay para departamentos en modo "Próximamente" -->
+          <div *ngIf="proximamenteDepartamentosNormalized.includes(normalizeName(ciudad.departamentoName))" class="overlay">
+            <span class="overlay-text">Próximamente</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Botones de navegación del carrusel -->
+    <button class="carousel-button left" (click)="prevSlide()">
+      <i class="bx bx-chevron-left"></i>
+    </button>
+    <button class="carousel-button right" (click)="nextSlide()">
+      <i class="bx bx-chevron-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Modal para búsqueda de departamento -->
+<div class="modal-backdrop" *ngIf="filterModalOpen">
+  <div class="modal-content">
+    <h2>Buscar Departamento</h2>
+    <input type="text" placeholder="Ingrese el nombre de la ciudad" [(ngModel)]="filterQuery">
+    <div class="modal-buttons">
+      <button (click)="searchDepartment()">Buscar</button>
+      <button (click)="closeFilterModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
