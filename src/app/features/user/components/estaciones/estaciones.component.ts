@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-estaciones',
-  imports: [CommonModule],
+  imports: [CommonModule], 
   templateUrl: './estaciones.component.html',
   styleUrls: ['./estaciones.component.css']
 })

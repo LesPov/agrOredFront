@@ -1,6 +1,6 @@
 /* Contenedor principal */
 .container_zona {
-  height: 94vh;
+  height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,7 +26,7 @@
    =============================== */
 .card {
   width: 70%;
-  height: 550px;
+  height: 490px;
   position: relative;
   display: flex;
   justify-content: center;
@@ -37,9 +37,9 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.two {
+/* .two {
   margin-bottom: 150px;
-}
+} */
 
 .cover_image {
   width: 100%;
@@ -173,7 +173,7 @@
   position: absolute;
   width: 30px;
   height: 30px;
-  top: 40%;
+  top: 50%;
   border-radius: 50%;
   background: #232949;
   display: flex;
@@ -200,115 +200,8 @@
 /* ===================================================
    Media Queries para pantallas pequeñas
    =================================================== */
-@media (max-width: 390px) {
-  /* .container_zona {
-    padding: 40px 10px;
-  } */
+@media (max-width: 390px) {}
 
-  .container_zona p {
-    font-size: 25px;
-    padding: 4px;
-  }
+@media (max-width: 350px) {}
 
-  .card {
-    width: 95%;
-    height: 400px;
-  }
-
-  .one:hover .character {
-    transform: translate3d(0%, -55%, -90px) scale(1.1);
-  }
-
-  .two:hover .character {
-    transform: translate3d(0%, -125%, -90px) scale(1.1);
-  }
-
-  .title {
-    width: 80%;
-    font-size: 18px;
-    transform: translate3d(0%, -10%, 100px);
-  }
-
-  .icon-click {
-    bottom: 85px;
-    left: 80%;
-    font-size: 2rem;
-  }
-
-  .card:hover .icon-click {
-    transform: translateY(-100px) rotateY(180deg) rotateZ(-50deg);
-    bottom: 60px;
-  }
-}
-
-@media (max-width: 350px) {
-  /* .container_zona {
-    padding: 40px 10px;
-  } */
-
-  .container_zona p {
-    font-size: 22px;
-    padding: 4px;
-  }
-
-  .card {
-    width: 95%;
-    height: 400px;
-  }
-
-  .title {
-    width: 80%;
-    font-size: 16px;
-    transform: translate3d(0%, -15%, 100px);
-  }
-
-  .one:hover .character {
-    transform: translate3d(0%, -50%, -90px) scale(1.1);
-  }
-
-  .two:hover .character {
-    transform: translate3d(0%, -110%, -90px) scale(1.1);
-  }
-
-  .icon-click {
-    bottom: 65px;
-    left: 75%;
-    font-size: 1.8rem;
-  }
-
-  .card:hover .icon-click {
-    bottom: -10px;
-  }
-
-  .wrapper::before {
-    background: linear-gradient(to bottom, transparent 50%, rgba(12, 13, 19, 0.5) 70%, rgb(12, 13, 19) 90%);
-  }
-}
-
-@media (max-width: 320px) {
-  .container_zona {
-    height: 85vh;
-  }
-
-  .wrapper {
-    width: 125%;
-  }
-
-  .card {
-    width: 50%;
-    height: 115%;
-  }
-
-  .two:hover .character {
-    transform: translate3d(0%, -175%, -90px) scale(1.5);
-  }
-
-  .character {
-    width: 80%;
-
-  }
-
-  .one:hover .character {
-    transform: translate3d(0%, -70%, -90px) scale(1.5);
-  }
-}
+@media (max-width: 320px) {}

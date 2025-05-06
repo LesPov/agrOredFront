@@ -48,20 +48,20 @@ export const userRouter: Routes = [
 
         ]
       },
-      // {
-      //   path: 'productos',
-      //   loadComponent: () =>
-      //     import('../../users/layaut/products/products.component')
-      //       .then(m => m.ProductsComponent),
-      //   data: { mode: 'private' },
-      // },
-      // {
-      //   path: 'detalleProducto',
-      //   loadComponent: () =>
-      //     import('../layaut/products/detalle-products/detalle-products.component')
-      //       .then(m => m.DetalleProductsComponent),
-      //   data: { mode: 'private' }
-      // },
+      {
+        path: 'productos',
+        loadComponent: () =>
+          import('../../visualization/components/products/products.component')
+            .then(m => m.ProductsComponent),
+        data: { mode: 'private' },
+      },
+      {
+        path: 'detalleProducto',
+        loadComponent: () =>
+          import('../../visualization/components/products/detalle-products/detalle-products.component')
+            .then(m => m.DetalleProductsComponent),
+        data: { mode: 'private' }
+      },
 
       {
         path: '',

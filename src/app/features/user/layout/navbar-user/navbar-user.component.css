@@ -141,7 +141,7 @@
 
 .navigation ul li:nth-child(3).active~.indicador {
     transform: translateX(calc(70px * 2));
-    background: #59a200;
+    background: #3a7077;
 
 }
 

@@ -5,9 +5,9 @@
 export const environment = {
   production: false,
   // endpoint: 'https://s7rlvzcx-3001.use2.devtunnels.ms/'  // <-- URL de tu túnel
-  //endpoint: 'https://increasingly-hq-trinity-pontiac.trycloudflare.com/' // SIN espacio inicial
+  //endpoint: 'https://carlo-retrieve-rand-dna.trycloudflare.com/'  // ¡mira el https!
 
-    endpoint: 'http://localhost:3001/'
+  endpoint: 'http://localhost:3001/'
 
 };
 
