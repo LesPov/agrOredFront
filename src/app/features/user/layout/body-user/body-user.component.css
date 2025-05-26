@@ -1,8 +1,8 @@
 .body {
     width: 100%;
     position: relative;
-    top: 68px;
-    height: 82vh;
+    top: 0;
+    height: 92vh;
     z-index: 1;
     color: #000;
     scrollbar-width: none; 

@@ -1,15 +1,15 @@
-<!-- Este es el header principal de tu aplicación (la barra superior verde claro/blanca que ya tenías) -->
-<div class="main-header">
-    <div class="header-left">
-      <!-- Icono para ABRIR el menú lateral -->
-      <i class='bx bx-menu-alt-left menu-toggle-icon' (click)="toggleDropdown()"></i>
-    </div>
-    <!-- Título principal de la app -->
-    <img src="../../../../../../assets/img/inicio/agroredtitle.png" alt="">
-    <!-- Icono de voz (si lo sigues necesitando aquí) -->
-    <i class='bx bxs-user-voice voice-icon' (click)="speakBot()"></i>
+<!-- Aplicamos la clase 'transparent' solo cuando isSceneRoute === true -->
+<div class="main-header" [class.transparent]="isSceneRoute">
+  <div class="header-left">
+    <!-- Icono para ABRIR el menú lateral -->
+    <i class='bx bx-menu-alt-left menu-toggle-icon' (click)="toggleDropdown()"></i>
   </div>
-  
+  <!-- Título principal de la app -->
+  <img src="../../../../../../assets/img/inicio/agroredtitle.png" alt="AgroRed">
+  <!-- Icono de voz (si lo sigues necesitando aquí) -->
+  <i class='bx bxs-user-voice voice-icon' (click)="speakBot()"></i>
+</div>
+
   <!-- Este es el Menú Lateral Desplegable (Dropdown) -->
   <!-- Usamos *ngIf para mostrarlo/ocultarlo -->
   <div class="dropdown-menu" *ngIf="dropdownVisible">

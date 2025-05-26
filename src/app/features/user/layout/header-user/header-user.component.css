@@ -1,48 +1,50 @@
 /* --- Estilos del Header Principal (Barra Superior) --- */
 .main-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: fixed;
-    /* O 'sticky' si prefieres */
-    top: 0;
-    left: 0;
-    /* Alineado a la izquierda */
-    height: 9%;
-    width: 100%;
-    background: #ffffff;
-    /* O el color que prefieras para la barra superior */
-    padding: 10px 15px;
-    /* Ajusta el padding */
-    color: #333;
-    /* Color del texto/iconos en la barra superior */
-    z-index: 1000;
-    /* Asegura que esté sobre el contenido normal */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-    /* Incluye padding en el width */
-  }
-  
-  .main-header .header-left {
-    display: flex;
-    align-items: center;
-  }
-  
-  .main-header img {
-  
-    width: auto;
-    height: 60px;
-  }
-  
-  .main-header .menu-toggle-icon,
-  .main-header .voice-icon {
-    font-size: 35px;
-    /* Tamaño de los iconos */
-    cursor: pointer;
-    color: #034512;
-    /* Color verde para los iconos del header */
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 9%;
+  width: 100%;
+  background: white; /* Color de fondo por defecto */
+  transition: background 0.3s ease, color 0.3s ease; /* añadimos color para transición suave */
+  padding: 10px 15px;
+  color: #333; /* color de texto e iconos por defecto */
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+/* Cuando estamos en la ruta de escena, añadimos transparencia */
+.main-header.transparent {
+  background: transparent !important; /* Fondo transparente */
+  box-shadow: none !important;       /* Sin sombra */
+  color: #fff;                        /* Color de texto e iconos en blanco */
+}
+
+/* Iconos por defecto */
+.main-header .menu-toggle-icon,
+.main-header .voice-icon {
+  font-size: 35px;
+  cursor: pointer;
+  color: #104a07; /* hereda de .main-header color */
+  transition: color 0.3s ease;
+}
+
+/* Aseguramos que en modo transparente los iconos sean blancos */
+.main-header.transparent .menu-toggle-icon,
+.main-header.transparent .voice-icon {
+  color: #fff !important;
+}
+
+/* Ajustes de imagen/logo */
+.main-header img {
+  width: auto;
+  height: 45px;
+}
+
   .main-header .app-title {
     font-size: clamp(20px, 5vw, 24px);
     /* Tamaño adaptable */

@@ -1,41 +1,61 @@
-import { Component, ElementRef, HostListener } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription, filter } from 'rxjs';
 import { BotInfoService } from '../../../admin/services/botInfo.service';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header-user',
-  imports: [CommonModule, RouterLink], 
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './header-user.component.html',
-  styleUrl: './header-user.component.css'
+  styleUrls: ['./header-user.component.css']
 })
-export class HeaderUserComponent {
-
-
-  dropdownVisible: boolean = false;
+export class HeaderUserComponent implements OnInit, OnDestroy {
+  dropdownVisible = false;
+  isSceneRoute = false; // Propiedad para controlar la clase 'transparent'
+  private routerSub!: Subscription;
 
   constructor(
-    private router: Router, 
+    private router: Router,
     private elementRef: ElementRef,
-    private botInfoService: BotInfoService
-  ) {}
+    private botInfoService: BotInfoService,
+    private cdr: ChangeDetectorRef, // Inyecta ChangeDetectorRef
+  ) { }
 
-  // Alterna la visibilidad del menú desplegable
+  ngOnInit() {
+    this.routerSub = this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe((e: NavigationEnd) => {
+        const url = e.urlAfterRedirects;
+        // Comprueba si la ruta empieza por /user/estaciones/scene
+        // Esto cubrirá rutas como /user/estaciones/scene/123 o /user/estaciones/scene
+        this.isSceneRoute = /^\/user\/estaciones\/scene(\/|$)/.test(url);
+        // Forzar detección de cambios para que Angular actualice la clase en el HTML
+        this.cdr.detectChanges();
+      });
+  }
+
+  ngOnDestroy() {
+    this.routerSub?.unsubscribe(); // Limpiar la suscripción para evitar fugas de memoria
+  }
+
   toggleDropdown(): void {
     this.dropdownVisible = !this.dropdownVisible;
   }
 
-  // Cierra el dropdown si se hace clic fuera del componente
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
+    // Cierra el menú desplegable si se hace clic fuera de él
     if (this.dropdownVisible && !this.elementRef.nativeElement.contains(event.target)) {
       this.dropdownVisible = false;
     }
   }
 
-  // Función para activar el bot de voz al hacer clic en el ícono
   speakBot(): void {
-    this.botInfoService.speakNextAndScroll()
+    this.botInfoService
+      .speakNextAndScroll()
       .catch((error) => console.error('Error en el bot:', error));
   }
 }

@@ -11,7 +11,7 @@ import { CampiAmigoZonesService } from '../../../campiamigo/services/campiAmigoZ
 import { SceneService, ZoneConfig } from '../../services/scene-manager.service';
 
 
-interface IndicatorData {
+interface IndicatorData {  
   color: string;
   position: THREE.Vector3;
   firstName?: string;

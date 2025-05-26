@@ -1,7 +1,7 @@
 /* CONTENEDOR GENERAL (Three.js, overlay, botones, etc.) */
 .renderer-container {
     width: 100% !important;
-    height: 88vh !important;
+    height: 92vh !important;
     overflow: hidden;
   }
   
@@ -23,7 +23,7 @@
     height: 60vh;
   }
   
-  .bottom-menu .menu-header {
+  .bottom-menu .menu-header { 
     display: flex;
     align-items: center;
     justify-content: center;
