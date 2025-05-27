@@ -1,9 +1,11 @@
 /* --- Ajustes al contenedor principal de Three.js para asegurar que el menú no lo empuje --- */
 .renderer-container {
   width: 100% !important;
-  height: 92vh !important; /* O 100vh si tu diseño no tiene barra de navegación superior/inferior fija */
+  height: 92vh !important;
+  /* O 100vh si tu diseño no tiene barra de navegación superior/inferior fija */
   overflow: hidden;
-  position: relative; /* Importante para que el bottom-menu se posicione correctamente en relación a él */
+  position: relative;
+  /* Importante para que el bottom-menu se posicione correctamente en relación a él */
 }
 
 /* --- ESTILOS PARA EL MENÚ LATERAL (bottom-menu) --- */
@@ -13,12 +15,15 @@
   left: 15px;
   width: 380px;
   max-width: calc(100% - 30px);
-  height: 0px; /* Altura inicial cuando está contraído */
+  height: 0px;
+  /* Altura inicial cuando está contraído */
   background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  
-  transition: height 0.3s ease-out, visibility 0.3s ease-out, opacity 0.3s ease-out;
+  border-radius: 18px;
+  /* Bordes más redondeados */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  /* Sombra más suave y moderna */
+
+  transition: height 0.3s ease-out, visibility 0.3s ease-out, opacity 0.3s ease-out, box-shadow 0.3s ease-out;
   transition-property: height, visibility, opacity, top, left, width, box-shadow, border-radius;
   transition-duration: 0.3s;
   transition-timing-function: ease-out;
@@ -38,77 +43,106 @@
   opacity: 1;
 }
 
-/* --- ESTILOS PARA EL CONTENIDO INTERNO DEL MENÚ (se mantienen de la respuesta anterior) --- */
+/* --- ESTILOS PARA EL CONTENIDO INTERNO DEL MENÚ --- */
 
 /* Header del menú */
 .menu-header-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  background: linear-gradient(to right, #00C6FF, #0072FF);
+  padding: 20px 25px;
+  /* Más padding para un aspecto más amplio */
+  background: linear-gradient(to right, #0072FF, #00C6FF);
+  /* Gradiente con dirección más moderna */
   color: #fff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: none;
+  /* Quitamos el borde inferior, la sombra de la tarjeta es suficiente */
   flex-shrink: 0;
+  border-top-left-radius: 18px;
+  /* Asegura que la cabecera siga el radio del contenedor */
+  border-top-right-radius: 18px;
 }
 
 .menu-title h3 {
   margin: 0;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.65rem;
+  /* Fuente un poco más grande y prominente */
+  font-weight: 700;
+  /* Más negrita */
 }
 
 .menu-title p {
-  margin: 0;
-  font-size: 0.9rem;
-  opacity: 0.9;
+  margin: 2px 0 0;
+  /* Espacio ajustado */
+  font-size: 0.98rem;
+  opacity: 0.95;
 }
 
 .close-menu-btn {
-  font-size: 2rem;
+  font-size: 2.3rem;
+  /* Tamaño más notorio para el botón de cierre */
   color: #fff;
   cursor: pointer;
   padding: 5px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  /* Transición para interactividad */
 }
 
 .close-menu-btn:hover {
-  opacity: 0.8;
+  opacity: 0.7;
+  transform: rotate(90deg);
+  /* Efecto de giro sutil al cerrar */
 }
 
 /* Barra de búsqueda */
 .search-bar-container {
   display: flex;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #f0f2f5;
+  padding: 15px 25px;
+  /* Más padding */
+  background-color: #f7f9fc;
+  /* Fondo muy claro para la barra */
   border-bottom: 1px solid #e0e2e5;
   flex-shrink: 0;
 }
 
 .search-bar-container i {
-  font-size: 1.2rem;
-  color: #888;
-  margin-right: 10px;
+  font-size: 1.4rem;
+  /* Icono un poco más grande */
+  color: #666;
+  margin-right: 15px;
+  /* Más espacio */
 }
 
 .search-bar-container input {
   flex-grow: 1;
-  border: none;
-  background-color: transparent;
-  padding: 8px 0;
+  border: 1px solid #dcdfe6;
+  /* Borde más definido */
+  border-radius: 10px;
+  /* Bordes redondeados para el input */
+  background-color: #ffffff;
+  padding: 12px 18px;
+  /* Más padding para el texto dentro del input */
   font-size: 1rem;
   outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .search-bar-container input::placeholder {
-  color: #bbb;
+  color: #aab;
 }
 
-/* Pestañas de filtro (4 botones) */
+.search-bar-container input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.2);
+  /* Sutil brillo al enfocar */
+}
+
+/* Pestañas de filtro */
 .filter-tabs {
   display: flex;
   justify-content: space-around;
-  padding: 10px 0;
+  padding: 12px 12px;
   border-bottom: 1px solid #e0e2e5;
   background-color: #f8f9fa;
   flex-shrink: 0;
@@ -118,68 +152,96 @@
   flex-grow: 1;
   border: none;
   background-color: transparent;
-  padding: 10px 5px; /* Ajustado el padding horizontal para 4 botones */
-  font-size: 0.9rem; /* Ligeramente reducido el tamaño de fuente */
-  font-weight: 500;
-  color: #555;
+  padding: 10px 8px;
+  font-size: 0.98rem;
+  /* Fuente ligeramente más grande */
+  font-weight: 600;
+  /* Más negrita para los botones */
+  color: #666;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 20px;
-  margin: 0 3px; /* Reducido el margen entre botones */
-  white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+  border-radius: 28px;
+  /* Más redondeado, estilo "píldora" */
+  margin: 0 4px;
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es muy largo */
+  text-overflow: ellipsis;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  /* Sombra sutil para todos los botones */
 }
 
 .filter-tabs button.active {
   background-color: #007bff;
   color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
+  /* Sombra más pronunciada para el activo */
+  transform: translateY(-2px);
+  /* Ligero levantamiento al estar activo */
 }
 
 .filter-tabs button:hover:not(.active) {
-  background-color: #e2e6ea;
+  background-color: #e9ecef;
+  transform: translateY(-1px);
+  /* Ligero levantamiento al pasar el ratón */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Contenido principal del menú (lista de Campiamigos) */
 .bottom-menu .menu-content {
-  padding: 15px 10px;
+  padding: 15px 20px;
+  /* Padding horizontal incrementado */
   overflow-y: auto;
   height: auto;
   flex-grow: 1;
+  -webkit-overflow-scrolling: touch;
+  /* Desplazamiento suave en dispositivos táctiles */
 }
 
 /* Tarjeta individual de Campiamigo */
 .campiamigo-card {
   background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  /* Borde más claro */
+  border-radius: 18px;
+  /* Bordes más redondeados para la tarjeta */
+  margin-bottom: 20px;
+  /* Más espacio entre tarjetas */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  /* Sombra más pronunciada pero suave */
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  position: relative;
 }
 
 .campiamigo-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-6px);
+  /* Mayor levantamiento al pasar el ratón */
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  /* Sombra más fuerte al pasar el ratón */
 }
 
 .card-header {
   display: flex;
   align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 20px 22px;
+  /* Más padding para el encabezado de la tarjeta */
+  border-bottom: 1px solid #f7f7f7;
+  /* Borde muy claro */
 }
 
 .profile-thumb {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  /* Foto de perfil un poco más grande */
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 15px;
-  border: 2px solid #f2f2f2;
+  margin-right: 20px;
+  /* Más espacio */
+  border: 4px solid #e6e6e6;
+  /* Borde más grueso y suave */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Sombra sutil en la foto de perfil */
 }
 
 .header-details {
@@ -187,137 +249,203 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  position: relative;
 }
 
 .header-details h4 {
   margin: 0;
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #333;
+  font-size: 1.3rem;
+  /* Fuente más grande para el nombre */
+  font-weight: 700;
+  /* Más negrita */
+  color: #222;
+  line-height: 1.2;
 }
 
-/* Punto de estado (verde/rojo/color del indicador) */
-.status-dot {
-  position: absolute;
-  top: 5px;
-  right: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+/* Contenedor de estado y tags */
+.status-tags-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  /* Permite que los tags se ajusten si son muchos */
+  gap: 10px;
+  /* Espacio entre los elementos (badge, dot, tags) */
+  margin-top: 8px;
+  /* Espacio desde el nombre */
 }
 
-/* Reutilizando .badge y .badge-tag que ya tenías */
+/* Badge de estado (Activo/Inactivo) */
 .badge {
-  padding: 4px 10px;
+  padding: 6px 14px;
+  /* Más padding para los badges */
   border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
+  font-size: 0.88rem;
+  /* Fuente ligeramente más grande */
+  font-weight: 600;
+  /* Más negrita */
   text-transform: capitalize;
-  margin-top: 5px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  /* Espacio entre el texto del badge y un posible icono/punto */
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  /* Borde sutil para los badges */
 }
 
-.badge-tag {
-  /* Inherits from .badge, colores desde Angular */
+ 
+
+/* Punto de color del indicador 3D */
+.status-dot.indicator-color-dot {
+  width: 11px;
+  height: 11px;
+  right: 18px;
+  border-radius: 50%;
+  position: absolute;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
-.card-body {
-  padding: 15px;
-}
-
-/* REVISADO: Estilos para la ubicación */
-.card-location {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 8px; /* Espacio debajo de la ubicación */
-  display: flex; /* Para el icono */
-  align-items: flex-start; /* Para alinear el icono con la primera línea de texto si hay salto */
-  line-height: 1.4; /* Asegura un buen espaciado si el texto de la ubicación es largo */
-}
-
-.card-location i {
-  margin-right: 8px; /* Más espacio para el ícono */
-  font-size: 1rem;
-  color: #888;
-  margin-top: 2px; /* Alineación vertical fina con el texto */
-  flex-shrink: 0; /* Evita que el ícono se encoja */
-}
-
-.card-biography {
-  font-size: 0.85rem;
-  color: #555;
-  margin-bottom: 12px;
-  line-height: 1.4;
-}
-
-.card-tags {
+/* Tags de la tarjeta en el header */
+.card-tags.header-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 15px;
+  /* Espacio entre tags individuales */
+  margin-top: 0;
+  /* Reinicia cualquier margen superior */
 }
 
-/* ELIMINADO: No hay sección de productos destacados */
-/*
-.card-products-section h5 { ... }
-.featured-products-list { ... }
-.featured-product-item { ... }
-.featured-product-item img { ... }
-.featured-product-item p { ... }
-*/
+.card-tags.header-tags .badge-tag {
+  padding: 5px 12px;
+  /* Padding específico para tags en el header */
+  font-size: 0.82rem;
+  /* Tamaño de fuente para tags */
+  font-weight: 500;
+}
+
+
+.card-body {
+  padding: 20px 22px;
+  /* Más padding */
+  border-bottom: 1px solid #f7f7f7;
+  /* Borde consistente */
+}
+
+.main-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Más espacio entre biografía y zona */
+}
+
+.user-biography,
+.zone-type-display {
+  display: flex;
+  align-items: flex-start;
+  font-size: 0.98rem;
+  color: #555;
+  line-height: 1.5;
+}
+
+.info-icon {
+  font-size: 1.3rem;
+  /* Tamaño de icono consistente */
+  color: #777;
+  /* Color de icono más suave */
+  margin-right: 12px;
+  /* Más espacio */
+  flex-shrink: 0;
+  padding-top: 3px;
+  /* Ajuste fino de alineación */
+}
+
+.user-biography span {
+  flex-grow: 1;
+}
+
+.zone-type-display strong {
+  color: #333;
+  /* Texto de la zona más oscuro y prominente */
+  font-weight: 700;
+}
+
 
 .card-contact-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
-  border-top: 1px solid #f0f0f0;
+  padding: 18px 22px;
+  /* Padding consistente */
+  background-color: #fcfcfc;
+  /* Fondo muy sutil para la sección de acciones */
+  border-bottom-left-radius: 18px;
+  /* Coincide con el radio de la tarjeta */
+  border-bottom-right-radius: 18px;
 }
 
 .contact-phone {
   display: flex;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
+  /* Teléfono ligeramente más grande */
   color: #007bff;
-  font-weight: 500;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.contact-phone:hover {
+  color: #0056b3;
+  /* Color más oscuro al pasar el ratón */
 }
 
 .contact-phone i {
-  margin-right: 5px;
-  font-size: 1.1rem;
+  margin-right: 10px;
+  /* Más espacio */
+  font-size: 1.3rem;
+  /* Icono más grande */
+  color: #007bff;
 }
 
 .btn-view-profile {
   background-color: #28a745;
   color: #fff;
   border: none;
-  padding: 8px 15px;
-  border-radius: 25px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  padding: 12px 22px;
+  /* Más padding para el botón */
+  border-radius: 30px;
+  /* Más redondeado, estilo "píldora" */
+  font-size: 1rem;
+  /* Fuente ligeramente más grande */
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+  /* Sombra sutil para el botón */
 }
 
 .btn-view-profile:hover {
   background-color: #218838;
+  transform: translateY(-3px);
+  /* Ligero levantamiento al pasar el ratón */
+  box-shadow: 0 7px 15px rgba(40, 167, 69, 0.45);
+  /* Sombra más fuerte al pasar el ratón */
 }
 
 .no-results-message {
   text-align: center;
   color: #777;
-  padding: 20px;
+  padding: 25px;
+  /* Más padding para el mensaje */
   font-style: italic;
+  font-size: 1.05rem;
 }
-
 
 /* Estilos para el overlay de información DENTRO del model-container principal */
 .territory-overlay-info {
   position: absolute;
   top: 50%;
   right: 15px;
-   opacity: 1;
+  opacity: 1;
   transition: background 0.3s ease;
 }
 
