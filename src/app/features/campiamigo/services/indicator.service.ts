@@ -23,6 +23,9 @@ export interface IndicatorResponse {
     name: string;
     tipoZona: string;
     zoneImage: string;
+    departamentoName?: string; // <-- Nuevo campo
+    climate?: string;        // <-- Nuevo campo
+    about?: string;  
   };
   userProfile?: {
     id: number;          // userProfile.id
@@ -46,6 +49,7 @@ export interface IndicatorResponse {
       username?: string;
       email?: string;
       phoneNumber?: string;
+      status?: 'Activado' | 'Desactivado';
       products?: Array<{
         id: number;
         name: string;
@@ -71,7 +75,7 @@ export interface IndicatorResponse {
 export class IndicatorService {
   private baseUrl = `${environment.endpoint}user/admin/`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getIndicatorData(userProfileId: number): Observable<GetIndicatorResponse> {
     const token = localStorage.getItem('token') || '';

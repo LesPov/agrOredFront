@@ -352,7 +352,7 @@
 
 /* Media queries para dispositivos pequeños */
 @media (max-width: 380px) {
-  .container_zona {
+  /* .container_zona {
     padding: 40px 10px;
   }
 
@@ -363,5 +363,5 @@
   .cards {
     gap: 16px;
     margin-bottom: 80px;
-  }
+  } */
 }

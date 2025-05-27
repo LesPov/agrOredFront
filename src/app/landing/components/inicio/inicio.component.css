@@ -21,28 +21,30 @@
 /* Sección Hero (Estilos Actualizados)    */
 /* ====================================== */
 .hero-section {
-    background: linear-gradient(to bottom, #5cb85c, #004d26);
-    /* Ajustado verde inicial */
-    color: white;
-    padding: 5rem 1.5rem 3rem 1.5rem;
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
+  background: linear-gradient(to bottom, #5cb85c, #004d26);
+  color: white;
+  padding: 5rem 1.5rem 3rem;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;       /* centramos horizontal */
+  text-align: left;
+  margin-top: 66px;
 }
 
 .hero-section .content {
-    max-width: 700px;
-    margin: 0 auto;
-    text-align: left;
+  max-width: 700px;
+  width: 100%;                   /* full width hasta max-width */
+  margin: 0 auto;
 }
 
+
 .welcome-title {
-    font-size: 40px;
-    font-weight: 800;
-    line-height: 1.2;
-    margin-bottom: 1.5rem;
-    color: #ffffff;
-    font-family: 'Poppins', 'Segoe UI', sans-serif;
+  /* cambiaremos luego por clamp() */
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
 }
 
 .welcome-title .highlight {
@@ -51,7 +53,7 @@
 }
 
 .description {
-    font-size: 1.15rem;
+  font-size: clamp(1rem, 3vw, 1.25rem);
     line-height: 1.7;
     margin-bottom: 2rem;
     max-width: 550px;
@@ -126,7 +128,7 @@
 .usage-section {
     background-color: #f8f9fa;
     /* Un fondo ligeramente gris para contraste */
-    padding: 4rem 1rem 3rem 1rem;
+    padding: 0rem 1rem 3rem 1rem;
     text-align: center;
 }
 

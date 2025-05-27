@@ -81,7 +81,7 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
       console.log('ZoneComponent cargado en modo PRIVADO');
     }
 
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params: { [x: string]: string | undefined; }) => {
       this.loadInitialData(params['climate'], params['dept']);
     });
   }

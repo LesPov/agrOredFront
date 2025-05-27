@@ -1,0 +1,128 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  background: #ffffff;
+  padding: 8px 30px;
+  color: #232949;
+  border-bottom-left-radius: 10%;
+  border-bottom-right-radius: 10%;
+  z-index: 100000;
+  box-shadow: 0 3px 10px #00000040;
+}
+
+.header i {
+  font-size: 20px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.header h2 {
+  font-size: clamp(24px, 6vw, 36px);
+  margin: 0;
+  text-align: center;
+}
+
+.header-left {
+  position: relative;
+  display: flex;
+  align-items: center;
+  -webkit-tap-highlight-color: transparent;
+
+}
+
+.header-left i {
+  cursor: pointer;
+}
+
+.dropdown {
+  position: absolute;
+  top: 15px;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 120px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100000;
+  margin-top: 5px;
+}
+
+.dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown ul li {
+  padding: 8px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.dropdown ul li:last-child {
+  border-bottom: none;
+}
+
+.dropdown ul li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 14px;
+}
+
+.bx {
+  cursor: pointer;
+}
+
+.dropdown ul li:hover {
+  background-color: #f5f5f5;
+}
+
+/* Estilos para el elemento activo */
+.dropdown ul li.active {
+  background-color: #232949;
+}
+
+.dropdown ul li.active a {
+  color: #fff;
+}
+
+/* Clase que aplica color rojo y animación cuando el bot está hablando */
+.bot-speaking {
+  color: red !important;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Media Query para pantallas muy pequeñas */
+@media (max-width: 400px) {
+  .header {
+    padding: 8px 20px;
+  }
+
+  .header h2 {
+    font-size: clamp(20px, 6vw, 28px);
+  }
+
+  .header i {
+    font-size: 25px;
+  }
+}

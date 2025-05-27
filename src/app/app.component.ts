@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { IdleService } from './shared/components/inactividad/idle.service';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +10,6 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'agrOredFront';
-  
+  constructor(private idleService: IdleService) {
+  }
 }

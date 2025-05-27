@@ -1,0 +1,21 @@
+<div class="navigation">
+  <ul>
+    <!-- Generamos dinámicamente los items -->
+    <li *ngFor="let item of navData; let i = index" 
+        #listItem 
+        class="list" 
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }">
+      <a [routerLink]="item.routerLink">
+        <span class="icon">
+          <i [class]="item.icon" [ngClass]="{'scene-active': isSceneRoute}"></i>
+        </span>
+        <span class="text">{{ item.label }}</span>
+      </a>
+    </li>
+    <!-- Indicador para la animación se muestra solo si la ruta actual coincide con alguno de los links -->
+    <ng-container *ngIf="hasActiveNav()">
+      <div class="indicador" [ngClass]="{'scene-active': isSceneRoute}"></div>
+    </ng-container>
+  </ul>
+</div>

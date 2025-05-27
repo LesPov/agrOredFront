@@ -1,12 +1,12 @@
 .body {
     width: 100%;
     position: relative;
-    top: 0px;
+    top: 42px;
     height: 80vh;
     z-index: 1;
     color: #000;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
 }
 
 body::-webkit-scrollbar {

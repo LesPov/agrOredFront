@@ -1,0 +1,26 @@
+<div class="header">
+  <div class="header-left">
+    <!-- Al hacer clic en el ícono se activa el dropdown -->
+    <i class='bx bxs-cog' (click)="toggleDropdown()"></i>
+
+    <!-- Dropdown: se muestra solo cuando dropdownVisible es true -->
+    <div class="dropdown" *ngIf="dropdownVisible"> 
+      <ul>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/configuracion">Configuración</a>
+        </li>
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <a routerLink="/soporte">Soporte</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>CampiAmigo</h2>
+
+  <!-- Icono del bot: cambia a rojo (y con animación) cuando está hablando -->
+  <i class='bx bxs-user-voice' 
+     [ngClass]="{'bot-speaking': isBotSpeaking}" 
+     (click)="speakBot()">
+  </i>
+</div>
