@@ -6,10 +6,9 @@
 .product-detail-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 2rem;
     padding: 1rem;
     max-width: 1200px;
-    margin: 0 auto;
+    margin-top: 0px;
 }
 .products-header {
     margin-bottom: 16px;

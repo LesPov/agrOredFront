@@ -44,11 +44,9 @@ const iconDefault = L.icon({
     FormsModule,  // Para [(ngModel)]
     LoginPromptComponent
   ],
-  providers: [ // Pipes necesitan ser proveídos si no están en CommonModule (DatePipe, CurrencyPipe, DecimalPipe sí lo están)
-    // DatePipe, CurrencyPipe, DecimalPipe // No es estrictamente necesario aquí si están en CommonModule
-  ],
+ 
   templateUrl: './detalle-products.component.html',
-  styleUrls: ['./detalle-products.component.css']
+  styleUrls: ['./detalle-products.component.css'] // <-- Verifica que esta ruta sea correcta
 })
 export class DetalleProductsComponent implements OnInit, AfterViewInit, OnDestroy {
 
