@@ -11,17 +11,28 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/front-venta-market",
+           "outputPath": "dist/front-venta-market",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": [
+             "polyfills": [
               "zone.js"
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images",
+                "output": "/assets/leaflet/images"
+              },
+              {
+                "glob": "**/*",
+                "input": "public",
+                "output": "/"
+              }
             ],
             "styles": [
+              "node_modules/leaflet/dist/leaflet.css",
               "src/styles.css",
               {
                 "input": "node_modules/ngx-toastr/toastr.css",
@@ -33,9 +44,9 @@
             "allowedCommonJsDependencies": [
               "canvg",
               "core-js",
+              "leaflet",
               "rgbcolor",
-              "raf",
-              "leaflet"
+              "raf"
             ],
             "optimization": true,
             "vendorChunk": true,
@@ -81,6 +92,7 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          
           "configurations": {
             "production": {
               "buildTarget": "FrontVentaMarket:build:production"

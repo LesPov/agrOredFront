@@ -18,7 +18,7 @@ export class ProfileService {
   getProfile(): Observable<Profile> {
     const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<Profile>(`${this.baseUrl}user/me`, { headers });
+    return this.http.get<Profile>(`${this.baseUrl}me`, { headers });
   }
 
   // Nuevo método: consulta el perfil de un usuario específico por su ID

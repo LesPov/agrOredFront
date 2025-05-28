@@ -12,7 +12,7 @@
 <div class="territory-overlay-info">
   <div class="info-items-container">
     <div class="menu-header" (click)="toggleMenu()">
-      <i [class]="isExpanded ? 'bx bx-exit-fullscreen' : 'bx bx-target-lock'"></i>
+      <i [class]="isExpanded ? 'bx bx-exit-fullscreen' : 'bx bxs-user-pin'"></i>
     </div>
     <!-- Botón para animar el sol -->
     <div class="botonsol" (click)="toggleSunAnimation()">
@@ -104,8 +104,9 @@
       <div class="card-body">
         <div class="main-card-info">
           <p class="user-biography">
-            <i class='bx bxs-quote-alt-left info-icon'></i>
-            <span>{{ getShortBiography(indicator.userProfile?.biography) }}</span>
+            <i class='bx bxs-bookmark-alt info-icon'></i>
+             <span>Biografia: <strong>{{ getShortBiography(indicator.userProfile?.biography) }}</strong></span>
+
           </p>
           <p class="zone-type-display">
             <i class='bx bxs-tree info-icon'></i>
@@ -119,7 +120,7 @@
           <i class='bx bxs-phone'></i> {{ getPhoneNumber(indicator.userProfile) }}
         </span>
         <button class="btn-view-profile"
-          (click)="fetchAndShowIndicatorModal(indicator.userProfile!.id); $event.stopPropagation()">Ver perfil</button>
+          (click)="fetchAndShowIndicatorModal(indicator.userProfile!.id); $event.stopPropagation()">Ver</button>
       </div>
     </div>
     <!-- Mensaje si no hay resultados -->

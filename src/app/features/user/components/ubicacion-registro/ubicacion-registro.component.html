@@ -1,1 +1,27 @@
-<p>ubicacion-registro works!</p>
+<div class="ubicacion-wrapper">
+    <div class="map-container">
+      <div class="ubicacion-input">
+        <label for="direccion">Ubicación seleccionada:</label>
+        <input
+          type="text"
+          id="direccion"
+          [value]="direccionSeleccionada"
+          readonly
+          [class.loading]="isLoading"
+          placeholder="Selecciona un punto en el mapa">
+      </div>
+      <button class="btn-ubicacion-actual" (click)="centrarEnUbicacionActual()">
+        <i class='bx bx-target-lock bx-tada'></i>
+      </button>
+      <div id="map">
+        <!-- ELIMINADO: Overlay de carga del mapa y spinner -->
+        <!-- <div *ngIf="isLoadingMap" class="map-loading-overlay">
+          <div class="spinner"></div>
+          <p>Cargando mapa...</p>
+        </div> -->
+      </div>
+    </div>
+    <button class="btn-continuar" (click)="handleContinue()">
+      Continuar
+    </button>
+  </div>

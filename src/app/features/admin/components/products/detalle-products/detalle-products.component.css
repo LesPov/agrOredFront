@@ -1,5 +1,6 @@
 /* detalle-products.component.css */
 @import "~leaflet/dist/leaflet.css";
+
 /* ==========================================================================
    Layout Principal
    ========================================================================== */
@@ -7,14 +8,15 @@
     display: flex;
     flex-wrap: wrap;
     padding: 1rem;
-    max-width: 1200px;
-    margin-top: 0px;
+    margin-top: 68px;
 }
+
 .products-header {
     margin-bottom: 16px;
     display: flex;
     align-items: center;
 }
+
 .bx-chevron-left {
     font-size: 30px;
     cursor: pointer;
@@ -25,13 +27,13 @@
     text-align: center;
     margin: 0 10px;
 }
+
 .back-link {
     width: 100%;
     cursor: pointer;
     gap: 20px;
     font-size: 20px;
-    display: flex
-;
+    display: flex;
     color: #333333;
     padding: 0.5rem 1rem;
     font-weight: 500;
@@ -614,11 +616,11 @@
 }
 
 /* Si hay descripción Y categorías, añadir borde arriba de categorías */
- .categories-section {
+.categories-section {
     border-top: 1px solid #eee;
 }
 
-  .categories-section {
+.categories-section {
     margin-top: 10px;
     background: none;
     box-shadow: none;
@@ -626,7 +628,7 @@
     /* Quitar borde por defecto */
 }
 
-  .categories-section h3 {
+.categories-section h3 {
     font-size: 1rem;
     font-weight: 600;
     color: #444;
@@ -637,13 +639,13 @@
     border: none;
 }
 
- .category-tags {
+.category-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
 }
 
- .category-tag {
+.category-tag {
     background-color: #f0f0f0;
     color: #555;
     padding: 0.4rem 0.9rem;
@@ -972,7 +974,7 @@
     background-color: #ffffff;
     border-top: 1px solid #e9ecef;
     padding: 1.2rem;
-     display: flex;
+    display: flex;
     flex-direction: column;
     overflow: hidden;
 }
@@ -1145,9 +1147,11 @@
 /* Elimina cualquier otra definición de .leaflet-map-container que tengas */
 .map-container {
     width: 100%;
-    height: 400px;   /* o el alto que necesites */
+    height: 400px;
+    /* o el alto que necesites */
     position: relative;
-  }
+}
+
 /* Placeholders dentro de .styled-map */
 .map-loading-placeholder,
 .map-ssr-placeholder {
@@ -1262,6 +1266,7 @@
     background-color: #f8d7da;
     border-color: #f5c6cb;
 }
+
 /* ==========================================================================
    ESTILOS PARA EL POPUP DEL MAPA Y SU BOTÓN (REFINADOS CON ÉNFASIS EN TS)
    ========================================================================== */
@@ -1270,27 +1275,32 @@
 .custom-leaflet-popup .leaflet-popup-content-wrapper {
     background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15); /* Sombra un poco más suave */
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    /* Sombra un poco más suave */
     border: none;
     padding: 0;
 }
 
 /* Contenido interno del popup */
 .custom-leaflet-popup .leaflet-popup-content {
-    margin: 0 !important; /* Sobrescribir margen por defecto */
-    padding: 12px 18px;   /* Padding interno ajustado */
+    margin: 0 !important;
+    /* Sobrescribir margen por defecto */
+    padding: 12px 18px;
+    /* Padding interno ajustado */
     font-family: 'Segoe UI', sans-serif;
-    font-size: 0.9rem;    /* Tamaño base del texto */
+    font-size: 0.9rem;
+    /* Tamaño base del texto */
     line-height: 1.4;
     min-width: 180px;
 }
 
- 
+
 
 /* Nombre del vendedor */
 .popup-seller-name {
-     /* Ya tiene estilos inline, podemos añadir más si es necesario */
-     margin-bottom: 3px; /* Pequeño espacio extra abajo */
+    /* Ya tiene estilos inline, podemos añadir más si es necesario */
+    margin-bottom: 3px;
+    /* Pequeño espacio extra abajo */
 }
 
 
@@ -1299,23 +1309,27 @@
 .btn-get-directions-popup {
     /* Estilos base principales vienen de inline style en TS */
     /* Añadimos :hover y otros ajustes */
-    text-decoration: none; /* Asegurar que no haya subrayado inicial */
+    text-decoration: none;
+    /* Asegurar que no haya subrayado inicial */
     transition: color 0.2s ease, text-decoration 0.2s ease;
 }
 
 .btn-get-directions-popup:hover {
-    color: #1a73e8 !important; /* Azul en hover, !important por si acaso */
+    color: #1a73e8 !important;
+    /* Azul en hover, !important por si acaso */
     text-decoration: underline !important;
 }
 
 
 /* Botón de cierre (X) */
 .custom-leaflet-popup .leaflet-popup-close-button {
-    color: #999; /* Gris más oscuro */
+    color: #999;
+    /* Gris más oscuro */
     font-size: 1.3rem;
     padding: 6px 6px 0 0;
     transition: color 0.2s ease;
 }
+
 .custom-leaflet-popup .leaflet-popup-close-button:hover {
     color: #333;
     background-color: transparent;
@@ -1323,6 +1337,6 @@
 
 /* Flecha del popup */
 .custom-leaflet-popup .leaflet-popup-tip {
-   background-color: #ffffff;
-   box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
 }

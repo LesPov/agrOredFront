@@ -363,7 +363,7 @@
   flex-grow: 1;
 }
 
-.zone-type-display strong {
+  strong {
   color: #333;
   /* Texto de la zona más oscuro y prominente */
   font-weight: 700;
