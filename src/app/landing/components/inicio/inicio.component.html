@@ -359,7 +359,7 @@
   <footer class="footer-section">
     <div class="footer-container">
 
-      <!-- Botón de volver arriba -->
+       <!-- Este botón llamará a la nueva función `scrollToTop()` -->
       <button type="button" class="scroll-to-top" (click)="scrollToTop()" title="Volver arriba"
         aria-label="Volver al principio de la página">
         <i class="bx bx-up-arrow-alt" aria-hidden="true"></i>
@@ -395,41 +395,47 @@
           </ul>
         </div>
 
-        <!-- Columna “Enlaces Rápidos” -->
+         <!-- Columna “Enlaces Rápidos” -->
         <div class="footer-col links-col">
           <h4>Enlaces Rápidos</h4>
           <ul class="footer-links" aria-label="Enlaces rápidos">
             <li>
-              <a routerLink="/inicio/territorio" role="link">
+              <!-- "Explorar Territorio" se enlaza a /inicio/zonas como en el header -->
+              <a routerLink="/inicio/zonas" role="link">
                 <i class="bx bx-chevron-right" aria-hidden="true"></i>
                 Explorar Territorio
               </a>
             </li>
             <li>
+              <!-- "Productos" se enlaza a /inicio/productos -->
               <a routerLink="/inicio/productos" role="link">
                 <i class="bx bx-chevron-right" aria-hidden="true"></i>
                 Productos
               </a>
             </li>
             <li>
+              <!-- "Campiamigos": Asumo una ruta a nivel raíz (o que la definirás) -->
               <a routerLink="/campiamigos" role="link">
                 <i class="bx bx-chevron-right" aria-hidden="true"></i>
                 Campiamigos
               </a>
             </li>
             <li>
-              <a routerLink="/inicio/productos" [queryParams]="{ clima: 'frio' }" role="link">
+              <!-- "Clima Frío": Enlace a productos con query param para filtrar -->
+              <a [routerLink]="['/inicio/productos']" [queryParams]="{ clima: 'frio' }" role="link">
                 <i class="bx bx-chevron-right" aria-hidden="true"></i>
                 Clima Frío
               </a>
             </li>
             <li>
-              <a routerLink="/inicio/productos" [queryParams]="{ clima: 'calido' }" role="link">
+              <!-- "Clima Cálido": Enlace a productos con query param para filtrar -->
+              <a [routerLink]="['/inicio/productos']" [queryParams]="{ clima: 'calido' }" role="link">
                 <i class="bx bx-chevron-right" aria-hidden="true"></i>
                 Clima Cálido
               </a>
             </li>
             <li>
+              <!-- "Cómo Funciona": Asumo una ruta a nivel raíz (o que la definirás) -->
               <a routerLink="/como-funciona" role="link">
                 <i class="bx bx-chevron-right" aria-hidden="true"></i>
                 Cómo Funciona
@@ -437,6 +443,7 @@
             </li>
           </ul>
         </div>
+ 
 
         <!-- Columna “Información” -->
         <div class="footer-col links-col">
@@ -525,7 +532,7 @@
   <!-- ==================================== -->
   <!--         FIN: Footer Section          -->
   <!-- ==================================== -->
-
+ 
 </div> <!-- Fin dashboard-container -->
   <!-- *** AÑADE EL MODAL DE LOGIN AQUÍ *** -->
   <app-login-prompt

@@ -5,7 +5,7 @@
       <i class='bx bx-menu-alt-left menu-toggle-icon' (click)="toggleDropdown()"></i>
     </div>
     <!-- Título principal de la app -->
-    <img src="../../../../../../assets/img/inicio/agroredtitle.png" alt="">
+    <img src="../../../../../../assets/img/inicio/agroredtitle.png" alt="AgroRed Logo">
     <!-- Icono de voz (si lo sigues necesitando aquí) -->
     <i class='bx bxs-user-voice voice-icon' (click)="speakBot()"></i>
   </div>
@@ -18,8 +18,8 @@
     <div class="dropdown-header">
       <div class="logo-container">
         <!-- Puedes usar una imagen o un icono para el logo -->
-        <img src="../../../../../../assets/img/inicio/icon.png" alt="">
-        <img src="../../../../../../assets/img/inicio/agroredtitle.png" alt=""> 
+        <img src="../../../../../../assets/img/inicio/icon.png" alt="Icono AgroRed">
+        <img src="../../../../../../assets/img/inicio/agroredtitle.png" alt="Título AgroRed"> 
         <i class='bx bx-x close-icon' (click)="toggleDropdown()"></i>
   
       </div>
@@ -32,26 +32,40 @@
       <div class="menu-section">
         <h4 class="section-title">NAVEGACIÓN</h4>
         <ul>
-          <!-- Añade routerLink cuando tengas las rutas -->
+          <!-- INICIO: Conectado a la ruta base /inicio -->
           <li>
-            <i class='bx bx-home-alt'></i>
-            <span>Inicio</span>
+            <a routerLink="/inicio" (click)="toggleDropdown()">
+              <i class='bx bx-home-alt'></i>
+              <span>Inicio</span>
+            </a>
           </li>
+          <!-- EXPLORAR TERRITORIO: Conectado a /inicio/zonas -->
           <li>
-            <i class='bx bx-map'></i>
-            <span>Explorar Territorio</span>
+            <a routerLink="/inicio/zonas" (click)="toggleDropdown()">
+              <i class='bx bx-map'></i>
+              <span>Explorar Territorio</span>
+            </a>
           </li>
+          <!-- PRODUCTOS: Conectado a /inicio/productos -->
           <li>
-            <i class='bx bx-purchase-tag-alt'></i> <!-- O bx-shopping-bag -->
-            <span>Productos</span>
+            <a routerLink="/inicio/productos" (click)="toggleDropdown()">
+              <i class='bx bx-purchase-tag-alt'></i> <!-- O bx-shopping-bag -->
+              <span>Productos</span>
+            </a>
           </li>
+          <!-- CAMPIAMIGOS: Basado en el footer, asumo una ruta /campiamigos (puede que necesites definirla si no existe) -->
           <li>
-            <i class='bx bx-group'></i>
-            <span>Campiamigos</span>
+            <a routerLink="/campiamigos" (click)="toggleDropdown()">
+              <i class='bx bx-group'></i>
+              <span>Campiamigos</span>
+            </a>
           </li>
+          <!-- CÓMO FUNCIONA: Basado en el footer, asumo una ruta /como-funciona (puede que necesites definirla si no existe) -->
           <li>
-            <i class='bx bx-info-circle'></i>
-            <span>Cómo Funciona</span>
+            <a routerLink="/como-funciona" (click)="toggleDropdown()">
+              <i class='bx bx-info-circle'></i>
+              <span>Cómo Funciona</span>
+            </a>
           </li>
         </ul>
       </div>
@@ -60,16 +74,21 @@
       <div class="menu-section">
         <h4 class="section-title">EXPLORAR POR CLIMA</h4>
         <ul>
-          <!-- Añade routerLink cuando tengas las rutas -->
+          <!-- CLIMA FRÍO: Conectado a /inicio/productos con queryParam clima=frio -->
           <li>
-            <i class='bx bx-cloud'></i>
-            <span>Clima Frío</span>
-            <i class='bx bx-chevron-right arrow-icon'></i>
+            <a [routerLink]="['/inicio/productos']" [queryParams]="{ clima: 'frio' }" (click)="toggleDropdown()">
+              <i class='bx bx-cloud'></i>
+              <span>Clima Frío</span>
+              <i class='bx bx-chevron-right arrow-icon'></i>
+            </a>
           </li>
+          <!-- CLIMA CÁLIDO: Conectado a /inicio/productos con queryParam clima=calido -->
           <li>
-            <i class='bx bx-sun'></i>
-            <span>Clima Cálido</span>
-            <i class='bx bx-chevron-right arrow-icon'></i>
+            <a [routerLink]="['/inicio/productos']" [queryParams]="{ clima: 'calido' }" (click)="toggleDropdown()">
+              <i class='bx bx-sun'></i>
+              <span>Clima Cálido</span>
+              <i class='bx bx-chevron-right arrow-icon'></i>
+            </a>
           </li>
         </ul>
       </div>
@@ -80,21 +99,21 @@
     <div class="dropdown-footer">
       <!-- Botón Iniciar Sesión -->
       <!-- Mantenemos tu routerLink existente -->
-      <a class="btn btn-login" routerLink="/auth/login" (click)="dropdownVisible=false">
+      <a class="btn btn-login" routerLink="/auth/login" (click)="toggleDropdown()">
         <i class='bx bx-log-in'></i>
         <span>Iniciar Sesión</span>
       </a>
   
       <!-- Botón Registrarse -->
       <!-- Mantenemos tu routerLink existente -->
-      <a class="btn btn-register" routerLink="/auth/register" (click)="dropdownVisible=false">
+      <a class="btn btn-register" routerLink="/auth/register" (click)="toggleDropdown()">
         <i class='bx bx-user-plus'></i> <!-- Icono de usuario con '+' -->
         <span>Registrarse</span>
       </a>
   
       <!-- Enlace de Soporte -->
       <!-- Mantenemos tu routerLink existente -->
-      <a class="support-link" routerLink="/soporte" (click)="dropdownVisible=false">
+      <a class="support-link" routerLink="/soporte" (click)="toggleDropdown()">
         <i class='bx bx-help-circle'></i> <!-- Icono de pregunta -->
         <span>Soporte</span>
       </a>

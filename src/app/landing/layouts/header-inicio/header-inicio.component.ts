@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener } from '@angular/core';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router } from '@angular/router'; // RouterLink ya está importado
 import { BotInfoService } from '../../../features/admin/services/botInfo.service';
 
 @Component({
@@ -11,12 +11,11 @@ import { BotInfoService } from '../../../features/admin/services/botInfo.service
 })
 export class HeaderInicioComponent {
 
-
   dropdownVisible: boolean = false;
 
   constructor(
     private router: Router, 
-    private elementRef: ElementRef,
+    private elementRef: ElementRef, 
     private botInfoService: BotInfoService
   ) {}
 

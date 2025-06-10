@@ -48,7 +48,7 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
   public environment = environment;
   private territoryServiceInitialized = false;
   private readonly baseAssetUrl = environment.endpoint.endsWith('/') ? environment.endpoint : environment.endpoint + '/';
-  private readonly defaultZoneImage = 'assets/img/default-zone.png';
+  private readonly defaultZoneImage = 'assets/img/zone/default-zone.png';
   private preloadQueue: ExtendedZoneData[] = [];
   private isPreloadingActive = false;
   private allProducts: ProductData[] = [];

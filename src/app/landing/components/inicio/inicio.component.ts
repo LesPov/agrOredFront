@@ -1,4 +1,3 @@
-// src/app/pages/inicio/inicio.component.ts // O la ruta correcta: src/app/landing/components/inicio/inicio.component.ts
 import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
@@ -20,6 +19,7 @@ import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { CommonModule } from '@angular/common';
 import { BotInfoService } from '../../../features/admin/services/botInfo.service';
 import { LoginPromptComponent } from '../../../shared/components/login-prompt/login-prompt.component';
+
 interface ExtendedZoneData extends ZoneData {
   productosPrincipales?: string[];
 }
@@ -92,7 +92,7 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   public showModal = false;
 
   private readonly defaultProductImage = 'assets/img/default-product.png';
-  private readonly defaultTerritoryImage = 'assets/img/default-zone.png';
+  private readonly defaultTerritoryImage = 'assets/img/zonas/default-zone.png';
   private readonly baseAssetUrl = environment.endpoint.endsWith('/') ? environment.endpoint : environment.endpoint + '/';
   public showLoginModal: boolean = false;
   selectedZone: AggregatedZone | null = null;
@@ -449,7 +449,36 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   public subscribeNewsletter(event: Event): void {
     event.preventDefault(); const form = event.target as HTMLFormElement; const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement; if (!emailInput) return; const email = emailInput.value; if (email && emailInput.checkValidity()) { this.toastr.success(`Gracias por suscribirte con ${email}!`, 'Suscripción Exitosa'); emailInput.value = ''; } else if (!email) { this.toastr.warning('Por favor, ingresa tu correo electrónico.', 'Campo Vacío'); } else { this.toastr.error('Por favor, ingresa un correo electrónico válido.', 'Error de Formato'); }
   }
-  public scrollToTop(): void { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  
+  // MODIFICACIÓN: Función scrollToTop para una animación más controlada
+  public scrollToTop(): void {
+    const scrollDuration = 800; // Duración en milisegundos (puedes ajustar: 500ms es rápido, 1000ms es más lento)
+    const startPosition = window.scrollY; // Posición actual del scroll
+    const startTime = performance.now(); // Marca de tiempo de inicio
+
+    const animateScroll = () => {
+      const currentTime = performance.now();
+      const elapsed = currentTime - startTime; // Tiempo transcurrido desde el inicio
+      
+      // Calcula el progreso de la animación (entre 0 y 1)
+      // Usamos una función de easing (facilita la animación) para un movimiento más natural
+      const progress = Math.min(elapsed / scrollDuration, 1); // Asegura que no exceda 1
+      const easeProgress = 0.5 - 0.5 * Math.cos(Math.PI * progress); // Easing suave (easeInOutSine)
+
+      // Calcula la nueva posición del scroll
+      const newPosition = startPosition * (1 - easeProgress);
+
+      window.scrollTo(0, newPosition); // Mueve el scroll a la nueva posición
+
+      // Si la animación no ha terminado, solicita el siguiente frame
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+
+    requestAnimationFrame(animateScroll); // Inicia la animación
+  }
+
 
   // ======================================================================== //
   // == Section 8: Utility & Helper Functions                              == //
@@ -458,7 +487,6 @@ export class InicioComponent implements OnInit, AfterViewInit, OnDestroy {
   public zoneHasModels(zone: ZoneData | null): boolean { if (!zone) return false; return this.territoryInteractionService.zoneHasModels(zone); }
   public getZoneClimateClass(climate?: ZoneData['climate'] | string): string { if (!climate) return 'other'; const cl = climate.toLowerCase(); if (cl === 'frio' || cl === 'frío') return 'cold'; if (cl === 'calido' || cl === 'cálido' || cl === 'templado') return 'hot'; return 'other'; }
   public getZoneClimateText(climate?: ZoneData['climate'] | string): string { if (!climate) return 'N/A'; const cl = climate.toLowerCase(); if (cl === 'frio' || cl === 'frío') return 'Frío'; if (cl === 'calido' || cl === 'cálido') return 'Cálido'; if (cl === 'templado') return 'Templado'; return climate.charAt(0).toUpperCase() + climate.slice(1).toLowerCase(); }
-  private getProductClimateInfo(zone?: Zone): { climateClass: 'cold' | 'hot' | 'other'; climateText: string } { if (!zone?.climate) return { climateClass: 'other', climateText: 'Clima N/A' }; const cl = zone.climate.toLowerCase(); switch (cl) { case 'frio': case 'frío': return { climateClass: 'cold', climateText: 'Clima Frío' }; case 'calido': case 'cálido': case 'templado': return { climateClass: 'hot', climateText: 'Clima Templado' }; default: return { climateClass: 'other', climateText: `Clima ${zone.climate}` }; } }
   public getOriginalIndex(productId: number): number { return this.allDisplayProducts.findIndex(p => p.id === productId); }
   private getOriginalIndexForSwiperIndex(swiperIndex: number): number | null { if (!this.filteredDisplayProducts || swiperIndex < 0 || swiperIndex >= this.filteredDisplayProducts.length) return null; const productOnSlide = this.filteredDisplayProducts[swiperIndex]; if (!productOnSlide) return null; const originalIndex = this.getOriginalIndex(productOnSlide.id); return originalIndex !== -1 ? originalIndex : null; }
   private findCanvasByProductId(productId: number): ElementRef<HTMLCanvasElement> | undefined { if (!this.productCanvases) { console.warn("findCanvasByProductId: productCanvases QueryList is not yet available."); return undefined; } const found = this.productCanvases.find(ref => ref.nativeElement.getAttribute('data-product-id') === productId.toString()); return found; }
