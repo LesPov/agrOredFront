@@ -5,7 +5,7 @@ import { BotInfoService } from '../../../features/admin/services/botInfo.service
 
 @Component({
   selector: 'app-header-inicio',
-  imports: [CommonModule, RouterLink], 
+  imports: [CommonModule, RouterLink],  
   templateUrl: './header-inicio.component.html',
   styleUrl: './header-inicio.component.css'
 })
