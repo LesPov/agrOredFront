@@ -2,6 +2,18 @@
 
 CampiAmigo es una plataforma web diseñada para conectar a productores agrícolas (CampiAmigos) con clientes interesados en productos frescos y de calidad. La aplicación permite explorar territorios en 3D, gestionar perfiles de usuario, administrar productos y mucho más.
 
+## Contexto del Proyecto
+
+En un mundo donde la conexión entre productores agrícolas y consumidores finales es cada vez más importante, CampiAmigo surge como una solución innovadora para fortalecer la red agroalimentaria. Este proyecto busca:
+
+- **Empoderar a los productores agrícolas**: Brindándoles una plataforma para mostrar sus productos y conectarse directamente con los clientes.
+- **Promover la sostenibilidad**: Reduciendo intermediarios y fomentando el consumo de productos locales.
+- **Facilitar la exploración de territorios agrícolas**: A través de herramientas interactivas en 3D que permiten conocer las zonas productoras y sus características.
+
+CampiAmigo no solo es una herramienta tecnológica, sino también un puente para fortalecer la economía local y fomentar la confianza entre productores y consumidores.
+
+---
+
 ## Tabla de Contenidos
 
 1. [Características](#características)
@@ -9,9 +21,10 @@ CampiAmigo es una plataforma web diseñada para conectar a productores agrícola
 3. [Instalación](#instalación)
 4. [Ejecución del Proyecto](#ejecución-del-proyecto)
 5. [Estructura del Proyecto](#estructura-del-proyecto)
-6. [Uso](#uso)
-7. [Contribuciones](#contribuciones)
-8. [Licencia](#licencia)
+6. [Herramientas Utilizadas](#herramientas-utilizadas)
+7. [Uso](#uso)
+8. [Contribuciones](#contribuciones)
+9. [Licencia](#licencia)
 
 ---
 
@@ -81,6 +94,20 @@ Una breve descripción de las carpetas y archivos más importantes en el proyect
   - `environments/`: Archivos de configuración para diferentes entornos (desarrollo, producción, etc.).
 - `angular.json`: Configuración del proyecto para Angular CLI.
 - `package.json`: Dependencias y scripts del proyecto.
+
+---
+
+## Herramientas Utilizadas
+
+En el desarrollo de CampiAmigo se utilizaron las siguientes herramientas y tecnologías:
+
+- **Angular**: Framework para la construcción de la interfaz de usuario.
+- **Node.js**: Entorno de ejecución para el servidor.
+- **Express**: Framework para Node.js que maneja las peticiones del servidor.
+- **MongoDB**: Base de datos NoSQL para almacenar la información de usuarios y productos.
+- **Mongoose**: ODM para MongoDB y Node.js.
+- **Three.js**: Biblioteca JavaScript para crear y mostrar gráficos 3D en el navegador.
+- **Bootstrap**: Framework de CSS para un diseño responsivo y moderno.
 
 ---
 
