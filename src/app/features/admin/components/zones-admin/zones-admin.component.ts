@@ -17,12 +17,11 @@ export class ZonesAdminComponent implements OnInit {
   // Datos para crear o actualizar la zona
   zoneData: ZoneData = {
     id: 0,
-    name: '',
-    tipoZona: '' as 'municipio' | 'departamento' | 'vereda' | 'ciudad',
+    municipio: '',
+    vereda: '',
     description: '',
     climate: '' as 'frio' | 'calido',
-    departamentoName: '',
-    // --- INICIALIZACIÓN DE NUEVOS CAMPOS ---
+    departamento: '',
     elevation: undefined, // O usar null. undefined es común para campos opcionales
     temperature: undefined, // O usar null
     about: ''
@@ -52,7 +51,7 @@ export class ZonesAdminComponent implements OnInit {
 
   // Propiedades para filtros de zonas
   isFilterModalOpen: boolean = false;
-  filters = { name: '', tipoZona: '', climate: '' };
+  filters = { municipio: '', tipoZona: '', climate: '' };
 
   // Propiedad para controlar la fila con menú abierto
   selectedProductIndex: number | null = null;
@@ -97,7 +96,7 @@ export class ZonesAdminComponent implements OnInit {
     });
   }
 
-  
+
 
   /* Añade esto a tu componente TypeScript */
   toggleActions(index: number): void {
@@ -144,21 +143,21 @@ export class ZonesAdminComponent implements OnInit {
   // Métodos de ejemplo para las acciones
   viewProduct(product: any): void {
     // Aquí puedes redirigir o abrir un modal para ver los detalles del producto
-    this.toastr.info(`Ver producto: ${product.name}`, 'Acción');
+    this.toastr.info(`Ver producto: ${product.municipio}`, 'Acción');
     this.selectedProductIndex = null; // Cerrar menú después de la acción
   }
 
   editProduct(product: any): void {
     // Aquí puedes redirigir a la vista de edición o abrir un modal de edición
-    this.toastr.info(`Editar producto: ${product.name}`, 'Acción');
+    this.toastr.info(`Editar producto: ${product.municipio}`, 'Acción');
     this.selectedProductIndex = null;
   }
 
   deleteProduct(product: any): void {
     // Implementa la lógica para eliminar el producto. Por ejemplo, llamar a un servicio.
-    if (confirm(`¿Estás seguro de eliminar el producto "${product.name}"?`)) {
+    if (confirm(`¿Estás seguro de eliminar el producto "${product.municipio}"?`)) {
       // Llama al servicio para eliminar el producto (ejemplo):
-      this.toastr.success(`Producto "${product.name}" eliminado.`, 'Acción');
+      this.toastr.success(`Producto "${product.municipio}" eliminado.`, 'Acción');
       this.selectedProductIndex = null;
     }
   }
@@ -172,7 +171,7 @@ export class ZonesAdminComponent implements OnInit {
   }
 
   private isFilterValid(): boolean {
-    return this.filters.name.trim() !== '' ||
+    return this.filters.municipio.trim() !== '' ||
       this.filters.tipoZona.trim() !== '' ||
       this.filters.climate.trim() !== '';
   }
@@ -186,9 +185,8 @@ export class ZonesAdminComponent implements OnInit {
     }
 
     const result = this.zones.filter(zone =>
-      (this.filters.name ? zone.name.toLowerCase().includes(this.filters.name.toLowerCase()) : true) &&
-      (this.filters.tipoZona ? zone.tipoZona.toLowerCase().includes(this.filters.tipoZona.toLowerCase()) : true) &&
-      (this.filters.climate ? (zone.climate || '').toLowerCase().includes(this.filters.climate.toLowerCase()) : true)
+      (this.filters.municipio ? zone.municipio.toLowerCase().includes(this.filters.municipio.toLowerCase()) : true) &&
+       (this.filters.climate ? (zone.climate || '').toLowerCase().includes(this.filters.climate.toLowerCase()) : true)
     );
 
     if (result.length === 0) {
@@ -200,49 +198,47 @@ export class ZonesAdminComponent implements OnInit {
     this.closeFilterModal();
   }
 
+  // --- MÉTODO buildZoneFormData ACTUALIZADO ---
   buildZoneFormData(): FormData {
     const formData = new FormData();
-    formData.append('name', this.zoneData.name);
-    formData.append('tipoZona', this.zoneData.tipoZona);
+
+    // Añadimos los nuevos campos jerárquicos
+    formData.append('departamento', this.zoneData.departamento || '');
+    formData.append('municipio', this.zoneData.municipio || '');
+    // El campo vereda es opcional, lo enviamos aunque esté vacío
+    formData.append('vereda', this.zoneData.vereda || '');
+
+    // Los campos antiguos (name, tipoZona, departamentoName) se han eliminado.
+
+    // El resto de los campos se mantienen igual
     formData.append('description', this.zoneData.description || '');
     formData.append('climate', this.zoneData.climate || '');
-    formData.append('departamentoName', this.zoneData.departamentoName || '');
-     // --- AÑADIR NUEVOS CAMPOS AL FORMDATA ---
-    // Convertir números a string al añadirlos si existen
+
     if (this.zoneData.elevation !== null && this.zoneData.elevation !== undefined) {
       formData.append('elevation', this.zoneData.elevation.toString());
     }
     if (this.zoneData.temperature !== null && this.zoneData.temperature !== undefined) {
       formData.append('temperature', this.zoneData.temperature.toString());
     }
-    if (this.zoneData.about) { // Añadir solo si no está vacío
+    if (this.zoneData.about) {
       formData.append('about', this.zoneData.about);
     }
-    // --- FIN NUEVOS CAMPOS ---
-    if (this.selectedCityImage) {
-      formData.append('cityImage', this.selectedCityImage);
-    }
-    if (this.selectedZoneImage) {
-      formData.append('zoneImage', this.selectedZoneImage);
-    }
-    if (this.selectedVideo) {
-      formData.append('video', this.selectedVideo);
-    }
-    if (this.selectedModelFile) {
-      formData.append('modelPath', this.selectedModelFile);
-    }
-    if (this.selectedTitleGlb) {
-      formData.append('titleGlb', this.selectedTitleGlb);
-    }
+
+    // Lógica para archivos sin cambios
+    if (this.selectedCityImage) formData.append('cityImage', this.selectedCityImage);
+    if (this.selectedZoneImage) formData.append('zoneImage', this.selectedZoneImage);
+    if (this.selectedVideo) formData.append('video', this.selectedVideo);
+    if (this.selectedModelFile) formData.append('modelPath', this.selectedModelFile);
+    if (this.selectedTitleGlb) formData.append('titleGlb', this.selectedTitleGlb);
+
     return formData;
   }
-
-    // --- FUNCIÓN MODIFICADA ---
+  // --- FUNCIÓN MODIFICADA ---
   // Lógica para crear la zona, incluyendo el reseteo de los nuevos campos
   createZone(): void {
-    // Validaciones básicas (puedes añadir más si necesitas)
-    if (!this.zoneData.name || !this.zoneData.tipoZona) {
-      this.toastr.error('El nombre y el tipo de zona son requeridos.', 'Error de Validación');
+     // Validación actualizada para los campos obligatorios
+    if (!this.zoneData.departamento || !this.zoneData.municipio) {
+      this.toastr.error('Los campos "Departamento" y "Municipio" son obligatorios.', 'Error de Validación');
       return;
     }
 
@@ -273,12 +269,11 @@ export class ZonesAdminComponent implements OnInit {
         // --- RESETEO DEL FORMULARIO (INCLUYE NUEVOS CAMPOS) ---
         this.zoneData = {
           id: 0, // O null/undefined
-          name: '',
-          tipoZona: '' as 'municipio' | 'departamento' | 'vereda' | 'ciudad',
+          departamento: '',
+          municipio: '',
+          vereda: '',
           description: '',
-          climate: '' as 'frio' | 'calido',
-          departamentoName: '',
-          // Resetea nuevos campos
+          climate: undefined,
           elevation: undefined,
           temperature: undefined,
           about: ''
@@ -300,13 +295,12 @@ export class ZonesAdminComponent implements OnInit {
           this.zoneForm.resetForm();
           // Puede que necesites re-asignar el valor inicial de los selects si resetForm() los deja en blanco
           setTimeout(() => {
-            this.zoneData.tipoZona = '' as any;
-            this.zoneData.climate = '' as any;
+             this.zoneData.climate = '' as any;
           }, 0);
         }
 
         // Opcional: Cerrar el <details>
-        if(this.zoneDetails) {
+        if (this.zoneDetails) {
           this.zoneDetails.nativeElement.removeAttribute('open');
         }
 
@@ -314,11 +308,11 @@ export class ZonesAdminComponent implements OnInit {
       error: (error) => {
         let errorMessage = 'Error al crear la zona.';
         if (error.error && error.error.msg) {
-           // Intenta usar el mensaje específico del backend
+          // Intenta usar el mensaje específico del backend
           errorMessage = error.error.msg;
         } else if (error.message) {
-            // Mensaje de error genérico de HttpClient
-            errorMessage = error.message;
+          // Mensaje de error genérico de HttpClient
+          errorMessage = error.message;
         }
         this.toastr.error(errorMessage, 'Error');
         console.error('Error en createZone:', error);
@@ -344,7 +338,7 @@ export class ZonesAdminComponent implements OnInit {
   }
 
   deleteZone(zone: ZoneData): void {
-    if (confirm(`¿Está seguro de eliminar la zona "${zone.name}"?`)) {
+    if (confirm(`¿Está seguro de eliminar la zona "${zone.municipio}"?`)) {
       this.campiAmigoService.deleteZone(zone.id)
         .subscribe({
           next: (response) => {

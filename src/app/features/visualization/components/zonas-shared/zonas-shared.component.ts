@@ -143,14 +143,14 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
   private processZonesAndProducts(zonesReceived: ZoneData[], deptFilter?: string): void {
     let filteredZones = zonesReceived;
     if (deptFilter) {
-      filteredZones = filteredZones.filter(zone => zone.departamentoName === deptFilter);
+      filteredZones = filteredZones.filter(zone => zone.departamento  === deptFilter);
     }
 
     const zoneMap = new Map<string, AggregatedZone>();
     const zonesToPreloadCandidates: ExtendedZoneData[] = [];
 
     filteredZones.forEach(baseZone => {
-      const key = `${baseZone.name}_${baseZone.id}`;
+      const key = `${baseZone.municipio}_${baseZone.id}`;
       const campIds: number[] = baseZone.userProfiles ? baseZone.userProfiles.map(profile => profile.userId) : [];
       const currentCount = campIds.length;
       const zone: ExtendedZoneData = { ...baseZone, productosPrincipales: [] };
@@ -215,7 +215,7 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       return;
     }
-    console.log("Selecting zone:", agg.zone.name);
+    console.log("Selecting zone:", agg.zone.municipio);
     if (this.selectedZone && this.zoneLoaded[this.selectedZone.zone.id]) {
       this.zoneLoaded[this.selectedZone.zone.id] = false;
     }
@@ -231,7 +231,7 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // Iniciar precarga si es necesario (priorizar esta zona)
     if (this.zoneHasModels(agg.zone) && !this.zoneModelsReady[agg.zone.id] && !this.isZonePreloading[agg.zone.id] && !this.isZoneLoading[agg.zone.id]) {
-      console.log(`[Select] Prioritizing preload for: ${agg.zone.name}`);
+      console.log(`[Select] Prioritizing preload for: ${agg.zone.municipio}`);
       // Quitar de la cola si ya estaba para añadirla al principio
       this.preloadQueue = this.preloadQueue.filter(z => z.id !== agg.zone.id);
       this.preloadQueue.unshift(agg.zone); // Poner al principio
@@ -296,19 +296,19 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     const zoneId = zoneToPreload.id;
 
     if (this.zoneModelsReady[zoneId] || this.isZoneLoading[zoneId] || this.isZonePreloading[zoneId]) {
-      console.log(`[Preload] Skipping ${zoneToPreload.name} (Already handled)`);
+      console.log(`[Preload] Skipping ${zoneToPreload.municipio} (Already handled)`);
       if (this.isPreloadingActive) setTimeout(() => this.processNextInPreloadQueue(), 50);
       return;
     }
     if (!this.zoneHasModels(zoneToPreload)) {
       this.zoneModelsReady[zoneId] = true; // Listo porque no hay nada que cargar
-      console.log(`[Preload] Skipping ${zoneToPreload.name} (No models)`);
+      console.log(`[Preload] Skipping ${zoneToPreload.municipio} (No models)`);
       if (this.isPreloadingActive) setTimeout(() => this.processNextInPreloadQueue(), 50);
       return;
     }
 
     this.isZonePreloading[zoneId] = true;
-    console.log(`[Preload] Starting: ${zoneToPreload.name} (ID: ${zoneId})`);
+    console.log(`[Preload] Starting: ${zoneToPreload.municipio} (ID: ${zoneId})`);
     if (this.selectedZone?.zone.id === zoneId) {
       this.cdRef.detectChanges(); // Ocultar icono si estaba visible
     }
@@ -321,21 +321,21 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
       // Si el servicio maneja solo un modelo, esto es necesario para
       // asegurar que la precarga realmente pone el modelo deseado en el servicio.
       this.territoryService.clearModels();
-      console.log(`[Preload] Loading models for ${zoneToPreload.name} into service...`);
+      console.log(`[Preload] Loading models for ${zoneToPreload.municipio} into service...`);
       await this.territoryService.loadModels(zoneToPreload.modelPath, zoneToPreload.titleGlb);
 
       // Éxito: Marcar como listo
       this.zoneModelsReady[zoneId] = true;
-      console.log(`[Preload] Success: ${zoneToPreload.name}. Models marked as ready.`);
+      console.log(`[Preload] Success: ${zoneToPreload.municipio}. Models marked as ready.`);
 
       // Actualizar UI si sigue siendo la zona seleccionada (Mostrar icono)
       if (this.selectedZone?.zone.id === zoneId) {
-        console.log(`[Preload] Updating UI for active zone: ${zoneToPreload.name}`);
+        console.log(`[Preload] Updating UI for active zone: ${zoneToPreload.municipio}`);
         this.cdRef.detectChanges();
       }
 
     } catch (error) {
-      console.error(`[Preload] Failed: ${zoneToPreload.name}:`, error);
+      console.error(`[Preload] Failed: ${zoneToPreload.municipio}:`, error);
       this.zoneModelsReady[zoneId] = false; // Marcar como no listo
       if (this.selectedZone?.zone.id === zoneId) {
         this.cdRef.detectChanges(); // Actualizar UI aunque falle
@@ -360,7 +360,7 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     const clickedZoneId = currentSelected.zone.id;
     const clickedZone = currentSelected.zone;
 
-    console.log(`[Click] Zone: ${clickedZone.name} | Ready: ${this.zoneModelsReady[clickedZoneId]} | Loading: ${this.isZoneLoading[clickedZoneId]} | Preloading: ${this.isZonePreloading[clickedZoneId]} | Loaded(Visible): ${this.zoneLoaded[clickedZoneId]}`);
+    console.log(`[Click] Zone: ${clickedZone.municipio} | Ready: ${this.zoneModelsReady[clickedZoneId]} | Loading: ${this.isZoneLoading[clickedZoneId]} | Preloading: ${this.isZonePreloading[clickedZoneId]} | Loaded(Visible): ${this.zoneLoaded[clickedZoneId]}`);
 
     // 1. Validaciones
     if (!this.zoneHasModels(clickedZone)) {
@@ -385,7 +385,7 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     // 3. Lógica principal CORREGIDA
     if (this.zoneModelsReady[clickedZoneId]) {
       // --- CASO: MODELO LISTO (PRECARGADO) ---
-      console.log(`[Click/Ready] Showing preloaded model for ${clickedZone.name}`);
+      console.log(`[Click/Ready] Showing preloaded model for ${clickedZone.municipio}`);
       // Asegurar que no se muestre spinner
       this.isZoneLoading[clickedZoneId] = false;
 
@@ -399,14 +399,14 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
         //         (Asumimos que la precarga dejó el modelo correcto activo)
         this.territoryService.onResize(canvasElement); // Ajustar tamaño
         this.territoryService.startAnimation();      // Animar
-        console.log(`[Click/Ready] Animation started instantly for ${clickedZone.name}.`);
+        console.log(`[Click/Ready] Animation started instantly for ${clickedZone.municipio}.`);
         // OPCIONAL: Podríamos verificar si el modelo activo en el servicio *realmente*
         // coincide con clickedZone. Si no, cargaríamos aquí, pero intentemos
         // confiar en la precarga primero para máxima velocidad.
 
       } catch (error) {
         // Este catch es menos probable ahora, pero por seguridad
-        console.error(`[Click/Ready] Error showing/animating model for ${clickedZone.name}:`, error);
+        console.error(`[Click/Ready] Error showing/animating model for ${clickedZone.municipio}:`, error);
         this.toastr.error("Error al mostrar el modelo 3D.", "Error");
         this.zoneLoaded[clickedZoneId] = false; // Revertir
         // No necesariamente marcar como !ready, podría ser un error de animación
@@ -417,7 +417,7 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     else {
       // --- CASO: MODELO NO LISTO -> Cargar con Spinner ---
-      console.warn(`[Click/Not Ready] Models for ${clickedZone.name} not ready. Starting active load...`);
+      console.warn(`[Click/Not Ready] Models for ${clickedZone.municipio} not ready. Starting active load...`);
       await this.loadAndShowWithSpinner(currentSelected, canvasElement);
     }
   }
@@ -432,17 +432,17 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
       this.territoryService.clearModels();
       this.territoryService.onResize(canvasElement);
-      console.log(`[Load&Show] Actively loading models for ${zone.name}...`);
+      console.log(`[Load&Show] Actively loading models for ${zone.municipio}...`);
       await this.territoryService.loadModels(zone.modelPath, zone.titleGlb);
-      console.log(`[Load&Show] Models for ${zone.name} loaded actively.`);
+      console.log(`[Load&Show] Models for ${zone.municipio} loaded actively.`);
       this.zoneModelsReady[zoneId] = true;
       this.isZoneLoading[zoneId] = false;
       this.zoneLoaded[zoneId] = true;
       this.cdRef.detectChanges();
       this.territoryService.startAnimation();
     } catch (error) {
-      console.error(`[Load&Show] Error during active load for ${zone.name}:`, error);
-      this.toastr.error(`No se pudo cargar el modelo 3D para ${zone.name}.`, 'Error');
+      console.error(`[Load&Show] Error during active load for ${zone.municipio}:`, error);
+      this.toastr.error(`No se pudo cargar el modelo 3D para ${zone.municipio}.`, 'Error');
       this.isZoneLoading[zoneId] = false;
       this.zoneLoaded[zoneId] = false;
       this.zoneModelsReady[zoneId] = false;
@@ -541,8 +541,8 @@ export class ZonasSharedComponent implements OnInit, AfterViewInit, OnDestroy {
     const tipoQuery = this.filterTipoZona;
     this.aggregatedZones = this.allAggregatedZones.filter(agg => {
       const z = agg.zone;
-      const nameMatch = nameQuery ? z.name.toLowerCase().includes(nameQuery) : true;
-      const typeMatch = tipoQuery ? z.tipoZona === tipoQuery : true;
+      const nameMatch = nameQuery ? z.municipio.toLowerCase().includes(nameQuery) : true;
+      const typeMatch = tipoQuery ? z.vereda === tipoQuery : true;
       return nameMatch && typeMatch;
     });
 

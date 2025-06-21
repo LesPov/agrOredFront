@@ -50,12 +50,12 @@ export class ViewzonesAdminComponent implements OnInit {
       next: (response) => {
         let zones: ZoneData[] = response.zones;
         if (dept) {
-          zones = zones.filter(zone => zone.departamentoName === dept);
+          zones = zones.filter(zone => zone.departamento === dept);
         }
         // Creamos un Map para agrupar por nombre de zona
         const zoneMap = new Map<string, AggregatedZone>();
         zones.forEach(zone => {
-          const key = zone.name;
+          const key = zone.municipio;
           // Extraemos los userIds de los perfiles asociados (userProfiles)
           const campIds: number[] = zone.userProfiles ? zone.userProfiles.map(profile => profile.userId) : [];
           if (zoneMap.has(key)) {
@@ -75,7 +75,7 @@ export class ViewzonesAdminComponent implements OnInit {
         });
         // Log para verificar la cantidad, los IDs y si están activas
         this.aggregatedZones.forEach(agg => {
-          console.log(`Zona: ${agg.zone.name} - Count: ${agg.count} - Active: ${this.canViewModel(agg.zone)} - Campiamigo IDs: ${agg.campiamigoIds}`);
+          console.log(`Zona: ${agg.zone.municipio} - Count: ${agg.count} - Active: ${this.canViewModel(agg.zone)} - Campiamigo IDs: ${agg.campiamigoIds}`);
         });
       },
       error: (err) => {
@@ -86,8 +86,8 @@ export class ViewzonesAdminComponent implements OnInit {
 
   // Función para determinar la imagen a mostrar en cada zona
   public getZoneImage(zone: ZoneData): string {
-    if (this.imagenesPorZona[zone.name]) {
-      return this.environment.endpoint + 'uploads/zones/images/' + this.imagenesPorZona[zone.name];
+    if (this.imagenesPorZona[zone.municipio]) {
+      return this.environment.endpoint + 'uploads/zones/images/' + this.imagenesPorZona[zone.municipio];
     }
     return zone.zoneImage
       ? this.environment.endpoint + 'uploads/zones/images/' + zone.zoneImage
@@ -103,7 +103,7 @@ export class ViewzonesAdminComponent implements OnInit {
   // Se utiliza el ID de la zona en lugar del nombre.
   public viewScene(aggregated: AggregatedZone): void {
     if (this.canViewModel(aggregated.zone)) {
-      console.log('Navegando a la escena para la zona:', aggregated.zone.name);
+      console.log('Navegando a la escena para la zona:', aggregated.zone.municipio);
       console.log('Campiamigo IDs a enviar:', aggregated.campiamigoIds);
       this.router.navigate(
         ['/admin/zones/scene', aggregated.zone.id],

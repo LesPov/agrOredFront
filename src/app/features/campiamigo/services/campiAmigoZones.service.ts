@@ -5,12 +5,13 @@ import { environment } from '../../../../environments/environment';
  
 export interface ZoneData {
   id: number;
-  name: string;
-  departamentoName?: string;       // Nombre del departamento o ciudad (opcional)
+ departamento: string;    // Nombre del departamento. Es un campo obligatorio.
+  municipio: string;       // Nombre del municipio. Es un campo obligatorio.
+  vereda?: string;         // Nombre de la vereda, quebrada o zona específica. Es opcional.
+
   cityImage?: string;              // URL o path de la imagen de la ciudad (opcional)
   zoneImage?: string;              // URL o path de la imagen representativa de la zona (opcional) 
-  tipoZona: 'municipio' | 'departamento' | 'vereda' | 'ciudad';
-  description?: string;
+   description?: string;
   climate?: 'frio' | 'calido';
   userProfiles?: Array<{ id: number; userId: number }>; // Asumo que esto viene de alguna relación en el backend
   video?: string;                  // Ruta o URL del video asociado a la zona
@@ -22,6 +23,15 @@ export interface ZoneData {
   temperature?: number;            // Temperatura promedio en grados Celsius (opcional)
   about?: string;                  // Texto adicional "acerca de" la zona (opcional)
 }
+// Define la estructura de los filtros que podemos enviar.
+export interface ZoneFilters {
+  departamento?: string;
+  municipio?: string;
+  vereda?: string;
+  climate?: 'frio' | 'calido';
+  search?: string;
+}
+
 
 @Injectable({
   providedIn: 'root',

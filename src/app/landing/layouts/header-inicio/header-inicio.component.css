@@ -1,26 +1,22 @@
 /* --- Estilos del Header Principal (Barra Superior) --- */
 .main-header {
-    display: flex;
+      display: flex
+;
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    /* O 'sticky' si prefieres */
     top: 0;
     left: 0;
-    /* Alineado a la izquierda */
     height: 9%;
     width: 100%;
-    background: #ffffff;
-    /* O el color que prefieras para la barra superior */
+    background: rgb(255 255 255 / 10%);
     padding: 10px 15px;
-    /* Ajusta el padding */
     color: #333;
-    /* Color del texto/iconos en la barra superior */
     z-index: 1000;
-    /* Asegura que esté sobre el contenido normal */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
-    /* Incluye padding en el width */
+    backdrop-filter: blur(2px);
+
   }
   
   .main-header .header-left {
@@ -196,6 +192,7 @@
     flex-grow: 1;
     /* El texto ocupa el espacio restante */
     font-size: 0.95em;
+    color: #000;
   }
   
   .menu-section ul li .arrow-icon {

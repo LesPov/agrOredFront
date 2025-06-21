@@ -66,7 +66,7 @@
           <div class="placeholder-content main-placeholder" *ngIf="!territoryLoaded" aria-hidden="true">
             <!-- Imagen Zona Activa -->
             <img [src]="getZoneImageUrl(activeTerritoryZone)"
-              [alt]="'Vista previa del territorio ' + activeTerritoryZone.name" class="placeholder-image"
+              [alt]="'Vista previa del territorio ' + activeTerritoryZone.municipio" class="placeholder-image"
               (error)="onImgError($event, 'zone')" />
             <!-- Icono y Spinner MOVIDOS FUERA -->
           </div> <!-- Fin placeholder-content -->
@@ -87,8 +87,8 @@
           <!-- ... Contenido de card-info ... -->
           <div class="card-title">
             <div class="card-title-group">
-              <h3>{{ activeTerritoryZone.name | uppercase }}</h3>
-              <span class="region">{{ activeTerritoryZone.departamentoName | uppercase }}</span>
+              <h3>{{ activeTerritoryZone.municipio | uppercase }}</h3>
+              <span class="region">{{ activeTerritoryZone.departamento| uppercase }}</span>
             </div>
             <a class="link-detail" (click)="openLoginPromptModal()" role="button" style="cursor: pointer;">Ver detalles</a>          </div>
           <p class="card-desc">
@@ -177,182 +177,192 @@
   <!-- FIN: Sección ¿Cómo quieres usar? -->
   <!-- ==================================== -->
 
-  <!-- ========================================== -->
-  <!-- INICIO: Sección Productos Destacados       -->
-  <!-- ========================================== -->
-  <section class="products-section" aria-labelledby="products-title">
-    <div class="container_products">
+<!-- ========================================== -->
+<!-- INICIO: Sección Productos Destacados       -->
+<!-- ========================================== -->
+<section class="products-section" aria-labelledby="products-title">
+  <div class="container_products">
 
-      <!-- Cabecera -->
-      <div class="section-header">
-        <h2 id="products-title">Productos Destacados</h2>
-        <p>
-          Descubre productos frescos y de calidad directamente de nuestros CampiAmigos. Cada producto viene con
-          información detallada sobre su origen y productor.
-        </p>
-      </div>
+    <!-- Cabecera -->
+    <div class="section-header">
+      <h2 id="products-title">Productos Destacados</h2>
+      <p>
+        Descubre productos frescos y de calidad directamente de nuestros CampiAmigos. Cada producto viene con
+        información detallada sobre su origen y productor.
+      </p>
+    </div>
 
-      <!-- Filtros como pestañas accesibles -->
-      <div class="filter-tabs tabs" role="tablist" aria-labelledby="products-title">
-        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='all' ? 'true':'false'"
-          (click)="selectTab('all')" class="tab-button" [class.active]="selectedTab==='all'">
-          Todos
-        </button>
-        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='offer' ? 'true':'false'"
-          (click)="selectTab('offer')" class="tab-button" [class.active]="selectedTab==='offer'">
-          Oferta
-        </button>
-        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='new' ? 'true':'false'"
-          (click)="selectTab('new')" class="tab-button" [class.active]="selectedTab==='new'">
-          Nuevos
-        </button>
-        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='popular' ? 'true':'false'"
-          (click)="selectTab('popular')" class="tab-button" [class.active]="selectedTab==='popular'">
-          Popular
-        </button>
-        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='cold' ? 'true':'false'"
-          (click)="selectTab('cold')" class="tab-button" [class.active]="selectedTab==='cold'">
-          Clima Frío
-        </button>
-        <button type="button" role="tab" [attr.aria-selected]="selectedTab==='hot' ? 'true':'false'"
-          (click)="selectTab('hot')" class="tab-button" [class.active]="selectedTab==='hot'">
-          Clima Cálido
-        </button>
-      </div>
+    <!-- Filtros como pestañas accesibles -->
+    <div class="filter-tabs tabs" role="tablist" aria-labelledby="products-title">
+      <button type="button" role="tab" [attr.aria-selected]="selectedTab==='all' ? 'true':'false'"
+        (click)="selectTab('all')" class="tab-button" [class.active]="selectedTab==='all'">
+        Todos
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="selectedTab==='offer' ? 'true':'false'"
+        (click)="selectTab('offer')" class="tab-button" [class.active]="selectedTab==='offer'">
+        Oferta
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="selectedTab==='new' ? 'true':'false'"
+        (click)="selectTab('new')" class="tab-button" [class.active]="selectedTab==='new'">
+        Nuevos
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="selectedTab==='popular' ? 'true':'false'"
+        (click)="selectTab('popular')" class="tab-button" [class.active]="selectedTab==='popular'">
+        Popular
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="selectedTab==='cold' ? 'true':'false'"
+        (click)="selectTab('cold')" class="tab-button" [class.active]="selectedTab==='cold'">
+        Clima Frío
+      </button>
+      <button type="button" role="tab" [attr.aria-selected]="selectedTab==='hot' ? 'true':'false'"
+        (click)="selectTab('hot')" class="tab-button" [class.active]="selectedTab==='hot'">
+        Clima Cálido
+      </button>
+    </div>
 
-      <!-- Estado de carga y error -->
-      <div *ngIf="isLoadingProducts" class="loading-message" role="status">
-        Cargando productos...
-      </div>
-      <div *ngIf="productError" class="error-message" role="alert">
-        {{ productError }}
-      </div>
+    <!-- Estado de carga y error -->
+    <div *ngIf="isLoadingProducts" class="loading-message" role="status">
+      Cargando productos...
+    </div>
+    <div *ngIf="productError" class="error-message" role="alert">
+      {{ productError }}
+    </div>
 
-      <!-- Carrusel de productos -->
-      <div class="product-carousel-container" *ngIf="!isLoadingProducts && !productError">
-        <!-- Solo renderiza si hay productos filtrados -->
-        <div class="swiper-container product-carousel" #productSwiperContainer
-          *ngIf="filteredDisplayProducts.length > 0" aria-label="Carrusel de productos destacados">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide" *ngFor="let prod of filteredDisplayProducts; let i = index" role="group"
-              [id]="'product-slide-' + prod.id" aria-roledescription="slide"
-              [attr.aria-label]="'Producto ' + (i + 1) + ' de ' + filteredDisplayProducts.length + ': ' + prod.name">
+    <!-- Carrusel de productos -->
+    <div class="product-carousel-container" *ngIf="!isLoadingProducts && !productError">
+      <!-- Solo renderiza si hay productos filtrados -->
+      <div class="swiper-container product-carousel" #productSwiperContainer *ngIf="filteredDisplayProducts.length > 0"
+        aria-label="Carrusel de productos destacados">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide" *ngFor="let prod of filteredDisplayProducts; let i = index" role="group"
+            [id]="'product-slide-' + prod.id" aria-roledescription="slide"
+            [attr.aria-label]="'Producto ' + (i + 1) + ' de ' + filteredDisplayProducts.length + ': ' + prod.name">
 
-              <!-- Tarjeta de producto -->
-              <div class="product-card">
+            <!-- Tarjeta de producto -->
+            <div class="product-card">
 
-                <!-- Zona clicable para el modelo 3D -->
-                <div class="product-model" [class.loaded]="productLoaded[getOriginalIndex(prod.id)]"
-                  (click)="onProductCanvasClick(getOriginalIndex(prod.id))" role="button" tabindex="0"
-                  [attr.aria-label]="'Ver modelo 3D de ' + prod.name">
+              <!-- Zona clicable para el modelo 3D -->
+              <div class="product-model" [class.loaded]="productLoaded[getOriginalIndex(prod.id)]"
+                (click)="onProductCanvasClick(getOriginalIndex(prod.id))" role="button" tabindex="0"
+                [attr.aria-label]="'Ver modelo 3D de ' + prod.name">
 
-                  <!-- Canvas 3D -->
-                  <canvas #productCanvas [attr.data-product-id]="prod.id"
-                    [style.display]="productLoaded[getOriginalIndex(prod.id)] ? 'block' : 'none'"
-                    aria-label="Visualización 3D del producto">
-                  </canvas>
+                <!-- Canvas 3D -->
+                <canvas #productCanvas [attr.data-product-id]="prod.id"
+                  [style.display]="productLoaded[getOriginalIndex(prod.id)] ? 'block' : 'none'"
+                  aria-label="Visualización 3D del producto">
+                </canvas>
 
-                  <!-- Imagen placeholder si no está cargado -->
-                  <div class="placeholder-content_product" *ngIf="!productLoaded[getOriginalIndex(prod.id)]"
-                    aria-hidden="true">
-                    <img [src]="prod.imageUrl" [alt]="'Imagen de ' + prod.name" class="placeholder-image_product"
-                      (error)="onImgError($event, 'product')" />
-                    <span *ngIf="!prod.glbFile" class="no-model-info">
-                      Sin vista 3D
-                    </span>
-                  </div>
-
-                  <!-- Icono clicable -->
-                  <div class="icon-click-wrapper" *ngIf="prod.glbFile && !productLoaded[getOriginalIndex(prod.id)]"
-                    role="button" tabindex="0" [attr.aria-label]="'Clic para ver modelo 3D de ' + prod.name">
-                    <i class="bx bxs-hand-right icon-click" aria-hidden="true"></i>
-                    <span class="line-container"></span>
-                  </div>
-
-                  <!-- Etiqueta de 'Modelo 3D' -->
-                  <span *ngIf="prod.glbFile && !productLoaded[getOriginalIndex(prod.id)]" class="model-badge-floating"
-                    aria-hidden="true">
-                    Modelo 3D
+                <!-- Imagen placeholder si no está cargado -->
+                <div class="placeholder-content_product" *ngIf="!productLoaded[getOriginalIndex(prod.id)]"
+                  aria-hidden="true">
+                  <img [src]="prod.imageUrl" [alt]="'Imagen de ' + prod.name" class="placeholder-image_product"
+                    (error)="onImgError($event, 'product')" />
+                  <span *ngIf="!prod.glbFile" class="no-model-info">
+                    Sin vista 3D
                   </span>
                 </div>
 
-                <!-- Información del producto -->
-                <div class="product-info">
-                  <span class="prod-subtitle">{{ prod.producerLocation }}</span>
-                  <h3 class="prod-title">{{ prod.name }}</h3>
-                  <p class="prod-desc">{{ prod.description }}</p>
-                  <div class="prod-meta" [attr.aria-label]="'Calificación: ' + (prod.rating || 0) + ' de 5 estrellas'">
-                    <i class="bx bxs-star" *ngFor="let _ of [].constructor(Math.floor(prod.rating || 0))"
-                      aria-hidden="true">
-                    </i>
-                    <i class="bx bxs-star-half" *ngIf="(prod.rating || 0) % 1 >= 0.5" aria-hidden="true">
-                    </i>
-                    <i class="bx bx-star" *ngFor="let _ of [].constructor(5 - Math.ceil(prod.rating || 0))"
-                      aria-hidden="true">
-                    </i>
-                    <span class="rating-value">({{ prod.ratingCount || 0 }})</span>
-                  </div>
-                  <div class="product-bottom-row">
-                    <div class="price-container">
-                      <span class="price" [attr.aria-label]="'Precio: ' + (prod.price | number:'1.2-2') + ' pesos'">
-                        {{ prod.price | number:'1.2-2' }} COP
-                      </span>
-                      <span class="original-price" *ngIf="prod.originalPrice"
-                        [attr.aria-label]="'Precio original: ' + (prod.originalPrice | number:'1.2-2') + ' pesos'">
-                        {{ prod.originalPrice | number:'1.2-2' }}
-                      </span>
+                <!-- Icono clicable -->
+                <div class="icon-click-wrapper" *ngIf="prod.glbFile && !productLoaded[getOriginalIndex(prod.id)]"
+                  role="button" tabindex="0" [attr.aria-label]="'Clic para ver modelo 3D de ' + prod.name">
+                  <i class="bx bxs-hand-right icon-click" aria-hidden="true"></i>
+                  <span class="line-container"></span>
+                </div>
+
+                <!-- Etiqueta de 'Modelo 3D' -->
+                <span *ngIf="prod.glbFile && !productLoaded[getOriginalIndex(prod.id)]" class="model-badge-floating"
+                  aria-hidden="true">
+                  
+                </span>
+              </div>
+
+              <!-- Información del producto -->
+              <div class="product-info">
+                <span class="prod-subtitle">{{ prod.producerLocation }}</span>
+                <h3 class="prod-title">{{ prod.name }}</h3>
+                <p class="prod-desc">{{ prod.description }}</p>
+
+                <!-- ================================================ -->
+                <!-- ==== INICIO: SECCIÓN DE RATING MODIFICADA ==== -->
+                <!-- ================================================ -->
+                <div class="prod-meta" [attr.aria-label]="'Calificación: ' + (prod.rating || 0) + ' de 5 estrellas'">
+                  <div class="rating-display">
+                    <!-- Contenedor solo para los iconos de estrellas -->
+                    <div class="rating-stars" aria-hidden="true">
+                      <!-- Estrellas LLENAS -->
+                      <i class="bx bxs-star" *ngFor="let _ of [].constructor(Math.floor(prod.rating || 0))"></i>
+                      <!-- Media Estrella -->
+                      <i class="bx bxs-star-half" *ngIf="(prod.rating || 0) % 1 >= 0.5"></i>
+                      <!-- Estrellas VACÍAS -->
+                      <i class="bx bx-star" *ngFor="let _ of [].constructor(5 - Math.ceil(prod.rating || 0))"></i>
                     </div>
-                    <a class="btn-view-product" [routerLink]="['/inicio','detalleProducto',prod.id]"
-                      [queryParams]="{ id: prod.id }" role="button"
-                      [attr.aria-label]="'Ver detalles del producto ' + prod.name" title="Ver detalles">
-                      <i class="bx bx-chevron-right" aria-hidden="true"></i>
-                    </a>
+                    <!-- El número de reviews, ahora alineado gracias al contenedor flex -->
+                    <span class="rating-value">({{ prod.reviewCount || 0 }})</span>
                   </div>
+                </div>
+                <!-- ================================================ -->
+                <!-- ====== FIN: SECCIÓN DE RATING MODIFICADA ====== -->
+                <!-- ================================================ -->
+                
+                <div class="product-bottom-row">
+                  <div class="price-container">
+                    <span class="price" [attr.aria-label]="'Precio: ' + (prod.price | number:'1.2-2') + ' pesos'">
+                      {{ prod.price | number:'1.2-2' }} COP
+                    </span>
+                    <span class="original-price" *ngIf="prod.originalPrice"
+                      [attr.aria-label]="'Precio original: ' + (prod.originalPrice | number:'1.2-2') + ' pesos'">
+                      {{ prod.originalPrice | number:'1.2-2' }}
+                    </span>
+                  </div>
+                  <a class="btn-view-product" [routerLink]="['/inicio','detalleProducto',prod.id]"
+                    [queryParams]="{ id: prod.id }" role="button"
+                    [attr.aria-label]="'Ver detalles del producto ' + prod.name" title="Ver detalles">
+                    <i class="bx bx-chevron-right" aria-hidden="true"></i>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- Controles Swiper convertidos en botones con nombre accesible -->
-          <button type="button" class="swiper-button-prev product-swiper-button-prev" aria-label="Anterior producto">
-            <span class="visually-hidden">Anterior producto</span>
-          </button>
-          <button type="button" class="swiper-button-next product-swiper-button-next" aria-label="Siguiente producto">
-            <span class="visually-hidden">Siguiente producto</span>
-          </button>
-          <!-- Swiper pagination sin atributos ARIA extra -->
-          <div class="swiper-pagination product-swiper-pagination"></div>
         </div>
 
-        <!-- Mensaje si no hay productos -->
-        <div *ngIf="filteredDisplayProducts.length === 0" class="no-products-message info-message" role="status">
-          <i class="bx bx-info-circle" aria-hidden="true"></i>
-          No hay productos que coincidan con los filtros seleccionados actualmente.
-        </div>
+        <!-- Controles Swiper -->
+        <button type="button" class="swiper-button-prev product-swiper-button-prev" aria-label="Anterior producto">
+          <span class="visually-hidden">Anterior producto</span>
+        </button>
+        <button type="button" class="swiper-button-next product-swiper-button-next" aria-label="Siguiente producto">
+          <span class="visually-hidden">Siguiente producto</span>
+        </button>
+        <div class="swiper-pagination product-swiper-pagination"></div>
       </div>
 
-      <!-- Paginación personalizada (si Swiper no la maneja bien para a11y) -->
-      <div class="custom-pagination" role="tablist" aria-label="Seleccionar producto">
-        <span *ngFor="let prod of filteredDisplayProducts; let idx = index" class="dot" role="tab"
-          [attr.aria-selected]="idx === currentSlideIndex" [attr.aria-controls]="'product-slide-' + prod.id"
-          [class.active]="idx === currentSlideIndex" (click)="goToSlide(idx)" tabindex="0"
-          [attr.aria-label]="'Ir al producto ' + (idx + 1)"></span>
+      <!-- Mensaje si no hay productos -->
+      <div *ngIf="filteredDisplayProducts.length === 0" class="no-products-message info-message" role="status">
+        <i class="bx bx-info-circle" aria-hidden="true"></i>
+        No hay productos que coincidan con los filtros seleccionados actualmente.
       </div>
-
-
-      <!-- Enlace “Ver todos” -->
-      <div class="view-all-container" *ngIf="!isLoadingProducts && !productError && allDisplayProducts.length>0">
-        <a class="btn-view-all" routerLink="/inicio/productos" role="button">
-          Ver todos los productos
-          <i class="bx bx-chevron-right" aria-hidden="true"></i>
-        </a>
-      </div>
-
     </div>
-  </section>
-  <!-- ======================================== -->
-  <!-- FIN: Sección Productos Destacados        -->
-  <!-- ======================================== -->
+
+    <!-- Paginación personalizada -->
+    <div class="custom-pagination" role="tablist" aria-label="Seleccionar producto">
+      <span *ngFor="let prod of filteredDisplayProducts; let idx = index" class="dot" role="tab"
+        [attr.aria-selected]="idx === currentSlideIndex" [attr.aria-controls]="'product-slide-' + prod.id"
+        [class.active]="idx === currentSlideIndex" (click)="goToSlide(idx)" tabindex="0"
+        [attr.aria-label]="'Ir al producto ' + (idx + 1)"></span>
+    </div>
+
+    <!-- Enlace “Ver todos” -->
+    <div class="view-all-container" *ngIf="!isLoadingProducts && !productError && allDisplayProducts.length>0">
+      <a class="btn-view-all" routerLink="/inicio/productos" role="button">
+        Ver todos los productos
+        <i class="bx bx-chevron-right" aria-hidden="true"></i>
+      </a>
+    </div>
+
+  </div>
+</section>
+<!-- ======================================== -->
+<!-- FIN: Sección Productos Destacados        -->
+<!-- ======================================== -->
   <!-- ====================================== -->
   <!--         INICIO: Footer Section         -->
   <!-- ====================================== -->

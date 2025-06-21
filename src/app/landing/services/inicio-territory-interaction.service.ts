@@ -55,7 +55,7 @@ export class TerritoryInteractionService {
                 // Después de obtener el canvas, verifica si hay una zona activa esperando precarga
                 const currentState = this.state.getValue();
                 if (currentState.activeZone && this.zoneHasModels(currentState.activeZone) && !currentState.modelsReady && !currentState.isLoading) {
-                    console.log(`Initialization: Triggering preload for waiting active zone: ${currentState.activeZone.name}`);
+                    console.log(`Initialization: Triggering preload for waiting active zone: ${currentState.activeZone.municipio}`);
                     // Usamos setTimeout para asegurar que la inicialización actual termine antes de empezar la carga
                     setTimeout(() => this.preloadModels(currentState.activeZone!), 0);
                 }
@@ -87,7 +87,7 @@ export class TerritoryInteractionService {
         const currentState = this.state.getValue();
         if (currentState.activeZone?.id === zone?.id && currentState.activeZone !== null) return;
 
-        console.log(`setActiveZone called for: ${zone?.name ?? 'null'}. Canvas set: ${!!this.terrainCanvasElement}`);
+        console.log(`setActiveZone called for: ${zone?.municipio ?? 'null'}. Canvas set: ${!!this.terrainCanvasElement}`);
 
         // Siempre actualiza el estado y desactiva vistas anteriores
         this.updateState({ activeZone: zone, isLoaded: false, modelsReady: false, isLoading: false });
@@ -98,11 +98,11 @@ export class TerritoryInteractionService {
             // *** MODIFICACIÓN CLAVE AQUÍ ***
             // Solo intentar precargar SI el servicio ya tiene la referencia al canvas
             if (this.terrainCanvasElement && !this.isPreloadingInBackground) {
-                console.log(`setActiveZone: Canvas is set. Triggering preload for ${zone.name}`);
+                console.log(`setActiveZone: Canvas is set. Triggering preload for ${zone.municipio}`);
                 // Usamos setTimeout para desacoplar de la llamada actual si es necesario
                 setTimeout(() => this.preloadModels(zone!), 0);
             } else if (!this.terrainCanvasElement) {
-                console.log(`setActiveZone: Canvas NOT set yet for ${zone.name}. Preload will be triggered by initialize().`);
+                console.log(`setActiveZone: Canvas NOT set yet for ${zone.municipio}. Preload will be triggered by initialize().`);
                 // No hacemos nada aquí, initialize() se encargará cuando reciba el canvas
             }
         } else if (zone && !this.zoneHasModels(zone)) {
@@ -198,7 +198,7 @@ export class TerritoryInteractionService {
         if (isActiveZone) {
             this.updateState({ modelsReady: false }); // isLoading ya está marcado si fue por handleCanvasClick
         }
-        console.log(`Preloading models for zone: ${zoneToPreload.name}`);
+        console.log(`Preloading models for zone: ${zoneToPreload.municipio}`);
 
         try {
             // Asegurar inicialización del SERVICIO DE ESCENA (puede ser la primera vez que se usa)
@@ -217,22 +217,22 @@ export class TerritoryInteractionService {
 
             // Cargar modelos
             await this.territorySceneService.loadModels(zoneToPreload.modelPath, zoneToPreload.titleGlb);
-            console.log(`Models loaded successfully for zone: ${zoneToPreload.name}`);
+            console.log(`Models loaded successfully for zone: ${zoneToPreload.municipio}`);
 
             // Actualizar estado SI la zona cargada AÚN es la activa
             if (this.state.getValue().activeZone?.id === zoneToPreload.id) {
                 this.updateState({ modelsReady: true });
             } else {
-                console.log(`Models loaded for ${zoneToPreload.name}, but it's no longer the active zone.`);
+                console.log(`Models loaded for ${zoneToPreload.municipio}, but it's no longer the active zone.`);
                 // No marcamos como listo si ya no es la zona activa
             }
 
         } catch (error) {
-            console.error(`Error during PRELOAD for ${zoneToPreload.name}:`, error);
+            console.error(`Error during PRELOAD for ${zoneToPreload.municipio}:`, error);
             // Si falló para la zona activa, marcar que no está listo y emitir error
             if (this.state.getValue().activeZone?.id === zoneToPreload.id) {
                 this.updateState({ modelsReady: false }); // Ya estaba en false, pero reconfirmar
-                this.emitEvent({ type: 'error', message: `Error cargando modelo 3D para ${zoneToPreload.name}.`, details: error });
+                this.emitEvent({ type: 'error', message: `Error cargando modelo 3D para ${zoneToPreload.municipio}.`, details: error });
             }
         } finally {
             this.isPreloadingInBackground = false;
@@ -240,7 +240,7 @@ export class TerritoryInteractionService {
             if (this.state.getValue().activeZone?.id === zoneToPreload.id) {
                 this.updateState({ isLoading: false });
             }
-            // console.log(`Preloading finished for zone: ${zoneToPreload.name}. Final state for active zone:`, this.state.getValue());
+            // console.log(`Preloading finished for zone: ${zoneToPreload.municipio}. Final state for active zone:`, this.state.getValue());
         }
     }
 

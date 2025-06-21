@@ -13,43 +13,47 @@
             <summary>{{ zoneExists ? 'Editar Zona' : 'Crear Nueva Zona' }}</summary> <!-- Título dinámico -->
             <form #zoneForm="ngForm" (ngSubmit)="createZone()">
   
-              <!-- Imágenes: ciudad y zona -->
+              <!-- ===== SECCIÓN DE IMÁGENES CON TÍTULOS ===== -->
+              <h4 class="form-section-title">Imágenes Representativas</h4>
               <div class="zone-image-preview">
                 <div class="preview-item">
+                  <span class="image-title">Imagen del Departamento</span>
                   <div class="icon-container">
-                    <label for="cityImageInput" class="icon-label" title="Seleccionar imagen de ciudad">
+                    <label for="cityImageInput" class="icon-label" title="Seleccionar imagen del Departamento">
                       <i class="bx bx-image-add"></i>
                     </label>
                     <input type="file" id="cityImageInput" (change)="onCityImageSelected($event)" accept="image/*" style="display: none;">
                   </div>
-                  <img [src]="getCityImageUrl()" alt="Previsualización Ciudad" class="img-preview">
+                  <img [src]="getCityImageUrl()" alt="Previsualización Departamento" class="img-preview">
                 </div>
                 <div class="preview-item">
+                  <span class="image-title">Imagen del Municipio</span>
                   <div class="icon-container">
-                    <label for="zoneImageInput" class="icon-label" title="Seleccionar imagen de zona">
+                    <label for="zoneImageInput" class="icon-label" title="Seleccionar imagen del Municipio">
                       <i class="bx bx-image-add"></i>
                     </label>
                     <input type="file" id="zoneImageInput" (change)="onZoneImageSelected($event)" accept="image/*" style="display: none;">
                   </div>
-                  <img [src]="getZoneImageUrl()" alt="Previsualización Zona" class="img-preview">
+                  <img [src]="getZoneImageUrl()" alt="Previsualización Municipio" class="img-preview">
                 </div>
               </div>
   
-              <!-- Campos de texto -->
+              <!-- ===== CAMPOS DE UBICACIÓN ACTUALIZADOS ===== -->
               <div class="group">
-                <label class="lbl" for="name">Nombre de la Zona <span class="required">*</span></label>
-                <input type="text" id="name" class="input" [(ngModel)]="zoneData.name" name="name" required placeholder="Ej: Anserma">
+                <label class="lbl" for="departamento">Departamento <span class="required">*</span></label>
+                <input type="text" id="departamento" class="input" [(ngModel)]="zoneData.departamento" name="departamento" required placeholder="Ej: Quindío">
               </div>
               <div class="group">
-                <label class="lbl" for="tipoZona">Tipo de Zona <span class="required">*</span></label>
-                <select id="tipoZona" class="input" [(ngModel)]="zoneData.tipoZona" name="tipoZona" required>
-                  <option value="" disabled>Seleccione un tipo</option> <!-- Opción deshabilitada -->
-                  <option value="municipio">Municipio</option>
-                  <option value="departamento">Departamento</option>
-                  <option value="vereda">Vereda</option>
-                  <option value="ciudad">Ciudad</option>
-                </select>
+                <label class="lbl" for="municipio">Municipio <span class="required">*</span></label>
+                <input type="text" id="municipio" class="input" [(ngModel)]="zoneData.municipio" name="municipio" required placeholder="Ej: Salento">
               </div>
+              <div class="group">
+                <label class="lbl" for="vereda">Vereda / Zona Específica (Opcional)</label>
+                <input type="text" id="vereda" class="input" [(ngModel)]="zoneData.vereda" name="vereda" placeholder="Ej: Vereda La Nubia">
+              </div>
+              <!-- Los campos 'Nombre de la Zona', 'Tipo de Zona' y 'Nombre del Departamento Asociado' han sido reemplazados por los 3 de arriba. -->
+              
+              <!-- ===== RESTO DE CAMPOS (SIN CAMBIOS) ===== -->
               <div class="group">
                 <label class="lbl" for="description">Descripción</label>
                 <textarea id="description" class="input" [(ngModel)]="zoneData.description" name="description" rows="3" placeholder="Breve descripción de la zona..."></textarea>
@@ -57,17 +61,13 @@
               <div class="group">
                 <label class="lbl" for="climate">Clima</label>
                 <select id="climate" class="input" [(ngModel)]="zoneData.climate" name="climate">
-                  <option value="">(Opcional)</option> <!-- Opción para no seleccionar clima -->
+                  <option [ngValue]="undefined">(Opcional)</option>
                   <option value="frio">Frío</option>
                   <option value="calido">Cálido</option>
                 </select>
               </div>
-              <div class="group">
-                <label class="lbl" for="departamentoName">Nombre del Departamento Asociado</label> <!-- Cambiado 'cityName' a 'departamentoName' para claridad -->
-                <input type="text" id="departamentoName" class="input" [(ngModel)]="zoneData.departamentoName" name="departamentoName" placeholder="Ej: Caldas (si aplica)">
-              </div>
-  
-              <!-- --- NUEVOS CAMPOS AÑADIDOS --- -->
+
+              <!-- --- NUEVOS CAMPOS AÑADIDOS (SIN CAMBIOS) --- -->
               <div class="group">
                 <label class="lbl" for="elevation">Elevación (msnm)</label>
                 <input type="number" id="elevation" class="input" [(ngModel)]="zoneData.elevation" name="elevation" placeholder="Ej: 1700 (metros sobre nivel del mar)">
@@ -84,7 +84,7 @@
               </div>
               <!-- --- FIN NUEVOS CAMPOS --- -->
   
-              <!-- Video, modelo 3D y título -->
+              <!-- Video, modelo 3D y título (SIN CAMBIOS) -->
               <div class="group">
                 <label class="lbl" for="videoInput">Video de la Zona (Opcional)</label>
                 <input type="file" id="videoInput" (change)="onVideoSelected($event)" accept="video/mp4,video/webm,video/ogg" class="input">
@@ -110,7 +110,7 @@
                 </div>
               </div>
   
-              <!-- Botón de envío -->
+              <!-- Botón de envío (SIN CAMBIOS)-->
               <button type="submit" class="btn submit-btn" [disabled]="zoneForm.invalid">
                 {{ zoneExists ? 'Actualizar Zona' : 'Crear Zona' }}
               </button>
@@ -135,22 +135,26 @@
             <div *ngIf="isZonesLoading" class="loading">Cargando zonas...</div>
             <div *ngIf="!isZonesLoading && zonesErrorMessage" class="error">{{ zonesErrorMessage }}</div>
             <div class="table-container">
+
+              <!-- ===== TABLA DE RESULTADOS ACTUALIZADA ===== -->
               <table *ngIf="!isZonesLoading && filteredZones.length > 0" class="user-table">
                 <thead>
                   <tr>
-                    <th>Nombre</th>
-                    <th>Tipo</th>
+                    <th>Departamento</th>
+                    <th>Municipio</th>
+                    <th>Vereda</th>
                     <th>Clima</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let zone of filteredZones">
-                    <td>{{ zone.name }}</td>
-                    <td>{{ zone.tipoZona }}</td>
+                    <td>{{ zone.departamento }}</td>
+                    <td>{{ zone.municipio }}</td>
+                    <td>{{ zone.vereda || 'N/A' }}</td>
                     <td>{{ zone.climate || 'N/A' }}</td>
                     <td>
-                      <button type="button" class="btn" (click)="deleteZone(zone)">Eliminar</button>
+                      <button type="button" class="btn btn-danger" (click)="deleteZone(zone)">Eliminar</button>
                     </td>
                   </tr>
                 </tbody>

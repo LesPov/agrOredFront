@@ -83,7 +83,7 @@ export class CiudadesComponent implements OnInit {
         >();
 
         zonas.forEach((zona) => {
-          const depto = zona.departamentoName;
+          const depto = zona.departamento ;
           if (depto && !ciudadesMap.has(depto)) {
             ciudadesMap.set(depto, {
               departamentoName: depto,

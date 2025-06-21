@@ -29,8 +29,7 @@
   align-items: center;
   justify-content: center;       /* centramos horizontal */
   text-align: left;
-  margin-top: 66px;
-}
+ }
 
 .hero-section .content {
   max-width: 700px;
@@ -1099,7 +1098,6 @@
     outline: 2px solid #343a40;
     outline-offset: 1px;
 }
-
 /* ============================================= */
 /*      ESTILOS SECCIÓN PRODUCTOS DESTACADOS     */
 /* ============================================= */
@@ -1123,7 +1121,6 @@
 
 .products-section .section-header p {
     color: #555;
-    /* Gris oscuro */
 }
 
 /* --- Pestañas de Filtro --- */
@@ -1140,26 +1137,21 @@
     border: 1.5px solid #ced4da;
     background-color: #fff;
     color: #495057;
-    /* Gris oscuro */
     border-radius: 20px;
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 500;
     transition: all 0.3s ease;
-    /* ... */
 }
 
 .tab-button:hover {
     border-color: #adb5bd;
     background-color: #f8f9fa;
     color: #212529;
-    /* Casi negro */
 }
 
-/* CORRECCIÓN CONTRASTE: Tab activo */
 .tab-button.active {
     background-color: #1e7e34;
-    /* Verde oscuro */
     color: white;
     border-color: #1e7e34;
     font-weight: 600;
@@ -1168,22 +1160,18 @@
 
 .tab-button.active:hover,
 .tab-button.active:focus {
-    /* Hover y Focus */
     background-color: #155724;
     border-color: #155724;
     outline: none;
-    /* El cambio de color es suficiente indicador */
 }
 
 .tab-button:focus {
-    /* Focus en botón inactivo */
     outline: 2px solid #0056b3;
     outline-offset: 1px;
     border-color: #adb5bd;
     box-shadow: 0 0 0 2px rgba(0, 86, 179, 0.25);
 }
 
-/* ... Mensajes ya corregidos ... */
 
 /* ============================================= */
 /*     ESTILOS CONTENEDOR Y CARRUSEL SWIPER      */
@@ -1204,12 +1192,9 @@
     width: 100%;
     max-width: 320px;
     margin: 0 auto;
-    overflow: hidden;
-    /* Cambiado para que se vean botones/paginación fuera */
+    overflow: visible; /* Cambiado para que se vean botones/paginación fuera */
     position: static;
 }
-
-
 
 .swiper-slide {
     display: flex;
@@ -1243,7 +1228,6 @@
 
 .product-card:hover .prod-title {
     color: #1e7e34;
-    /* Verde oscuro hover */
 }
 
 .product-card:hover .btn-view-product {
@@ -1252,159 +1236,36 @@
 }
 
 .product-card:focus-within {
-    /* Estilo si algo dentro tiene focus */
     box-shadow: 0 0 0 3px rgba(30, 126, 52, 0.3);
 }
 
+/* --- Imagen del Producto --- */
 .product-model {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 0.95;
     background-color: #f0f2f5;
     cursor: pointer;
- }
-
-.product-model canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transition: opacity 0.4s ease-in-out;
-    -webkit-tap-highlight-color: transparent;
-    border-radius: inherit;
 }
 
-.product-model.loaded canvas {
-    display: block;
-}
-.product-model.loaded  canvas.canvas-visible {
-    opacity: 1;
-    pointer-events: auto;
-}
+.product-model canvas,
 .placeholder-content_product {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 6;
-
-}
-
-.product-model.loaded .placeholder-content_product {
-    opacity: 0;
-    pointer-events: none;
+    transition: opacity 0.4s ease-in-out;
 }
 
 .placeholder-image_product {
     width: 100%;
-    max-height: 100%;
-    object-fit: fill;
-    /* Cambiado a contain */
-    position: relative;
-    top: 0;
-    /* Quitado top: 20px */
+    height: 100%;
+    object-fit: cover;
 }
 
-.placeholder-content_product .icon-click {
-    font-size: 2rem;
-    margin-top: 8px;
-    position: absolute;
-    color: rgb(255, 255, 255);
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, -1px 0 0 #000, 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000;
-    z-index: 3;
-    animation: pulseSimpleHand 1.8s infinite ease-in-out;
-    transform-origin: bottom right;
-}
+/* ... (otros estilos de product-model que ya tenías) ... */
 
-.product-model:hover .icon-click {
-    transform: scale(1.1);
-}
-
-.no-model-info {
-    font-size: 0.8em;
-    color: #555;
-    /* Gris oscuro */
-    margin-top: 10px;
-    text-align: center;
-}
-
-.model-badge-floating {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 500;
-    padding: 4px 10px;
-    border-radius: 15px;
-    z-index: 3;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
-}
-
-.product-model.loaded .model-badge-floating {
-    opacity: 0;
-}
-
-/* Badges - OK */
-.discount-badge,
-.top-badge {
-    position: absolute;
-    top: 12px;
-    padding: 4px 10px;
-    border-radius: 15px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: white;
-    z-index: 3;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    backdrop-filter: blur(2px);
-}
-
-.discount-badge {
-    left: 12px;
-    background-color: rgba(220, 53, 69, 0.85);
-}
-
-.top-badge {
-    left: auto;
-    right: 12px;
-    background-color: rgba(0, 123, 255, 0.85);
-}
-
-.climate-badge-corner {
-    position: absolute;
-    bottom: 10px;
-    right: 12px;
-    padding: 3px 8px;
-    border-radius: 10px;
-    font-size: 0.7rem;
-    font-weight: 500;
-    z-index: 3;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background-color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(3px);
-}
-
-.climate-badge-corner.hot {
-    color: #7a3d00;
-}
-
-/* Texto oscuro */
-.climate-badge-corner.cold {
-    color: #004044;
-}
-
-/* Texto oscuro */
-.climate-badge-corner i {
-    font-size: 0.9em;
-}
 
 /* --- Información del Producto --- */
 .product-info {
@@ -1415,66 +1276,86 @@
     flex-direction: column;
 }
 
-/* !! CAMBIO EN HTML: h3 a span !! */
 .prod-subtitle {
     display: block;
     font-size: 0.75rem;
     color: #555;
-    /* Gris oscuro */
     margin-bottom: 4px;
     font-weight: 500;
     text-transform: uppercase;
 }
 
-/* !! CAMBIO EN HTML: h2 a h3 !! */
 .prod-title {
     font-size: 1.05rem;
     font-weight: 600;
     color: #343a40;
-    /* Gris muy oscuro */
     margin-bottom: 8px;
     line-height: 1.35;
     min-height: calc(1.35em * 2);
-    /* ... */
     transition: color 0.3s ease;
 }
 
 .prod-desc {
     font-size: 0.85rem;
     color: #555;
-    /* Gris oscuro */
     margin-bottom: 1rem;
     line-height: 1.4;
     min-height: calc(1.4em * 2);
-    /* ... */
     flex-grow: 1;
 }
 
+/* ========================================================= */
+/* ==== INICIO: NUEVOS ESTILOS PARA RATING DE ESTRELLAS ==== */
+/* ========================================================= */
+
+/* Contenedor principal de la metadata del producto */
 .prod-meta {
     margin-bottom: 1rem;
 }
 
-.rating {
+/* Contenedor que alinea las estrellas y el contador de reviews */
+.rating-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* Espacio entre las estrellas y el número (e.g., "(15)") */
+}
+
+/* Contenedor específico para los iconos de estrella */
+.rating-stars {
     display: inline-flex;
     align-items: center;
 }
 
-/* Rating stars - ok */
-.rating i {
-    font-size: 0.95rem;
-    color: #ffc107;
-    margin-right: 1px;
+/* Estilo base para todos los iconos de estrella */
+.rating-stars i {
+    font-size: 1rem; /* Tamaño de las estrellas */
+    line-height: 1;
+    transition: color 0.2s ease-in-out;
 }
 
-.rating i.bx-star {
-    color: #e0e0e0;
+/* Estrellas LLENAS y MEDIAS (las que tienen calificación) */
+.rating-stars .bxs-star,
+.rating-stars .bxs-star-half {
+    color: #FFC700; /* Un dorado moderno y brillante */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
 }
 
+/* Estrellas VACÍAS (las que no tienen calificación) */
+.rating-stars .bx-star {
+    color: #d1d5db; /* Un gris neutro y suave */
+}
+
+/* Estilo para el número de reviews (e.g., "(15)") */
 .rating-value {
-    margin-left: 6px;
     font-size: 0.8rem;
-    color: #6c757d;
+    color: #6c757d; /* Un gris oscuro para el texto */
+    font-weight: 500;
+    transform: translateY(1px); /* Pequeño ajuste vertical para alinear perfectamente */
 }
+
+/* ========================================================= */
+/* ====== FIN: NUEVOS ESTILOS PARA RATING DE ESTRELLAS ====== */
+/* ========================================================= */
 
 .product-bottom-row {
     display: flex;
@@ -1495,7 +1376,6 @@
     font-size: 1.2rem;
     font-weight: 700;
     color: #1e7e34;
-    /* Verde oscuro */
 }
 
 .original-price {
@@ -1504,12 +1384,9 @@
     text-decoration: line-through;
 }
 
-/* CORRECCIÓN CONTRASTE: Botón ver producto */
 .btn-view-product {
     background-color: #e2f0e9;
-    /* Verde muy pálido */
     color: #1e7e34;
-    /* Icono verde oscuro */
     border: none;
     border-radius: 50%;
     width: 36px;
@@ -1529,16 +1406,8 @@
     transform: scale(1.1);
 }
 
-.btn-view-product:focus {
-    /* Añadir focus */
-    background-color: #c1e2d1;
-    /* Ligeramente más oscuro */
-    color: #155724;
-    outline: 2px solid #1e7e34;
-    outline-offset: 1px;
-    box-shadow: 0 0 0 2px rgba(30, 126, 52, 0.25);
-}
-
+/* ... (El resto de tu CSS para Swiper, botones, etc., puede permanecer igual) ... */
+ 
 
 /* ============================================= */
 /*      ESTILOS SWIPER NAVEGACIÓN Y PAGINACIÓN   */

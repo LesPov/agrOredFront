@@ -30,7 +30,7 @@
   
           <!-- Placeholder (Imagen) - Se muestra solo cuando el canvas NO está visible -->
           <div class="placeholder-content" *ngIf="!zoneLoaded[selectedZone.zone.id]" aria-hidden="true">
-            <img [src]="getZoneImageUrl(selectedZone.zone)" [alt]="'Vista previa de ' + selectedZone.zone.name"
+            <img [src]="getZoneImageUrl(selectedZone.zone)" [alt]="'Vista previa de ' + selectedZone.zone.municipio"
               class="placeholder-image" (error)="onImgError($event)" />
           </div>
   
@@ -83,7 +83,7 @@
   
         <!-- Info Debajo del Modelo/Imagen -->
         <div class="card-info">
-          <h4 class="about-title">Acerca de {{ selectedZone.zone.name | uppercase }}</h4>
+          <h4 class="about-title">Acerca de {{ selectedZone.zone.municipio | uppercase }}</h4>
           <p class="card-desc" *ngIf="selectedZone.zone.description">
             {{ selectedZone.zone.description }}
           </p>
@@ -101,7 +101,7 @@
           <button class="btn btn-explore-3d"
                   (click)="handleExploreClick()"
                   [disabled]="!selectedZone.zone.id"
-                  title="Explorar escena completa de {{ selectedZone.zone.name }}">
+                  title="Explorar escena completa de {{ selectedZone.zone.municipio }}">
             Explorar en 3D
             <i class='bx bx-right-arrow-alt'></i>
           </button>
@@ -129,13 +129,13 @@
           <li *ngFor="let agg of aggregatedZones" class="destacada-card" (click)="selectZone(agg)"
             [class.active-zone]="agg.zone.id === selectedZone?.zone?.id" role="button" tabindex="0"
             [attr.aria-current]="agg.zone.id === selectedZone?.zone?.id ? 'true' : 'false'"
-            title="Seleccionar {{ agg.zone.name }}">
+            title="Seleccionar {{ agg.zone.municipio }}">
             <div class="dest-placeholder">
               <img [src]="getZoneImageUrl(agg.zone)" alt="" class="dest-thumb" (error)="onImgError($event)">
             </div>
             <div class="dest-title-group">
-              <span class="dest-name">{{ agg.zone.name | titlecase }}</span>
-              <span class="dest-region">{{ agg.zone.departamentoName | uppercase }}</span>
+              <span class="dest-name">{{ agg.zone.municipio | titlecase }}</span>
+              <span class="dest-region">{{ agg.zone.departamento | uppercase }}</span>
               <span class="dest-campiamigos" *ngIf="agg.count > 0">
                 <i class='bx bxs-user-check'></i> {{ agg.count }} CampiAmigo{{ agg.count !== 1 ? 's' : '' }}
               </span>

@@ -31,8 +31,8 @@ export class ZoneIndicatorLogic {
         this.allZones = zones;
         const deptSet = new Set<string>();
         zones.forEach(zone => {
-          if (zone.departamentoName) {
-            deptSet.add(zone.departamentoName);
+          if (zone.departamento ) {
+            deptSet.add(zone.departamento );
           }
         });
         this.availableDepartments = Array.from(deptSet);
@@ -87,7 +87,7 @@ export class ZoneIndicatorLogic {
    */
   onDepartmentSelect(dept: string): void {
     this.selectedDepartment = dept;
-    this.availableZonesByDept = this.allZones.filter(zone => zone.departamentoName === dept);
+    this.availableZonesByDept = this.allZones.filter(zone => zone.departamento === dept);
     this.selectedZoneId = null;
   }
 
